@@ -154,6 +154,12 @@ export function TicketDetailPage() {
   async function uploadFile(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0]
     if (!file) return
+    const MAX_BYTES = 5 * 1024 * 1024 // 5 MB
+    if (file.size > MAX_BYTES) {
+      toast.error(`File too large — maximum 5 MB (free plan limit)`)
+      e.target.value = ''
+      return
+    }
     setUploading(true)
     const path = `${TENANT_ID}/${id}/${Date.now()}-${file.name}`
     const { error: upErr } = await supabase.storage

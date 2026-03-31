@@ -9,6 +9,7 @@ import { NewTicketPage } from './pages/tickets/NewTicketPage'
 import { TicketDetailPage } from './pages/tickets/TicketDetailPage'
 import { TicketTypesPage } from './pages/ticket-types/TicketTypesPage'
 import { CompaniesPage } from './pages/companies/CompaniesPage'
+import { CompanyDetailPage } from './pages/companies/CompanyDetailPage'
 import { ContractsPage } from './pages/contracts/ContractsPage'
 import { SitesPage } from './pages/sites/SitesPage'
 import { CostCentersPage } from './pages/cost-centers/CostCentersPage'
@@ -25,6 +26,9 @@ import { SLAPoliciesPage } from './pages/sla/SLAPoliciesPage'
 import { ApiKeysPage } from './pages/api-keys/ApiKeysPage'
 import { ReportingPage } from './pages/reporting/ReportingPage'
 import { IntegrationsPage } from './pages/integrations/IntegrationsPage'
+// Phase 3
+import { PublicPortalPage } from './pages/portal/PublicPortalPage'
+import { AccountPage } from './pages/account/AccountPage'
 
 export const router = createHashRouter([
   {
@@ -39,6 +43,11 @@ export const router = createHashRouter([
     // Public status page — no auth required
     path: '/status',
     element: <PublicStatusPage />,
+  },
+  {
+    // Public ticket portal — no auth required
+    path: '/portal',
+    element: <PublicPortalPage />,
   },
   {
     path: '/',
@@ -59,6 +68,7 @@ export const router = createHashRouter([
       { path: 'knowledge', element: <KnowledgePage /> },
       // Clients
       { path: 'companies', element: <CompaniesPage /> },
+      { path: 'companies/:id', element: <CompanyDetailPage /> },
       { path: 'contracts', element: <ContractsPage /> },
       { path: 'sites', element: <SitesPage /> },
       { path: 'costcenters', element: <CostCentersPage /> },
@@ -73,6 +83,7 @@ export const router = createHashRouter([
       { path: 'user-company-access', element: <CompanyAccessPage /> },
       { path: 'user-site-access', element: <SiteAccessPage /> },
       { path: 'user-management', element: <UserManagementPage /> },
+      { path: 'account', element: <AccountPage /> },
     ],
   },
   { path: '*', element: <Navigate to="/" replace /> },

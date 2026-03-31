@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 import { supabase, TENANT_ID } from '@/lib/supabase'
 import { useAuth } from '@/hooks/useAuth'
 import { PageHeader } from '@/components/shared/PageHeader'
@@ -7,9 +7,11 @@ import { Button } from '@/components/ui/Button'
 import { Badge } from '@/components/ui/Badge'
 import { Modal, ConfirmDialog } from '@/components/ui/Modal'
 import { PageLoader } from '@/components/ui/Spinner'
-import { Pencil, Trash2 } from 'lucide-react'
+import { Pencil, Trash2, Paperclip, Upload, Download } from 'lucide-react'
 import toast from 'react-hot-toast'
-import type { KbArticle, KbCategory, Company } from '@operate1/types'
+import type { KbArticle, KbCategory, Company, KbAttachment } from '@operate1/types'
+
+const MAX_FILE_BYTES = 5 * 1024 * 1024 // 5 MB
 
 export function KnowledgePage() {
   const { profile } = useAuth()
@@ -27,6 +29,9 @@ export function KnowledgePage() {
   const [form, setForm] = useState({ title: '', body: '', type: 'internal', status: 'draft', category_id: '', company_id: '' })
   const [saving, setSaving] = useState(false)
   const [deleteTarget, setDeleteTarget] = useState<string | null>(null)
+  const [expandedId, setExpandedId] = useState<string | null>(null)
+  const [attachmentMap, setAttachmentMap] = useState<Record<string, KbAttachment[]>>({})
+  const [attUploading, setAttUploading] = useState(false)
 
   useEffect(() => { fetchAll() }, [])
 
@@ -60,6 +65,62 @@ export function KnowledgePage() {
       toast.success('Article created')
     }
     setSaving(false); setModalOpen(false); fetchAll()
+  }
+
+  const fetchAttachments = useCallback(async (articleId: string) => {
+    if (attachmentMap[articleId]) return
+    const { data } = await supabase.from('kb_attachments').select('*').eq('article_id', articleId).order('created_at', { ascending: false })
+    setAttachmentMap(prev => ({ ...prev, [articleId]: (data ?? []) as KbAttachment[] }))
+  }, [attachmentMap])
+
+  function toggleAttachments(articleId: string) {
+    if (expandedId === articleId) { setExpandedId(null); return }
+    setExpandedId(articleId)
+    fetchAttachments(articleId)
+  }
+
+  async function uploadKbFile(articleId: string, e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0]
+    if (!file) return
+    if (file.size > MAX_FILE_BYTES) { toast.error('File too large — maximum 5 MB'); e.target.value = ''; return }
+    setAttUploading(true)
+    const path = `${TENANT_ID}/${articleId}/${Date.now()}-${file.name}`
+    const { error: upErr } = await supabase.storage.from('kb-attachments').upload(path, file)
+    if (upErr) { toast.error('Upload failed: ' + upErr.message); setAttUploading(false); return }
+    await supabase.from('kb_attachments').insert({
+      tenant_id: TENANT_ID,
+      article_id: articleId,
+      uploaded_by: profile?.id,
+      file_name: file.name,
+      file_size: file.size,
+      mime_type: file.type,
+      storage_path: path,
+    })
+    setAttUploading(false)
+    e.target.value = ''
+    toast.success('File uploaded')
+    // Invalidate cache for this article
+    setAttachmentMap(prev => { const n = { ...prev }; delete n[articleId]; return n })
+    fetchAttachments(articleId)
+  }
+
+  async function downloadKbFile(att: KbAttachment) {
+    const { data } = await supabase.storage.from('kb-attachments').createSignedUrl(att.storage_path, 60)
+    if (data?.signedUrl) window.open(data.signedUrl, '_blank')
+  }
+
+  async function deleteKbAttachment(att: KbAttachment) {
+    await supabase.storage.from('kb-attachments').remove([att.storage_path])
+    await supabase.from('kb_attachments').delete().eq('id', att.id)
+    setAttachmentMap(prev => ({ ...prev, [att.article_id]: (prev[att.article_id] ?? []).filter(a => a.id !== att.id) }))
+    toast.success('Attachment deleted')
+  }
+
+  function formatBytes(b: number | null) {
+    if (!b) return ''
+    if (b < 1024) return `${b} B`
+    if (b < 1048576) return `${(b / 1024).toFixed(1)} KB`
+    return `${(b / 1048576).toFixed(1)} MB`
   }
 
   async function handleDelete() {
@@ -108,22 +169,61 @@ export function KnowledgePage() {
               <th className="text-left px-4 py-3 text-xs font-semibold text-gray-500 uppercase">Status</th>
               <th className="text-left px-4 py-3 text-xs font-semibold text-gray-500 uppercase">Category</th>
               <th className="text-left px-4 py-3 text-xs font-semibold text-gray-500 uppercase">Company</th>
+              <th className="text-left px-4 py-3 text-xs font-semibold text-gray-500 uppercase">Files</th>
               {isAdmin && <th className="text-left px-4 py-3 text-xs font-semibold text-gray-500 uppercase">Actions</th>}
             </tr></thead>
             <tbody className="divide-y divide-gray-50">
               {filtered.map(a => (
-                <tr key={a.id} className="hover:bg-gray-50">
-                  <td className="px-4 py-3 font-medium">{a.title}</td>
-                  <td className="px-4 py-3"><Badge variant={a.type === 'public' ? 'info' : 'default'}>{a.type}</Badge></td>
-                  <td className="px-4 py-3"><Badge variant={a.status === 'published' ? 'success' : 'gray'}>{a.status}</Badge></td>
-                  <td className="px-4 py-3 text-gray-600">{(a.category as any)?.name || '—'}</td>
-                  <td className="px-4 py-3 text-gray-600">{(a.company as any)?.name || 'Shared'}</td>
-                  {isAdmin && <td className="px-4 py-3">
-                    <div className="flex items-center gap-1">
-                      <button onClick={() => openEdit(a)} className="p-1 text-gray-400 hover:text-amber-600"><Pencil size={15} /></button>
-                      <button onClick={() => setDeleteTarget(a.id)} className="p-1 text-gray-400 hover:text-red-600"><Trash2 size={15} /></button>
-                    </div></td>}
-                </tr>
+                <>
+                  <tr key={a.id} className="hover:bg-gray-50">
+                    <td className="px-4 py-3 font-medium">{a.title}</td>
+                    <td className="px-4 py-3"><Badge variant={a.type === 'public' ? 'info' : 'default'}>{a.type}</Badge></td>
+                    <td className="px-4 py-3"><Badge variant={a.status === 'published' ? 'success' : 'gray'}>{a.status}</Badge></td>
+                    <td className="px-4 py-3 text-gray-600">{(a.category as any)?.name || '—'}</td>
+                    <td className="px-4 py-3 text-gray-600">{(a.company as any)?.name || 'Shared'}</td>
+                    <td className="px-4 py-3">
+                      <button onClick={() => toggleAttachments(a.id)} className="flex items-center gap-1 text-xs text-violet-600 hover:text-violet-700">
+                        <Paperclip size={13} />
+                        {expandedId === a.id ? 'Hide' : 'Files'}
+                      </button>
+                    </td>
+                    {isAdmin && <td className="px-4 py-3">
+                      <div className="flex items-center gap-1">
+                        <button onClick={() => openEdit(a)} className="p-1 text-gray-400 hover:text-amber-600"><Pencil size={15} /></button>
+                        <button onClick={() => setDeleteTarget(a.id)} className="p-1 text-gray-400 hover:text-red-600"><Trash2 size={15} /></button>
+                      </div></td>}
+                  </tr>
+                  {expandedId === a.id && (
+                    <tr key={`${a.id}-att`}>
+                      <td colSpan={isAdmin ? 7 : 6} className="bg-gray-50 px-6 py-3 border-b border-gray-100">
+                        <div className="space-y-1">
+                          {(attachmentMap[a.id] ?? []).map(att => (
+                            <div key={att.id} className="flex items-center justify-between text-xs py-1 border-b border-gray-100 last:border-0">
+                              <div className="flex items-center gap-2 text-gray-700">
+                                <Paperclip size={12} className="text-gray-400" />
+                                <span>{att.file_name}</span>
+                                <span className="text-gray-400">{formatBytes(att.file_size)}</span>
+                              </div>
+                              <div className="flex items-center gap-2">
+                                <button onClick={() => downloadKbFile(att)} className="text-gray-400 hover:text-violet-600"><Download size={13} /></button>
+                                {isAdmin && <button onClick={() => deleteKbAttachment(att)} className="text-gray-400 hover:text-red-500"><Trash2 size={13} /></button>}
+                              </div>
+                            </div>
+                          ))}
+                          {(attachmentMap[a.id] ?? []).length === 0 && (
+                            <p className="text-xs text-gray-400 py-1">No files attached.</p>
+                          )}
+                          {isAdmin && (
+                            <label className="mt-2 flex items-center gap-1 text-xs text-violet-600 hover:text-violet-700 cursor-pointer font-medium">
+                              <Upload size={12} />{attUploading ? 'Uploading…' : 'Attach file (max 5 MB)'}
+                              <input type="file" className="hidden" disabled={attUploading} onChange={e => uploadKbFile(a.id, e)} />
+                            </label>
+                          )}
+                        </div>
+                      </td>
+                    </tr>
+                  )}
+                </>
               ))}
             </tbody>
           </table>

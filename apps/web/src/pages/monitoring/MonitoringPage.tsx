@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 import { supabase, TENANT_ID } from '@/lib/supabase'
 import { useAuth } from '@/hooks/useAuth'
 import { PageHeader } from '@/components/shared/PageHeader'
@@ -8,15 +8,20 @@ import { Modal } from '@/components/ui/Modal'
 import { MonitorStatusBadge } from '@/components/ui/Badge'
 import { PageLoader } from '@/components/ui/Spinner'
 import { timeAgo } from '@/lib/utils'
-import { Activity, Globe, Wifi } from 'lucide-react'
+import { Activity, Globe, Wifi, ChevronDown, ChevronUp } from 'lucide-react'
+import {
+  AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
+} from 'recharts'
 import toast from 'react-hot-toast'
-import type { Monitor, Device, Company } from '@operate1/types'
+import type { Monitor, Device, Company, MonitorResult } from '@operate1/types'
 
 const TYPE_ICONS: Record<string, React.ReactNode> = {
   http: <Globe size={18} className="text-blue-500" />,
   icmp: <Wifi size={18} className="text-green-500" />,
   tcp: <Activity size={18} className="text-purple-500" />,
 }
+
+interface CheckPoint { time: string; ms: number | null; status: 'up' | 'down' }
 
 export function MonitoringPage() {
   const { profile } = useAuth()
@@ -31,6 +36,10 @@ export function MonitoringPage() {
   const [modalOpen, setModalOpen] = useState(false)
   const [form, setForm] = useState({ name: '', type: 'http', target: '', port: '', device_id: '', company_id: '', interval_seconds: '60' })
   const [saving, setSaving] = useState(false)
+  // History panel
+  const [expandedId, setExpandedId] = useState<string | null>(null)
+  const [historyMap, setHistoryMap] = useState<Record<string, CheckPoint[]>>({})
+  const [historyLoading, setHistoryLoading] = useState(false)
 
   useEffect(() => { fetchAll() }, [])
 
@@ -57,6 +66,34 @@ export function MonitoringPage() {
   async function fetchMonitors() {
     const { data } = await supabase.from('monitors').select('*, device:devices(name), company:companies(name)').order('name')
     setMonitors((data as Monitor[]) || [])
+  }
+
+  const fetchHistory = useCallback(async (monitorId: string) => {
+    if (historyMap[monitorId]) return // already loaded
+    setHistoryLoading(true)
+    const { data } = await supabase
+      .from('monitor_results')
+      .select('status, response_ms, checked_at')
+      .eq('monitor_id', monitorId)
+      .order('checked_at', { ascending: false })
+      .limit(50)
+    setHistoryLoading(false)
+    if (!data) return
+    const points: CheckPoint[] = data.reverse().map(r => ({
+      time: new Date(r.checked_at).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' }),
+      ms: r.response_ms,
+      status: r.status as 'up' | 'down',
+    }))
+    setHistoryMap(prev => ({ ...prev, [monitorId]: points }))
+  }, [historyMap])
+
+  function toggleHistory(monitorId: string) {
+    if (expandedId === monitorId) {
+      setExpandedId(null)
+    } else {
+      setExpandedId(monitorId)
+      fetchHistory(monitorId)
+    }
   }
 
   async function handleCreate(e: React.FormEvent) {
@@ -110,39 +147,119 @@ export function MonitoringPage() {
       </div>
 
       {filtered.length === 0 ? <EmptyState title="No endpoints found" description="Create your first endpoint to start monitoring" /> : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {filtered.map(m => (
-            <div key={m.id} className="bg-white rounded-xl border border-gray-200 p-5 hover:shadow-md transition-shadow">
-              <div className="flex items-start justify-between mb-3">
-                <div className="flex items-center gap-2">
-                  {TYPE_ICONS[m.type] || <Activity size={18} />}
-                  <h3 className="font-semibold text-gray-900">{m.name}</h3>
+        <div className="space-y-4">
+          {filtered.map(m => {
+            const isExpanded = expandedId === m.id
+            const history = historyMap[m.id] ?? []
+            const downCount = history.filter(h => h.status === 'down').length
+
+            return (
+              <div key={m.id} className="bg-white rounded-xl border border-gray-200 overflow-hidden">
+                {/* Card header */}
+                <div className="p-5">
+                  <div className="flex items-start justify-between mb-3">
+                    <div className="flex items-center gap-2">
+                      {TYPE_ICONS[m.type] || <Activity size={18} />}
+                      <h3 className="font-semibold text-gray-900">{m.name}</h3>
+                    </div>
+                    <MonitorStatusBadge status={m.last_status} />
+                  </div>
+                  <p className="text-xs text-gray-500 mb-4 truncate">{m.target}</p>
+                  <div className="grid grid-cols-3 gap-2 mb-3">
+                    <div className="text-center">
+                      <p className="text-xs text-gray-400 uppercase">Uptime</p>
+                      <p className={`text-lg font-bold ${m.uptime_percent > 99 ? 'text-green-600' : m.uptime_percent > 90 ? 'text-yellow-600' : 'text-red-600'}`}>
+                        {m.uptime_percent?.toFixed(1) || '0.0'}%
+                      </p>
+                    </div>
+                    <div className="text-center">
+                      <p className="text-xs text-gray-400 uppercase">Avg Response</p>
+                      <p className="text-lg font-bold text-gray-700">{m.avg_response_ms || 0} ms</p>
+                    </div>
+                    <div className="text-center">
+                      <p className="text-xs text-gray-400 uppercase">Failures</p>
+                      <p className="text-lg font-bold text-gray-700">{m.failure_count || 0}</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center justify-between text-xs text-gray-400 pt-3 border-t border-gray-100">
+                    <span className="uppercase">{m.type}</span>
+                    <div className="flex items-center gap-3">
+                      <span>{m.last_checked_at ? timeAgo(m.last_checked_at) : 'Never'}</span>
+                      <button
+                        onClick={() => toggleHistory(m.id)}
+                        className="flex items-center gap-1 text-violet-600 hover:text-violet-700 font-medium"
+                      >
+                        {isExpanded ? <><ChevronUp size={13} />Hide history</> : <><ChevronDown size={13} />Check history</>}
+                      </button>
+                    </div>
+                  </div>
                 </div>
-                <MonitorStatusBadge status={m.last_status} />
+
+                {/* History panel */}
+                {isExpanded && (
+                  <div className="border-t border-gray-100 bg-gray-50 p-5">
+                    {historyLoading && !historyMap[m.id] ? (
+                      <p className="text-xs text-gray-400 text-center py-4">Loading…</p>
+                    ) : history.length === 0 ? (
+                      <p className="text-xs text-gray-400 text-center py-4">No check results recorded yet.</p>
+                    ) : (
+                      <div>
+                        <div className="flex items-center justify-between mb-3">
+                          <p className="text-xs font-semibold text-gray-600">Last {history.length} checks</p>
+                          <p className="text-xs text-gray-400">{downCount} down · {history.length - downCount} up</p>
+                        </div>
+
+                        {/* Response time chart */}
+                        <ResponsiveContainer width="100%" height={120}>
+                          <AreaChart data={history} margin={{ top: 4, right: 4, bottom: 0, left: -20 }}>
+                            <defs>
+                              <linearGradient id={`grad-${m.id}`} x1="0" y1="0" x2="0" y2="1">
+                                <stop offset="5%" stopColor="#8b5cf6" stopOpacity={0.25} />
+                                <stop offset="95%" stopColor="#8b5cf6" stopOpacity={0} />
+                              </linearGradient>
+                            </defs>
+                            <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+                            <XAxis dataKey="time" tick={{ fontSize: 10 }} tickLine={false} interval="preserveStartEnd" />
+                            <YAxis tick={{ fontSize: 10 }} tickLine={false} axisLine={false} unit="ms" />
+                            <Tooltip formatter={(v) => v ? [`${v} ms`, 'Response'] : ['—', 'Down']} />
+                            <Area
+                              type="monotone"
+                              dataKey="ms"
+                              stroke="#8b5cf6"
+                              fill={`url(#grad-${m.id})`}
+                              strokeWidth={1.5}
+                              connectNulls={false}
+                              dot={(props) => {
+                                const { cx, cy, payload } = props
+                                return payload.status === 'down'
+                                  ? <circle key={`dot-${cx}-${cy}`} cx={cx} cy={cy || 0} r={4} fill="#ef4444" stroke="white" strokeWidth={1} />
+                                  : <circle key={`dot-${cx}-${cy}`} cx={cx} cy={cy} r={2} fill="#8b5cf6" stroke="none" />
+                              }}
+                            />
+                          </AreaChart>
+                        </ResponsiveContainer>
+
+                        {/* Downtime event list */}
+                        {downCount > 0 && (
+                          <div className="mt-3">
+                            <p className="text-xs font-semibold text-red-600 mb-1">Down events</p>
+                            <div className="space-y-1">
+                              {history.filter(h => h.status === 'down').slice(-5).map((h, i) => (
+                                <div key={i} className="flex items-center gap-2 text-xs text-red-600">
+                                  <span className="w-2 h-2 rounded-full bg-red-400 shrink-0" />
+                                  <span>{h.time} — check failed</span>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                )}
               </div>
-              <p className="text-xs text-gray-500 mb-4 truncate">{m.target}</p>
-              <div className="grid grid-cols-3 gap-2 mb-3">
-                <div className="text-center">
-                  <p className="text-xs text-gray-400 uppercase">Uptime</p>
-                  <p className={`text-lg font-bold ${m.uptime_percent > 99 ? 'text-green-600' : m.uptime_percent > 90 ? 'text-yellow-600' : 'text-red-600'}`}>
-                    {m.uptime_percent?.toFixed(1) || '0.0'}%
-                  </p>
-                </div>
-                <div className="text-center">
-                  <p className="text-xs text-gray-400 uppercase">Avg Response</p>
-                  <p className="text-lg font-bold text-gray-700">{m.avg_response_ms || 0} ms</p>
-                </div>
-                <div className="text-center">
-                  <p className="text-xs text-gray-400 uppercase">Failures</p>
-                  <p className="text-lg font-bold text-gray-700">{m.failure_count || 0} failures</p>
-                </div>
-              </div>
-              <div className="flex items-center justify-between text-xs text-gray-400 pt-3 border-t border-gray-100">
-                <span className="uppercase">{m.type}</span>
-                <span>{m.last_checked_at ? timeAgo(m.last_checked_at) : 'Never'}</span>
-              </div>
-            </div>
-          ))}
+            )
+          })}
         </div>
       )}
 

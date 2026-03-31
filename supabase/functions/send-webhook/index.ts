@@ -11,6 +11,7 @@ interface WebhookBody {
   entity_type: string
   entity_id: string
   payload: Record<string, unknown>
+  target_webhook_id?: string  // if set, only fire this specific webhook (used for test pings)
 }
 
 Deno.serve(async (req: Request) => {
@@ -26,13 +27,19 @@ Deno.serve(async (req: Request) => {
     return new Response('Bad request', { status: 400 })
   }
 
-  // Load all active webhook configs that subscribe to this event
-  const { data: configs } = await supabase
+  // Load webhook configs — target a single one for test pings, otherwise all active matching event
+  let query = supabase
     .from('webhook_configs')
     .select('*')
     .eq('tenant_id', TENANT_ID)
-    .eq('is_active', true)
-    .contains('events', [body.event])
+
+  if (body.target_webhook_id) {
+    query = query.eq('id', body.target_webhook_id)
+  } else {
+    query = query.eq('is_active', true).contains('events', [body.event])
+  }
+
+  const { data: configs } = await query
 
   if (!configs?.length) {
     return new Response(JSON.stringify({ dispatched: 0 }), { status: 200 })

@@ -13,6 +13,8 @@ import {
   CheckCircle, AlertCircle, Clock, TrendingUp
 } from 'lucide-react'
 
+const TENANT_ID = '00000000-0000-0000-0000-000000000001'
+
 interface DashboardStats {
   ticketsOpen: number
   ticketsPending: number
@@ -114,47 +116,21 @@ export function DashboardPage() {
   }
 
   async function fetchStats() {
-    const [
-      { count: ticketsTotal },
-      { count: ticketsOpen },
-      { count: ticketsPending },
-      { count: ticketsInProgress },
-      { count: companiesTotal },
-      { count: devicesOnline },
-      { count: devicesOffline },
-      { count: devicesTotal },
-      { count: monitorsUp },
-      { count: monitorsDown },
-      { count: monitorsTotal },
-      { count: contractsActive },
-    ] = await Promise.all([
-      supabase.from('tickets').select('*', { count: 'exact', head: true }),
-      supabase.from('tickets').select('*', { count: 'exact', head: true }).eq('status', 'open'),
-      supabase.from('tickets').select('*', { count: 'exact', head: true }).eq('status', 'pending'),
-      supabase.from('tickets').select('*', { count: 'exact', head: true }).eq('status', 'in_progress'),
-      supabase.from('companies').select('*', { count: 'exact', head: true }),
-      supabase.from('devices').select('*', { count: 'exact', head: true }).eq('status', 'online'),
-      supabase.from('devices').select('*', { count: 'exact', head: true }).eq('status', 'offline'),
-      supabase.from('devices').select('*', { count: 'exact', head: true }),
-      supabase.from('monitors').select('*', { count: 'exact', head: true }).eq('last_status', 'up'),
-      supabase.from('monitors').select('*', { count: 'exact', head: true }).eq('last_status', 'down'),
-      supabase.from('monitors').select('*', { count: 'exact', head: true }),
-      supabase.from('contracts').select('*', { count: 'exact', head: true }).eq('status', 'active'),
-    ])
-
+    const { data } = await supabase.rpc('get_dashboard_stats', { p_tenant_id: TENANT_ID })
+    const d = (data ?? {}) as Record<string, number>
     setStats({
-      ticketsTotal: ticketsTotal ?? 0,
-      ticketsOpen: ticketsOpen ?? 0,
-      ticketsPending: ticketsPending ?? 0,
-      ticketsInProgress: ticketsInProgress ?? 0,
-      companiesTotal: companiesTotal ?? 0,
-      devicesOnline: devicesOnline ?? 0,
-      devicesOffline: devicesOffline ?? 0,
-      devicesTotal: devicesTotal ?? 0,
-      monitorsUp: monitorsUp ?? 0,
-      monitorsDown: monitorsDown ?? 0,
-      monitorsTotal: monitorsTotal ?? 0,
-      contractsActive: contractsActive ?? 0,
+      ticketsTotal:      d.tickets_total       ?? 0,
+      ticketsOpen:       d.tickets_open        ?? 0,
+      ticketsPending:    d.tickets_pending     ?? 0,
+      ticketsInProgress: d.tickets_in_progress ?? 0,
+      companiesTotal:    d.companies_total     ?? 0,
+      devicesOnline:     d.devices_online      ?? 0,
+      devicesOffline:    d.devices_offline     ?? 0,
+      devicesTotal:      d.devices_total       ?? 0,
+      monitorsUp:        d.monitors_up         ?? 0,
+      monitorsDown:      d.monitors_down       ?? 0,
+      monitorsTotal:     d.monitors_total      ?? 0,
+      contractsActive:   d.contracts_active    ?? 0,
     })
   }
 

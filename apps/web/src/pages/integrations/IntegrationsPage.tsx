@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/Button'
 import { Input } from '@/components/ui/Input'
 import { Badge } from '@/components/ui/Badge'
 import { Modal, ConfirmDialog } from '@/components/ui/Modal'
-import { Plus, Mail, Webhook, Trash2, Edit2, AlertCircle } from 'lucide-react'
+import { Plus, Mail, Webhook, Trash2, Edit2, AlertCircle, Play } from 'lucide-react'
 import { formatDateTime } from '@/lib/utils'
 import type { EmailRoute, WebhookConfig, TicketType, Company, WebhookProvider } from '@operate1/types'
 import toast from 'react-hot-toast'
@@ -40,6 +40,7 @@ export function IntegrationsPage() {
   const [whForm, setWhForm] = useState({ name: '', url: '', provider: 'generic' as WebhookProvider, events: ['ticket.created'], is_active: true, secret: '' })
   const [savingWh, setSavingWh] = useState(false)
   const [deleteWh, setDeleteWh] = useState<WebhookConfig | null>(null)
+  const [testingWhIds, setTestingWhIds] = useState<Set<string>>(new Set())
 
   useEffect(() => { fetchAll() }, [])
 
@@ -147,6 +148,32 @@ export function IntegrationsPage() {
     await supabase.from('webhook_configs').delete().eq('id', deleteWh.id)
     setDeleteWh(null)
     fetchAll()
+  }
+
+  async function testWebhook(w: WebhookConfig) {
+    setTestingWhIds(s => new Set(s).add(w.id))
+    try {
+      const { data, error } = await supabase.functions.invoke('send-webhook', {
+        body: {
+          event: 'ticket.created',
+          entity_type: 'ticket',
+          entity_id: 'test-ping',
+          payload: { ticket_number: 'TEST-001', subject: 'Webhook connectivity test from Operate1', status: 'open' },
+          target_webhook_id: w.id,
+        },
+      })
+      if (error) throw error
+      const result = data as { dispatched?: number; failed?: number }
+      if (result?.failed) {
+        toast.error(`Test delivered but webhook returned an error`)
+      } else {
+        toast.success(`Test sent to "${w.name}"`)
+      }
+    } catch (err: unknown) {
+      toast.error(`Could not reach webhook: ${err instanceof Error ? err.message : 'Unknown error'}`)
+    } finally {
+      setTestingWhIds(s => { const n = new Set(s); n.delete(w.id); return n })
+    }
   }
 
   function toggleEvent(ev: string) {
@@ -268,6 +295,14 @@ export function IntegrationsPage() {
                       <td className="px-4 py-3 text-gray-500 text-xs">{formatDateTime(w.created_at)}</td>
                       <td className="px-4 py-3">
                         <div className="flex gap-2 justify-end">
+                          <button
+                            onClick={() => testWebhook(w)}
+                            disabled={testingWhIds.has(w.id)}
+                            title="Send test ping"
+                            className="text-gray-400 hover:text-green-600 disabled:opacity-40"
+                          >
+                            <Play size={14} />
+                          </button>
                           <button onClick={() => openEditWh(w)} className="text-gray-400 hover:text-violet-600"><Edit2 size={14} /></button>
                           <button onClick={() => setDeleteWh(w)} className="text-gray-400 hover:text-red-500"><Trash2 size={14} /></button>
                         </div>

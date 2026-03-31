@@ -1,12 +1,13 @@
 {
   "name": "operate1",
   "private": true,
-  "version": "0.1.0",
+  "version": "1.1.5",
   "scripts": {
     "dev": "pnpm --filter web dev",
     "dev:electron": "pnpm --filter electron dev",
     "dev:worker": "pnpm --filter worker dev",
     "build": "pnpm --filter web build",
+    "build:agent": "pnpm --filter electron build && pnpm --filter electron dist",
     "gen-types": "supabase gen types typescript --project-ref yhdyuzdfocvtgyatnrqz > packages/types/src/database.types.ts",
     "db:push": "supabase db push --project-ref yhdyuzdfocvtgyatnrqz",
     "db:reset": "supabase db reset --project-ref yhdyuzdfocvtgyatnrqz"

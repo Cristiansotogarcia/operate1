@@ -1,5 +1,6 @@
 import fs from 'fs'
 import path from 'path'
+import { APP_DIR } from './paths'
 
 export interface WorkerConfig {
   supabase_url: string
@@ -11,7 +12,7 @@ export interface WorkerConfig {
   log_level: string
 }
 
-const CONFIG_PATH = path.join(__dirname, '..', 'worker.config.json')
+const CONFIG_PATH = path.join(APP_DIR, 'worker.config.json')
 
 export function loadConfig(): WorkerConfig {
   if (!fs.existsSync(CONFIG_PATH)) {

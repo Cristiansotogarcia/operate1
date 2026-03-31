@@ -38,7 +38,7 @@ export function ResetPasswordPage() {
       <div className="w-full max-w-md mx-4">
         <div className="bg-white rounded-2xl shadow-2xl p-8">
           <div className="text-center mb-8">
-            <h1 className="text-2xl font-bold text-violet-700">Xatech Helpdesk</h1>
+            <h1 className="text-2xl font-bold text-violet-700">Operate1</h1>
             <p className="text-sm text-gray-500 mt-1">Set a new password</p>
           </div>
 
@@ -74,7 +74,7 @@ export function ResetPasswordPage() {
             </button>
           </form>
         </div>
-        <p className="text-center text-xs text-white/50 mt-4">Xatech Helpdesk v1.0.0</p>
+        <p className="text-center text-xs text-white/50 mt-4">Operate1 v1.1.5</p>
       </div>
     </div>
   )

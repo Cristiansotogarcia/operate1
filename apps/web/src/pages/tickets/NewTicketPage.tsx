@@ -156,18 +156,8 @@ export function NewTicketPage() {
     </form>
   )
 
-  if (isAdmin) {
-    return (
-      <div className="fixed inset-0 z-50 flex items-center justify-center bg-gradient-to-br from-violet-900 via-indigo-900 to-purple-900">
-        <div className="bg-white rounded-xl shadow-2xl p-8 w-full max-w-xl mx-4 max-h-screen overflow-y-auto">
-          {formContent}
-        </div>
-      </div>
-    )
-  }
-
   return (
-    <div className="max-w-2xl mx-auto">
+    <div className="p-6 max-w-2xl mx-auto">
       <div className="bg-white rounded-xl border border-gray-200 p-8">
         {formContent}
       </div>

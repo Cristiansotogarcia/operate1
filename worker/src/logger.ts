@@ -1,7 +1,8 @@
 import winston from 'winston'
 import path from 'path'
+import { APP_DIR } from './paths'
 
-const logDir = path.join(__dirname, '..', 'logs')
+const logDir = path.join(APP_DIR, 'logs')
 
 export const logger = winston.createLogger({
   level: process.env.LOG_LEVEL || 'info',

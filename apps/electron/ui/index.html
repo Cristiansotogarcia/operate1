@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Operate1 Agent</title>
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box}
+    :root{--bg:#0f172a;--bg2:#1e293b;--card:#fff;--violet:#7c3aed;--violet-dim:rgba(124,58,237,.15);--green:#22c55e;--red:#ef4444;--yellow:#eab308;--g50:#f8fafc;--g100:#f1f5f9;--g200:#e2e8f0;--g300:#cbd5e1;--g400:#94a3b8;--g500:#64748b;--g700:#334155;--g800:#1e293b;--g900:#0f172a}
+    body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--g50);color:var(--g800);height:100vh;overflow:hidden;-webkit-app-region:drag;user-select:none}
+    button,input{-webkit-app-region:no-drag}
+
+    /* ─── Window controls ─── */
+    .win-controls{position:fixed;top:0;right:0;display:flex;z-index:100;-webkit-app-region:no-drag}
+    .win-btn{width:36px;height:32px;border:none;background:none;cursor:pointer;color:var(--g400);display:flex;align-items:center;justify-content:center;transition:.15s}
+    .win-btn:hover{background:rgba(0,0,0,.06);color:var(--g700)}
+    .win-btn.x:hover{background:#fef2f2;color:var(--red)}
+
+    /* ─── PAIRING SCREEN ─── */
+    #pairingScreen{display:flex;align-items:center;justify-content:center;height:100vh;background:linear-gradient(135deg,#0f172a 0%,#1e1b4b 100%)}
+    .pair-card{background:var(--card);border-radius:16px;padding:40px;width:380px;text-align:center;box-shadow:0 25px 50px rgba(0,0,0,.25)}
+    .pair-logo{width:56px;height:56px;background:var(--violet);border-radius:14px;display:flex;align-items:center;justify-content:center;margin:0 auto 20px}
+    .pair-logo svg{width:28px;height:28px}
+    .pair-card h1{font-size:20px;font-weight:700;color:var(--g900);margin-bottom:4px}
+    .pair-card p{font-size:13px;color:var(--g500);margin-bottom:24px}
+    .code-input{width:100%;padding:14px;border:2px solid var(--g200);border-radius:10px;text-align:center;font-size:24px;font-family:'Courier New',monospace;font-weight:700;letter-spacing:8px;text-transform:uppercase;outline:none;transition:.15s}
+    .code-input:focus{border-color:var(--violet);box-shadow:0 0 0 4px rgba(124,58,237,.1)}
+    .code-input::placeholder{font-size:14px;letter-spacing:2px;font-weight:400;color:var(--g300)}
+    .pair-btn{width:100%;padding:12px;border:none;border-radius:10px;background:var(--violet);color:#fff;font-size:14px;font-weight:600;cursor:pointer;margin-top:16px;transition:.15s}
+    .pair-btn:hover{background:#6d28d9}
+    .pair-btn:disabled{opacity:.5;cursor:not-allowed}
+    .pair-error{color:var(--red);font-size:12px;margin-top:12px;min-height:18px}
+    .pair-footer{margin-top:20px;font-size:11px;color:var(--g400)}
+
+    /* ─── AGENT DASHBOARD ─── */
+    #agentDashboard{display:none;height:100vh}
+    .app-layout{display:flex;height:100%}
+
+    /* Sidebar */
+    .sidebar{width:190px;background:var(--bg);display:flex;flex-direction:column;flex-shrink:0}
+    .sb-brand{padding:14px 16px;display:flex;align-items:center;gap:10px;border-bottom:1px solid rgba(255,255,255,.08)}
+    .sb-logo{width:28px;height:28px;background:var(--violet);border-radius:8px;display:flex;align-items:center;justify-content:center}
+    .sb-logo svg{width:15px;height:15px}
+    .sb-brand span{color:#fff;font-weight:600;font-size:13px}
+    .sb-nav{flex:1;padding:10px 6px}
+    .sb-item{display:flex;align-items:center;gap:9px;padding:8px 10px;border-radius:6px;color:var(--g400);font-size:12px;cursor:pointer;transition:.15s}
+    .sb-item:hover{background:rgba(255,255,255,.05);color:var(--g300)}
+    .sb-item.active{background:var(--violet-dim);color:#c4b5fd;font-weight:500}
+    .sb-item svg{opacity:.7;flex-shrink:0}
+    .sb-footer{padding:10px 14px;border-top:1px solid rgba(255,255,255,.08)}
+    .sb-status{display:flex;align-items:center;gap:7px;font-size:10px;color:var(--g500)}
+    .dot{width:7px;height:7px;border-radius:50%}
+    .dot.on{background:var(--green);box-shadow:0 0 6px rgba(34,197,94,.5)}
+    .dot.off{background:var(--red)}
+
+    /* Content */
+    .main-area{flex:1;display:flex;flex-direction:column;overflow:hidden}
+    .topbar{height:40px;background:var(--card);border-bottom:1px solid var(--g200);display:flex;align-items:center;padding:0 16px;font-size:12px;font-weight:600;color:var(--g700);flex-shrink:0}
+    .content{flex:1;overflow-y:auto;padding:16px}
+
+    /* Metric cards */
+    .mgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px}
+    .mcard{background:var(--card);border:1px solid var(--g200);border-radius:10px;padding:14px;text-align:center}
+    .mval{font-size:26px;font-weight:700;color:var(--g900);line-height:1}
+    .munit{font-size:13px;font-weight:400;color:var(--g400)}
+    .mlabel{font-size:10px;color:var(--g500);margin-top:5px;text-transform:uppercase;letter-spacing:.05em}
+    .mbar{width:100%;height:5px;background:var(--g100);border-radius:3px;margin-top:8px;overflow:hidden}
+    .mfill{height:100%;border-radius:3px;transition:width .6s}
+    .bg{background:var(--green)}.by{background:var(--yellow)}.br{background:var(--red)}
+
+    /* Info cards */
+    .igrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    .icard{background:var(--card);border:1px solid var(--g200);border-radius:10px;padding:14px}
+    .icard-title{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--g500);margin-bottom:10px}
+    .irow{display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid var(--g100);font-size:11px}
+    .irow:last-child{border:none}
+    .ilabel{color:var(--g500)}.ival{font-weight:500;color:var(--g800)}
+    .badge{display:inline-flex;align-items:center;gap:3px;padding:1px 7px;border-radius:3px;font-size:10px;font-weight:500}
+    .badge-g{background:#f0fdf4;color:#16a34a}.badge-r{background:#fef2f2;color:#dc2626}.badge-gr{background:var(--g100);color:var(--g500)}
+
+    /* Pages */
+    .page{display:none}.page.active{display:block}
+
+    /* Settings */
+    .unpair-btn{padding:6px 14px;border:1px solid var(--red);border-radius:6px;background:none;color:var(--red);font-size:12px;font-weight:500;cursor:pointer;transition:.15s}
+    .unpair-btn:hover{background:#fef2f2}
+  </style>
+</head>
+<body>
+
+<!-- Window controls -->
+<div class="win-controls">
+  <button class="win-btn" onclick="agent.minimize()" title="Minimize">
+    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/></svg>
+  </button>
+  <button class="win-btn x" onclick="agent.close()" title="Minimize to tray">
+    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+  </button>
+</div>
+
+<!-- PAIRING SCREEN -->
+<div id="pairingScreen">
+  <div class="pair-card">
+    <div class="pair-logo">
+      <svg viewBox="0 0 32 32" fill="none">
+        <path d="M8 16a8 8 0 1 1 16 0a8 8 0 0 1-16 0z" stroke="#fff" stroke-width="3" fill="none"/>
+        <path d="M16 10v6l4 2" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+    <h1>Operate1 Agent</h1>
+    <p>Enter the pairing code from your IT administrator</p>
+    <input class="code-input" id="codeInput" maxlength="6" placeholder="ABC123" autofocus>
+    <button class="pair-btn" id="pairBtn" onclick="doPair()" disabled>Connect</button>
+    <div class="pair-error" id="pairError"></div>
+    <div class="pair-footer">Operate1 Monitoring Agent v1.0.2</div>
+  </div>
+</div>
+
+<!-- AGENT DASHBOARD -->
+<div id="agentDashboard">
+  <div class="app-layout">
+    <div class="sidebar">
+      <div class="sb-brand">
+        <div class="sb-logo">
+          <svg viewBox="0 0 32 32" fill="none">
+            <path d="M8 16a8 8 0 1 1 16 0a8 8 0 0 1-16 0z" stroke="#fff" stroke-width="3" fill="none"/>
+            <path d="M16 10v6l4 2" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <span>Operate1</span>
+      </div>
+      <div class="sb-nav">
+        <div class="sb-item active" data-p="status" onclick="nav('status')">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          Status
+        </div>
+        <div class="sb-item" data-p="metrics" onclick="nav('metrics')">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+          Metrics
+        </div>
+        <div class="sb-item" data-p="settings" onclick="nav('settings')">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+          Settings
+        </div>
+      </div>
+      <div class="sb-footer">
+        <div class="sb-status"><span class="dot off" id="sDot"></span><span id="sTxt">Connecting...</span></div>
+      </div>
+    </div>
+
+    <div class="main-area">
+      <div class="topbar" id="pgTitle">Agent Status</div>
+      <div class="content">
+
+        <!-- STATUS -->
+        <div class="page active" id="pg-status">
+          <div class="mgrid">
+            <div class="mcard"><div class="mval" id="vCpu">--</div><div class="mlabel">CPU</div><div class="mbar"><div class="mfill bg" id="bCpu" style="width:0"></div></div></div>
+            <div class="mcard"><div class="mval" id="vRam">--</div><div class="mlabel">RAM</div><div class="mbar"><div class="mfill bg" id="bRam" style="width:0"></div></div></div>
+            <div class="mcard"><div class="mval" id="vDisk">--</div><div class="mlabel">Disk</div><div class="mbar"><div class="mfill bg" id="bDisk" style="width:0"></div></div></div>
+          </div>
+          <div class="igrid">
+            <div class="icard">
+              <div class="icard-title">Device</div>
+              <div class="irow"><span class="ilabel">Hostname</span><span class="ival" id="dHost">--</span></div>
+              <div class="irow"><span class="ilabel">Platform</span><span class="ival" id="dPlat">--</span></div>
+              <div class="irow"><span class="ilabel">Uptime</span><span class="ival" id="dUp">--</span></div>
+              <div class="irow"><span class="ilabel">Device ID</span><span class="ival" id="dId">--</span></div>
+            </div>
+            <div class="icard">
+              <div class="icard-title">Connection</div>
+              <div class="irow"><span class="ilabel">Status</span><span class="ival" id="cSt">--</span></div>
+              <div class="irow"><span class="ilabel">Last Heartbeat</span><span class="ival" id="cHb">--</span></div>
+              <div class="irow"><span class="ilabel">Heartbeats</span><span class="ival" id="cCt">0</span></div>
+              <div class="irow"><span class="ilabel">Interval</span><span class="ival" id="cInt">30s</span></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- METRICS -->
+        <div class="page" id="pg-metrics">
+          <div class="icard">
+            <div class="icard-title">System Resources</div>
+            <div class="irow"><span class="ilabel">CPU Usage</span><span class="ival" id="xCpu">--</span></div>
+            <div class="irow"><span class="ilabel">RAM Used</span><span class="ival" id="xRu">--</span></div>
+            <div class="irow"><span class="ilabel">RAM Total</span><span class="ival" id="xRt">--</span></div>
+            <div class="irow"><span class="ilabel">Disk Used</span><span class="ival" id="xDu">--</span></div>
+            <div class="irow"><span class="ilabel">Disk Total</span><span class="ival" id="xDt">--</span></div>
+            <div class="irow"><span class="ilabel">Uptime</span><span class="ival" id="xUp">--</span></div>
+          </div>
+        </div>
+
+        <!-- SETTINGS -->
+        <div class="page" id="pg-settings">
+          <div class="icard">
+            <div class="icard-title">Agent Settings</div>
+            <div class="irow"><span class="ilabel">Device ID</span><span class="ival" id="sId">--</span></div>
+            <div class="irow"><span class="ilabel">Heartbeat Interval</span><span class="ival" id="sInt">30s</span></div>
+            <div class="irow"><span class="ilabel">Status</span><span class="ival"><span class="badge badge-g">Paired</span></span></div>
+            <div style="margin-top:16px">
+              <button class="unpair-btn" onclick="doUnpair()">Unpair Device</button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const $ = id => document.getElementById(id)
+
+  // ─── Navigation ───
+  function nav(p) {
+    document.querySelectorAll('.page').forEach(e => e.classList.remove('active'))
+    document.querySelectorAll('.sb-item').forEach(e => e.classList.remove('active'))
+    $('pg-' + p).classList.add('active')
+    document.querySelector('[data-p="' + p + '"]').classList.add('active')
+    $('pgTitle').textContent = {status:'Agent Status',metrics:'System Metrics',settings:'Settings'}[p]
+  }
+
+  // ─── Pairing ───
+  $('codeInput').addEventListener('input', e => {
+    e.target.value = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, '')
+    $('pairBtn').disabled = e.target.value.length < 6
+    $('pairError').textContent = ''
+  })
+  $('codeInput').addEventListener('keydown', e => { if (e.key === 'Enter' && !$('pairBtn').disabled) doPair() })
+
+  async function doPair() {
+    const code = $('codeInput').value
+    $('pairBtn').disabled = true
+    $('pairBtn').textContent = 'Connecting...'
+    $('pairError').textContent = ''
+
+    const r = await agent.pair(code)
+    if (r.success) {
+      await agent.start()
+      showDashboard()
+    } else {
+      $('pairError').textContent = r.error || 'Pairing failed'
+      $('pairBtn').disabled = false
+      $('pairBtn').textContent = 'Connect'
+    }
+  }
+
+  async function doUnpair() {
+    await agent.unpair()
+    showPairing()
+  }
+
+  // ─── Screen switching ───
+  function showPairing() {
+    $('pairingScreen').style.display = 'flex'
+    $('agentDashboard').style.display = 'none'
+    $('codeInput').value = ''
+    $('pairBtn').disabled = true
+    $('pairBtn').textContent = 'Connect'
+    $('pairError').textContent = ''
+    $('codeInput').focus()
+  }
+
+  function showDashboard() {
+    $('pairingScreen').style.display = 'none'
+    $('agentDashboard').style.display = 'block'
+  }
+
+  // ─── Metrics display ───
+  function bc(p) { return p > 90 ? 'br' : p > 70 ? 'by' : 'bg' }
+
+  function updateM(m) {
+    if (!m) return
+    $('vCpu').innerHTML = m.cpu_percent + '<span class="munit">%</span>'
+    $('vRam').innerHTML = m.ram_percent + '<span class="munit">%</span>'
+    $('vDisk').innerHTML = m.disk_percent + '<span class="munit">%</span>'
+    $('bCpu').style.width = m.cpu_percent + '%'; $('bCpu').className = 'mfill ' + bc(m.cpu_percent)
+    $('bRam').style.width = m.ram_percent + '%'; $('bRam').className = 'mfill ' + bc(m.ram_percent)
+    $('bDisk').style.width = m.disk_percent + '%'; $('bDisk').className = 'mfill ' + bc(m.disk_percent)
+    $('dHost').textContent = m.hostname
+    $('dPlat').textContent = m.platform
+    $('dUp').textContent = m.uptime_hours + 'h'
+    $('xCpu').textContent = m.cpu_percent + '%'
+    $('xRu').textContent = m.ram_used_gb + ' GB'
+    $('xRt').textContent = m.ram_total_gb + ' GB'
+    $('xDu').textContent = m.disk_used_gb + ' GB'
+    $('xDt').textContent = m.disk_total_gb + ' GB'
+    $('xUp').textContent = m.uptime_hours + ' hours'
+  }
+
+  function updateS(s) {
+    if (!s) return
+    $('sDot').className = 'dot ' + (s.connected ? 'on' : 'off')
+    $('sTxt').textContent = s.connected ? 'Connected' : 'Disconnected'
+    $('dId').textContent = s.device_id ? s.device_id.slice(0, 8) + '...' : '--'
+    $('sId').textContent = s.device_id || '--'
+    $('cSt').innerHTML = s.connected ? '<span class="badge badge-g">Online</span>' : '<span class="badge badge-r">' + (s.error || 'Offline') + '</span>'
+    $('cHb').textContent = s.last_heartbeat ? new Date(s.last_heartbeat).toLocaleTimeString() : '--'
+    $('cCt').textContent = s.heartbeat_count
+  }
+
+  // Live updates
+  agent.onMetricsUpdate(updateM)
+  agent.onStatusUpdate(updateS)
+
+  // Init
+  ;(async () => {
+    const paired = await agent.isPaired()
+    if (paired) {
+      showDashboard()
+      updateM(await agent.getMetrics())
+      updateS(await agent.getStatus())
+      const cfg = await agent.getConfig()
+      $('cInt').textContent = (cfg.heartbeat_interval_ms / 1000) + 's'
+      $('sInt').textContent = (cfg.heartbeat_interval_ms / 1000) + 's'
+    } else {
+      showPairing()
+    }
+  })()
+</script>
+</body>
+</html>

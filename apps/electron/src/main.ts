@@ -1,99 +1,104 @@
-import { app, BrowserWindow, ipcMain, Tray, Menu, nativeImage } from 'electron'
+import { app, BrowserWindow, Tray, Menu, nativeImage } from 'electron'
 import path from 'path'
 import { setupIpcHandlers } from './ipc'
+import { loadConfig, startAgent, stopAgent, setMainWindow, isPaired } from './agent'
 
 let mainWindow: BrowserWindow | null = null
 let tray: Tray | null = null
 
-const DEV_URL = 'http://localhost:5173'
-const isDev = !app.isPackaged
-
 function createWindow() {
   mainWindow = new BrowserWindow({
-    width: 1400,
-    height: 900,
-    minWidth: 1024,
-    minHeight: 700,
-    title: 'Operate1',
+    width: 820,
+    height: 580,
+    minWidth: 700,
+    minHeight: 480,
+    title: 'Operate1 Agent',
+    frame: false,
+    titleBarStyle: 'hidden',
+    icon: path.join(__dirname, '..', 'assets', 'icon.ico'),
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
       contextIsolation: true,
       nodeIntegration: false,
     },
     show: false,
+    backgroundColor: '#0f172a',
+    closable: false, // Prevent Alt+F4 closing
   })
 
-  if (isDev) {
-    mainWindow.loadURL(DEV_URL)
-    mainWindow.webContents.openDevTools({ mode: 'detach' })
-  } else {
-    mainWindow.loadFile(path.join(__dirname, '..', '..', 'web', 'dist', 'index.html'))
-  }
+  mainWindow.loadFile(path.join(__dirname, '..', 'ui', 'index.html'))
 
   mainWindow.once('ready-to-show', () => {
     mainWindow?.show()
+    setMainWindow(mainWindow!)
   })
 
+  // Always minimize to tray — never close
   mainWindow.on('close', (e) => {
-    // Minimize to tray instead of closing
-    if (tray) {
-      e.preventDefault()
-      mainWindow?.hide()
-    }
-  })
-
-  mainWindow.on('closed', () => {
-    mainWindow = null
+    e.preventDefault()
+    mainWindow?.hide()
   })
 }
 
 function createTray() {
-  // Use a simple 16x16 icon placeholder — replace with real icon later
-  const icon = nativeImage.createEmpty()
-  tray = new Tray(icon)
-  tray.setToolTip('Operate1')
+  let trayIcon: Electron.NativeImage
+  const iconPath = path.join(__dirname, '..', 'assets', 'icon.ico')
+  try {
+    trayIcon = nativeImage.createFromPath(iconPath)
+  } catch {
+    trayIcon = nativeImage.createEmpty()
+  }
 
+  tray = new Tray(trayIcon)
+  tray.setToolTip('Operate1 Agent — Running')
+
+  // No "Quit" option — only admins can uninstall via Control Panel
   const contextMenu = Menu.buildFromTemplate([
     {
-      label: 'Show Operate1',
-      click: () => {
-        mainWindow?.show()
-        mainWindow?.focus()
-      },
+      label: 'Show Operate1 Agent',
+      click: () => { mainWindow?.show(); mainWindow?.focus() },
     },
     { type: 'separator' },
     {
-      label: 'Quit',
-      click: () => {
-        tray?.destroy()
-        tray = null
-        app.quit()
-      },
+      label: 'About',
+      click: () => { mainWindow?.show(); mainWindow?.focus() },
     },
   ])
 
   tray.setContextMenu(contextMenu)
-
-  tray.on('double-click', () => {
-    mainWindow?.show()
-    mainWindow?.focus()
-  })
+  tray.on('double-click', () => { mainWindow?.show(); mainWindow?.focus() })
 }
+
+// Prevent quitting — the app should always run
+app.on('before-quit', (e) => {
+  // Only allow quit if explicitly forced (e.g., during uninstall)
+  if (!process.env.OPERATE1_FORCE_QUIT) {
+    e.preventDefault()
+    mainWindow?.hide()
+  }
+})
 
 app.whenReady().then(() => {
   createWindow()
   createTray()
   setupIpcHandlers()
 
-  app.on('activate', () => {
-    if (BrowserWindow.getAllWindows().length === 0) {
-      createWindow()
+  // Auto-start agent if already paired
+  const cfg = loadConfig()
+  if (cfg && isPaired()) {
+    startAgent()
+    // If launched at boot with --hidden, stay in tray
+    if (process.argv.includes('--hidden')) {
+      mainWindow?.hide()
     }
+  }
+
+  app.on('activate', () => {
+    if (BrowserWindow.getAllWindows().length === 0) createWindow()
   })
 })
 
+// Prevent window-all-closed from quitting
 app.on('window-all-closed', () => {
-  if (process.platform !== 'darwin') {
-    app.quit()
-  }
+  // Do nothing — keep running in tray
 })

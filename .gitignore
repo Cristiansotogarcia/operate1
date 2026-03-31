@@ -12,11 +12,14 @@ supabase/.temp
 # Electron build
 apps/electron/out/
 apps/electron/dist/
+apps/electron/release/
 
 # Worker
 worker/dist/
 worker/worker.config.json
 worker/logs/
+worker/release/
+worker/worker-buffer.db
 
 # Claude Code local settings
 .claude/settings.local.json

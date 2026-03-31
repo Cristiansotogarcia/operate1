@@ -5,9 +5,10 @@ import { startScheduler, stopScheduler } from './scheduler'
 import { logger } from './logger'
 import fs from 'fs'
 import path from 'path'
+import { APP_DIR } from './paths'
 
 // Ensure logs directory exists
-const logDir = path.join(__dirname, '..', 'logs')
+const logDir = path.join(APP_DIR, 'logs')
 if (!fs.existsSync(logDir)) fs.mkdirSync(logDir, { recursive: true })
 
 async function main() {

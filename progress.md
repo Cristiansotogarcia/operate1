@@ -117,6 +117,21 @@
 
 ---
 
+## Phase 10 — Phase 3 Features ✅
+
+| # | Task | Status | Notes |
+|---|---|---|---|
+| 67 | Migration 00009 — asset management on devices | ✅ | asset_tag, serial_number, model, manufacturer, device_type, assigned_user_id, warranty, notes |
+| 68 | MonitoringPage — check history charts | ✅ | On-demand history from monitor_results, AreaChart (response_ms), down event list |
+| 69 | DevicesPage — full asset management | ✅ | Edit modal with all 9 asset fields, warranty status badge, assigned user join |
+| 70 | KnowledgePage — KB file attachments | ✅ | Per-article upload/download/delete via kb-attachments bucket, 5MB limit |
+| 71 | Public ticket portal (/portal) | ✅ | No auth, live company/site/type dropdowns, cascading, ticket number on success |
+| 72 | Account page — password + 2FA | ✅ | Zod password validation, TOTP enroll/verify/unenroll via Supabase MFA API |
+| 73 | Router — /portal (public) + /account (protected) | ✅ | |
+| 74 | Sidebar — Client Portal + My Account + section labels | ✅ | |
+
+---
+
 ## Build Status
 
 | Check | Result |
@@ -124,7 +139,7 @@
 | `pnpm --filter web build` | ✅ Pass |
 | `pnpm --filter worker build` | ✅ Pass |
 | `pnpm install` | ✅ Pass (6 workspaces) |
-| Migrations applied | ✅ 8 migrations live |
+| Migrations applied | ✅ 9 migrations live |
 | Edge Functions deployed | ✅ 8 functions live |
 
 ---

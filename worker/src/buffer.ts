@@ -4,7 +4,9 @@ import path from 'path'
 import fs from 'fs'
 import { logger } from './logger'
 
-const DB_PATH = path.join(process.cwd(), 'worker-buffer.db')
+import { APP_DIR } from './paths'
+
+const DB_PATH = path.join(APP_DIR, 'worker-buffer.db')
 
 let db: Database.Database
 

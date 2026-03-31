@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { supabase, TENANT_ID } from '@/lib/supabase'
 import { useAuth } from '@/hooks/useAuth'
 import { PageHeader } from '@/components/shared/PageHeader'
@@ -20,6 +21,7 @@ interface CompanyRow {
 }
 
 export function CompaniesPage() {
+  const navigate = useNavigate()
   const { profile } = useAuth()
   const isAdmin = profile?.role === 'admin'
   const [rows, setRows] = useState<CompanyRow[]>([])
@@ -27,7 +29,7 @@ export function CompaniesPage() {
   const [search, setSearch] = useState('')
   const [modalOpen, setModalOpen] = useState(false)
   const [editing, setEditing] = useState<CompanyRow | null>(null)
-  const [form, setForm] = useState({ name: '', notes: '' })
+  const [form, setForm] = useState({ name: '', notes: '', phone: '', email: '', website: '', address: '', contact_person: '' })
   const [saving, setSaving] = useState(false)
   const [deleteTarget, setDeleteTarget] = useState<string | null>(null)
   const [deleting, setDeleting] = useState(false)
@@ -47,13 +49,13 @@ export function CompaniesPage() {
 
   function openCreate() {
     setEditing(null)
-    setForm({ name: '', notes: '' })
+    setForm({ name: '', notes: '', phone: '', email: '', website: '', address: '', contact_person: '' })
     setModalOpen(true)
   }
 
   function openEdit(row: CompanyRow) {
     setEditing(row)
-    setForm({ name: row.name, notes: row.notes || '' })
+    setForm({ name: row.name, notes: row.notes || '', phone: '', email: '', website: '', address: '', contact_person: '' })
     setModalOpen(true)
   }
 
@@ -62,11 +64,19 @@ export function CompaniesPage() {
     if (!form.name.trim()) { toast.error('Company name is required'); return }
     setSaving(true)
     if (editing) {
-      const { error } = await supabase.from('companies').update({ name: form.name, notes: form.notes || null }).eq('id', editing.id)
+      const { error } = await supabase.from('companies').update({
+        name: form.name, notes: form.notes || null,
+        phone: form.phone || null, email: form.email || null, website: form.website || null,
+        address: form.address || null, contact_person: form.contact_person || null,
+      }).eq('id', editing.id)
       if (error) { toast.error(error.message); setSaving(false); return }
       toast.success('Company updated')
     } else {
-      const { error } = await supabase.from('companies').insert({ tenant_id: TENANT_ID, name: form.name, notes: form.notes || null })
+      const { error } = await supabase.from('companies').insert({
+        tenant_id: TENANT_ID, name: form.name, notes: form.notes || null,
+        phone: form.phone || null, email: form.email || null, website: form.website || null,
+        address: form.address || null, contact_person: form.contact_person || null,
+      })
       if (error) { toast.error(error.message); setSaving(false); return }
       toast.success('Company created')
     }
@@ -128,7 +138,7 @@ export function CompaniesPage() {
                 const activeContract = row.contracts?.find(c => c.status === 'active')
                 return (
                   <tr key={row.id} className="hover:bg-gray-50">
-                    <td className="px-4 py-3 font-medium text-violet-600">{row.name}</td>
+                    <td className="px-4 py-3 font-medium text-violet-600 cursor-pointer hover:underline" onClick={() => navigate(`/companies/${row.id}`)}>{row.name}</td>
                     <td className="px-4 py-3 text-gray-600">{activeContract ? 'Yes' : 'No active contract'}</td>
                     <td className="px-4 py-3">{activeContract ? <ContractTypeBadge type={activeContract.type as any} /> : '—'}</td>
                     <td className="px-4 py-3">{activeContract ? <ContractStatusBadge status={activeContract.status as any} /> : '—'}</td>
@@ -149,17 +159,53 @@ export function CompaniesPage() {
         </div>
       )}
 
-      <Modal open={modalOpen} onClose={() => setModalOpen(false)} title={editing ? 'Edit Company' : 'New Company'}>
+      <Modal open={modalOpen} onClose={() => setModalOpen(false)} title={editing ? 'Edit Company' : 'New Company'} size="md">
         <form onSubmit={handleSave} className="space-y-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Company Name *</label>
-            <input required value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))}
-              className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-violet-500" />
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Company Name *</label>
+              <input required value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))}
+                className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-violet-500" />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Contact Person</label>
+              <input value={form.contact_person} onChange={e => setForm(f => ({ ...f, contact_person: e.target.value }))}
+                placeholder="Primary contact"
+                className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-violet-500" />
+            </div>
+          </div>
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+              <input type="email" value={form.email} onChange={e => setForm(f => ({ ...f, email: e.target.value }))}
+                placeholder="contact@company.com"
+                className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-violet-500" />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Phone</label>
+              <input value={form.phone} onChange={e => setForm(f => ({ ...f, phone: e.target.value }))}
+                placeholder="+1 234 567 890"
+                className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-violet-500" />
+            </div>
+          </div>
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Website</label>
+              <input value={form.website} onChange={e => setForm(f => ({ ...f, website: e.target.value }))}
+                placeholder="https://company.com"
+                className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-violet-500" />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Address</label>
+              <input value={form.address} onChange={e => setForm(f => ({ ...f, address: e.target.value }))}
+                placeholder="Street, City, Country"
+                className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-violet-500" />
+            </div>
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Notes</label>
             <textarea value={form.notes} onChange={e => setForm(f => ({ ...f, notes: e.target.value }))}
-              rows={3} className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-violet-500" />
+              rows={2} className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-violet-500" />
           </div>
           <div className="flex gap-3 justify-end pt-2">
             <Button type="button" variant="secondary" onClick={() => setModalOpen(false)}>Cancel</Button>

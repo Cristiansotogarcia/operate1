@@ -50,7 +50,7 @@ export function PublicStatusPage() {
           <Activity size={28} />
           <h1 className="text-3xl font-bold">Service Status</h1>
         </div>
-        <p className="text-white/70 text-sm">Xatech Helpdesk — Endpoint Monitor Status</p>
+        <p className="text-white/70 text-sm">Operate1 — Endpoint Monitor Status</p>
       </div>
 
       <div className="max-w-2xl mx-auto px-4 py-10 space-y-6">
