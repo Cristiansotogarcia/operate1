@@ -1243,15 +1243,15 @@ bash scripts/gen-types.sh
 
 ### Fast wins that improve buyer appeal without delaying MVP
 
-| Feature | Effort | Impact |
+| Feature | Status | Notes |
 |---|---|---|
-| Monitor down email alert | 1 day | Immediate enterprise credibility |
-| Ticket email notifications (created/updated) | 2 days | Clients expect this as baseline |
-| Dashboard home screen (counts only) | 0.5 days | First thing every user sees |
-| Ticket assignment to technician | 1 hour | Technicians need it on day one |
-| Public status page (read-only) | 1 day | Clients show this to their own clients |
+| Monitor down email alert | ✅ Built | `notify-monitor-down` Edge Function + trigger. Awaiting Resend API key to activate. |
+| Ticket email notifications (created/updated) | ✅ Built | `notify-ticket` Edge Function + trigger. Awaiting Resend API key to activate. |
+| Dashboard home screen (counts only) | ✅ Built | Live stat cards — tickets, devices, monitors, contracts. Landing page. |
+| Ticket assignment to technician | ✅ Built | Inline dropdown in ticket list and detail page. |
+| Public status page (read-only) | ✅ Built | `/#/status` — no login required, auto-refreshes every 60s. |
 
-All five above can be built in Phase 1.5 — after the core MVP is running but before calling it production-ready.
+All five complete. Email activation deferred — add Resend secrets to Supabase when ready (no code changes required).
 
 ---
 
@@ -1285,11 +1285,22 @@ All five above can be built in Phase 1.5 — after the core MVP is running but b
 
 **Checkpoint:** Full MVP. Devices go online. Monitors report. Tickets are managed. You can install the worker on a client machine and show live CPU/RAM and endpoint uptime in the app. Tag `v0.1.0-pilot`.
 
-### Immediately after MVP
+### ✅ MVP Status — v0.1.0-pilot complete
 
-Add **monitor-down email alerts** and a **dashboard home screen**. These are the two features that transform this from an interesting demo into something a client would actually pay for.
+All Week 1 + Week 2 work is done. All fast wins are built. The app is running.
 
-Then run it as a real pilot with one client for 30 days to identify what actually breaks and what they genuinely need before committing to Phase 2.
+**What's live:**
+- 17 routes, full CRUD on all 13 modules
+- Dashboard, ticket detail + comments, public status page
+- 6 Edge Functions deployed, 6 DB migrations applied
+- Worker agent with heartbeat, HTTP/ICMP/TCP checks, SQLite offline buffer
+- Electron shell with service-role IPC
+- Zod validation, DOMPurify, React ErrorBoundary
+
+**Deferred (no code needed):**
+- Email notifications: add Resend secrets to Supabase Edge Functions → active immediately
+
+**Next: run a 30-day pilot with one real client.** Observe what actually breaks before committing to Phase 2 features.
 
 ---
 

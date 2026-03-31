@@ -120,10 +120,11 @@
 
 ---
 
-## To Activate Email Notifications
+## ⏳ Pending: Email Notifications via Resend
 
-Email alerts (notify-ticket, notify-monitor-down) are deployed but silent until configured.
-Add these secrets in Supabase dashboard → Settings → Edge Functions → Secrets:
+The `notify-ticket` and `notify-monitor-down` Edge Functions are **deployed and wired up** via Postgres triggers. They are silent until Resend is configured — deliberately deferred.
+
+**When ready, add these secrets in Supabase dashboard → Edge Functions → Secrets:**
 
 ```
 RESEND_API_KEY=<your Resend API key from resend.com>
@@ -131,6 +132,8 @@ ALERT_EMAIL_TO=<email to receive monitor-down alerts>
 ALERT_EMAIL_FROM=alerts@yourdomain.com
 TICKET_EMAIL_FROM=helpdesk@yourdomain.com
 ```
+
+No code changes needed — adding the secrets is all it takes to activate email.
 
 ---
 
