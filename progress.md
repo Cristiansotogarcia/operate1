@@ -1,6 +1,6 @@
 # Operate1 — Build Progress
 
-> MVP Complete ✅ — Tagged v0.1.0-pilot ready
+> Phase 2 Complete ✅ — v0.2.0
 
 ---
 
@@ -26,7 +26,7 @@
 |---|---|---|---|
 | 12 | apps/web scaffold | ✅ | Vite + Tailwind + TypeScript |
 | 13 | Supabase client | ✅ | |
-| 14 | Router (createHashRouter) | ✅ | 17 routes |
+| 14 | Router (createHashRouter) | ✅ | 22 routes |
 | 15 | Auth store (Zustand) | ✅ | |
 | 16 | useAuth hook | ✅ | |
 | 17 | App.tsx + ErrorBoundary | ✅ | |
@@ -37,7 +37,7 @@
 |---|---|---|---|
 | 18 | Button, Input, Badge, Modal (w/footer), Spinner, ProgressBar | ✅ | Hand-rolled |
 | 19 | EmptyState, PageHeader (w/subtitle), ProtectedRoute, ErrorBoundary | ✅ | |
-| 20 | Sidebar (15 nav items, role-gated) | ✅ | Dark navy, violet active |
+| 20 | Sidebar (sectioned nav, role-gated) | ✅ | Dark navy, violet active, section headers |
 | 21 | MainLayout | ✅ | |
 
 ## Phase 4 — Auth ✅
@@ -51,9 +51,9 @@
 
 | # | Task | Status | Notes |
 |---|---|---|---|
-| 24 | Dashboard | ✅ | Live counts: tickets, devices, monitors, contracts |
+| 24 | Dashboard + charts | ✅ | Live counts + recharts: area, bar, pie charts |
 | 25 | Tickets list + filters + CSV export | ✅ | Assignment dropdown |
-| 26 | Ticket detail + comments | ✅ | Status/assignee controls, DOMPurify rendering |
+| 26 | Ticket detail + comments + time tracking + attachments | ✅ | Tabbed: comments / time / files |
 | 27 | New Ticket form + Zod validation | ✅ | Tiptap, cascading dropdowns |
 | 28 | Ticket Types management | ✅ | Admin CRUD |
 | 29 | Companies CRUD | ✅ | |
@@ -97,6 +97,24 @@
 | 52 | Email alerts — monitor down | ✅ | notify-monitor-down edge function + trigger |
 | 53 | SQLite offline buffer for worker | ✅ | Auto-flush on reconnect |
 
+## Phase 9 — Phase 2 Features ✅
+
+| # | Task | Status | Notes |
+|---|---|---|---|
+| 54 | Migration 00007 — Phase 2 schema | ✅ | audit_logs, sla_policies, time_entries, ticket_attachments, kb_attachments, api_keys, email_routes, webhook_configs |
+| 55 | Migration 00008 — Phase 2 RLS + audit triggers | ✅ | Full RLS, ticket/device/monitor audit triggers, SLA breach function |
+| 56 | Dashboard charts | ✅ | 14-day ticket trend (area), monitor uptime (bar), ticket status (pie), device status (pie) — recharts |
+| 57 | Audit Log page | ✅ | Paginated, filterable, diff viewer |
+| 58 | SLA Policies CRUD | ✅ | Per ticket type + priority, response/resolve targets |
+| 59 | Time tracking on tickets | ✅ | Log hours, billable flag, total display in sidebar |
+| 60 | File attachments on tickets | ✅ | Supabase Storage (ticket-attachments bucket) |
+| 61 | API Keys management | ✅ | Generate/revoke, prefix display, scopes, expiry |
+| 62 | Reporting page | ✅ | CSV exports: tickets, time entries, monitors, devices |
+| 63 | Integrations page | ✅ | Email routes (email-to-ticket) + webhook configs (Slack/Teams/generic) |
+| 64 | Sidebar reorganised into sections | ✅ | Helpdesk / Clients / Infrastructure / Admin |
+| 65 | Edge function: inbound-email | ✅ | Deployed — silent until RESEND_WEBHOOK_SECRET added |
+| 66 | Edge function: send-webhook | ✅ | Deployed — fires Slack/Teams/generic webhooks |
+
 ---
 
 ## Build Status
@@ -106,8 +124,8 @@
 | `pnpm --filter web build` | ✅ Pass |
 | `pnpm --filter worker build` | ✅ Pass |
 | `pnpm install` | ✅ Pass (6 workspaces) |
-| Migrations applied | ✅ 6 migrations live |
-| Edge Functions deployed | ✅ 6 functions live |
+| Migrations applied | ✅ 8 migrations live |
+| Edge Functions deployed | ✅ 8 functions live |
 
 ---
 
@@ -120,20 +138,35 @@
 
 ---
 
-## ⏳ Pending: Email Notifications via Resend
+## ⏳ Pending: Email & Webhook Activation
 
-The `notify-ticket` and `notify-monitor-down` Edge Functions are **deployed and wired up** via Postgres triggers. They are silent until Resend is configured — deliberately deferred.
-
-**When ready, add these secrets in Supabase dashboard → Edge Functions → Secrets:**
-
+### Resend (outbound email)
+Add these to **Supabase dashboard → Edge Functions → Secrets**:
 ```
-RESEND_API_KEY=<your Resend API key from resend.com>
-ALERT_EMAIL_TO=<email to receive monitor-down alerts>
+RESEND_API_KEY=<your Resend API key>
+ALERT_EMAIL_TO=<email for monitor-down alerts>
 ALERT_EMAIL_FROM=alerts@yourdomain.com
 TICKET_EMAIL_FROM=helpdesk@yourdomain.com
 ```
 
-No code changes needed — adding the secrets is all it takes to activate email.
+### Resend (inbound email-to-ticket)
+```
+RESEND_WEBHOOK_SECRET=<signing secret from Resend dashboard>
+```
+Then configure an inbound domain in Resend → point webhook to:
+`https://yhdyuzdfocvtgyatnrqz.supabase.co/functions/v1/inbound-email`
+Then create email routes in **Integrations → Email Routes**.
+
+### Webhooks (Slack/Teams)
+Create webhook configs in **Integrations → Webhooks**.
+The `send-webhook` edge function is already deployed.
+
+### Supabase Storage buckets
+Create these buckets in **Supabase dashboard → Storage**:
+- `ticket-attachments` (private)
+- `kb-attachments` (private)
+
+No code changes needed for any of the above — configuration only.
 
 ---
 

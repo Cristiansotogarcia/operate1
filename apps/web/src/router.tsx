@@ -19,6 +19,12 @@ import { CompanyAccessPage } from './pages/access/CompanyAccessPage'
 import { SiteAccessPage } from './pages/access/SiteAccessPage'
 import { UserManagementPage } from './pages/users/UserManagementPage'
 import { PublicStatusPage } from './pages/status/PublicStatusPage'
+// Phase 2
+import { AuditLogPage } from './pages/audit/AuditLogPage'
+import { SLAPoliciesPage } from './pages/sla/SLAPoliciesPage'
+import { ApiKeysPage } from './pages/api-keys/ApiKeysPage'
+import { ReportingPage } from './pages/reporting/ReportingPage'
+import { IntegrationsPage } from './pages/integrations/IntegrationsPage'
 
 export const router = createHashRouter([
   {
@@ -44,17 +50,26 @@ export const router = createHashRouter([
     children: [
       { index: true, element: <Navigate to="/dashboard" replace /> },
       { path: 'dashboard', element: <DashboardPage /> },
+      // Helpdesk
       { path: 'tickets', element: <TicketsPage /> },
       { path: 'tickets/create', element: <NewTicketPage /> },
       { path: 'tickets/:id', element: <TicketDetailPage /> },
       { path: 'ticket-types', element: <TicketTypesPage /> },
+      { path: 'sla', element: <SLAPoliciesPage /> },
+      { path: 'knowledge', element: <KnowledgePage /> },
+      // Clients
       { path: 'companies', element: <CompaniesPage /> },
       { path: 'contracts', element: <ContractsPage /> },
-      { path: 'monitoring', element: <MonitoringPage /> },
       { path: 'sites', element: <SitesPage /> },
       { path: 'costcenters', element: <CostCentersPage /> },
-      { path: 'knowledge', element: <KnowledgePage /> },
+      // Infrastructure
+      { path: 'monitoring', element: <MonitoringPage /> },
       { path: 'devices', element: <DevicesPage /> },
+      // Admin
+      { path: 'reporting', element: <ReportingPage /> },
+      { path: 'audit', element: <AuditLogPage /> },
+      { path: 'api-keys', element: <ApiKeysPage /> },
+      { path: 'integrations', element: <IntegrationsPage /> },
       { path: 'user-company-access', element: <CompanyAccessPage /> },
       { path: 'user-site-access', element: <SiteAccessPage /> },
       { path: 'user-management', element: <UserManagementPage /> },

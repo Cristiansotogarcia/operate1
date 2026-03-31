@@ -4,6 +4,7 @@
 export type Role = 'admin' | 'user'
 export type Status = 'active' | 'inactive'
 export type TicketStatus = 'pending' | 'open' | 'in_progress' | 'resolved' | 'closed'
+export type TicketPriority = 'low' | 'normal' | 'high' | 'critical'
 export type ContractType = 'custom' | 'standard' | 'hourly'
 export type ContractStatus = 'draft' | 'active' | 'expired' | 'cancelled'
 export type MonitorType = 'http' | 'icmp' | 'tcp'
@@ -12,6 +13,7 @@ export type CheckStatus = 'up' | 'down' | 'unknown'
 export type DeviceStatus = 'online' | 'offline'
 export type ArticleType = 'internal' | 'public'
 export type ArticleStatus = 'draft' | 'published'
+export type WebhookProvider = 'slack' | 'teams' | 'generic'
 
 export interface Tenant {
   id: string
@@ -99,6 +101,11 @@ export interface Ticket {
   subject: string
   description: string | null
   status: TicketStatus
+  priority: TicketPriority
+  sla_policy_id: string | null
+  first_response_at: string | null
+  resolved_at: string | null
+  sla_breached: boolean
   assigned_to: string | null
   created_by: string | null
   created_at: string
@@ -196,6 +203,121 @@ export interface MonitorResult {
   response_ms: number | null
   error_message: string | null
   checked_at: string
+}
+
+export interface AuditLog {
+  id: string
+  tenant_id: string
+  actor_id: string | null
+  action: string
+  entity_type: string
+  entity_id: string | null
+  entity_label: string | null
+  old_values: Record<string, unknown> | null
+  new_values: Record<string, unknown> | null
+  ip_address: string | null
+  created_at: string
+  // joined
+  actor?: Profile
+}
+
+export interface SlaPolicy {
+  id: string
+  tenant_id: string
+  name: string
+  ticket_type_id: string | null
+  priority: TicketPriority
+  response_minutes: number
+  resolve_minutes: number
+  is_active: boolean
+  created_at: string
+  updated_at: string
+  // joined
+  ticket_type?: TicketType
+}
+
+export interface TimeEntry {
+  id: string
+  tenant_id: string
+  ticket_id: string
+  technician_id: string | null
+  description: string | null
+  minutes: number
+  billable: boolean
+  logged_at: string
+  created_at: string
+  // joined
+  technician?: Profile
+}
+
+export interface TicketAttachment {
+  id: string
+  tenant_id: string
+  ticket_id: string
+  comment_id: string | null
+  uploaded_by: string | null
+  file_name: string
+  file_size: number | null
+  mime_type: string | null
+  storage_path: string
+  created_at: string
+}
+
+export interface KbAttachment {
+  id: string
+  tenant_id: string
+  article_id: string
+  uploaded_by: string | null
+  file_name: string
+  file_size: number | null
+  mime_type: string | null
+  storage_path: string
+  created_at: string
+}
+
+export interface ApiKey {
+  id: string
+  tenant_id: string
+  name: string
+  key_hash: string
+  key_prefix: string
+  scopes: string[]
+  is_active: boolean
+  last_used_at: string | null
+  expires_at: string | null
+  created_by: string | null
+  created_at: string
+  revoked_at: string | null
+}
+
+export interface EmailRoute {
+  id: string
+  tenant_id: string
+  inbound_address: string
+  company_id: string | null
+  site_id: string | null
+  ticket_type_id: string | null
+  default_status: 'pending' | 'open' | 'in_progress'
+  is_active: boolean
+  created_at: string
+  updated_at: string
+  // joined
+  company?: Company
+  ticket_type?: TicketType
+}
+
+export interface WebhookConfig {
+  id: string
+  tenant_id: string
+  name: string
+  url: string
+  provider: WebhookProvider
+  events: string[]
+  is_active: boolean
+  secret: string | null
+  created_by: string | null
+  created_at: string
+  updated_at: string
 }
 
 export interface UserCompanyAccess {

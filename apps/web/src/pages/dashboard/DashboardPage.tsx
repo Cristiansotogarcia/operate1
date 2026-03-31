@@ -5,6 +5,10 @@ import { PageHeader } from '@/components/shared/PageHeader'
 import { Spinner } from '@/components/ui/Spinner'
 import { cn } from '@/lib/utils'
 import {
+  AreaChart, Area, BarChart, Bar, PieChart, Pie, Cell,
+  XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend,
+} from 'recharts'
+import {
   Ticket, Building2, Monitor, Activity,
   CheckCircle, AlertCircle, Clock, TrendingUp
 } from 'lucide-react'
@@ -23,6 +27,9 @@ interface DashboardStats {
   monitorsTotal: number
   contractsActive: number
 }
+
+interface DailyTicket { date: string; count: number }
+interface MonitorUptimeRow { name: string; uptime: number }
 
 interface StatCardProps {
   title: string
@@ -77,63 +84,117 @@ function SectionHeader({ icon, title }: SectionHeaderProps) {
   )
 }
 
+function ChartCard({ title, children }: { title: string; children: React.ReactNode }) {
+  return (
+    <div className="bg-white rounded-lg border border-gray-200 p-5">
+      <h3 className="text-sm font-semibold text-gray-700 mb-4">{title}</h3>
+      {children}
+    </div>
+  )
+}
+
 export function DashboardPage() {
   const { profile } = useAuth()
   const [stats, setStats] = useState<DashboardStats | null>(null)
+  const [ticketTrend, setTicketTrend] = useState<DailyTicket[]>([])
+  const [monitorUptime, setMonitorUptime] = useState<MonitorUptimeRow[]>([])
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    fetchStats()
+    fetchAll()
   }, [])
 
-  async function fetchStats() {
+  async function fetchAll() {
     setLoading(true)
     try {
-      const [
-        { count: ticketsTotal },
-        { count: ticketsOpen },
-        { count: ticketsPending },
-        { count: ticketsInProgress },
-        { count: companiesTotal },
-        { count: devicesOnline },
-        { count: devicesOffline },
-        { count: devicesTotal },
-        { count: monitorsUp },
-        { count: monitorsDown },
-        { count: monitorsTotal },
-        { count: contractsActive },
-      ] = await Promise.all([
-        supabase.from('tickets').select('*', { count: 'exact', head: true }),
-        supabase.from('tickets').select('*', { count: 'exact', head: true }).eq('status', 'open'),
-        supabase.from('tickets').select('*', { count: 'exact', head: true }).eq('status', 'pending'),
-        supabase.from('tickets').select('*', { count: 'exact', head: true }).eq('status', 'in_progress'),
-        supabase.from('companies').select('*', { count: 'exact', head: true }),
-        supabase.from('devices').select('*', { count: 'exact', head: true }).eq('status', 'online'),
-        supabase.from('devices').select('*', { count: 'exact', head: true }).eq('status', 'offline'),
-        supabase.from('devices').select('*', { count: 'exact', head: true }),
-        supabase.from('monitors').select('*', { count: 'exact', head: true }).eq('last_status', 'up'),
-        supabase.from('monitors').select('*', { count: 'exact', head: true }).eq('last_status', 'down'),
-        supabase.from('monitors').select('*', { count: 'exact', head: true }),
-        supabase.from('contracts').select('*', { count: 'exact', head: true }).eq('status', 'active'),
-      ])
-
-      setStats({
-        ticketsTotal: ticketsTotal ?? 0,
-        ticketsOpen: ticketsOpen ?? 0,
-        ticketsPending: ticketsPending ?? 0,
-        ticketsInProgress: ticketsInProgress ?? 0,
-        companiesTotal: companiesTotal ?? 0,
-        devicesOnline: devicesOnline ?? 0,
-        devicesOffline: devicesOffline ?? 0,
-        devicesTotal: devicesTotal ?? 0,
-        monitorsUp: monitorsUp ?? 0,
-        monitorsDown: monitorsDown ?? 0,
-        monitorsTotal: monitorsTotal ?? 0,
-        contractsActive: contractsActive ?? 0,
-      })
+      await Promise.all([fetchStats(), fetchTicketTrend(), fetchMonitorUptime()])
     } finally {
       setLoading(false)
     }
+  }
+
+  async function fetchStats() {
+    const [
+      { count: ticketsTotal },
+      { count: ticketsOpen },
+      { count: ticketsPending },
+      { count: ticketsInProgress },
+      { count: companiesTotal },
+      { count: devicesOnline },
+      { count: devicesOffline },
+      { count: devicesTotal },
+      { count: monitorsUp },
+      { count: monitorsDown },
+      { count: monitorsTotal },
+      { count: contractsActive },
+    ] = await Promise.all([
+      supabase.from('tickets').select('*', { count: 'exact', head: true }),
+      supabase.from('tickets').select('*', { count: 'exact', head: true }).eq('status', 'open'),
+      supabase.from('tickets').select('*', { count: 'exact', head: true }).eq('status', 'pending'),
+      supabase.from('tickets').select('*', { count: 'exact', head: true }).eq('status', 'in_progress'),
+      supabase.from('companies').select('*', { count: 'exact', head: true }),
+      supabase.from('devices').select('*', { count: 'exact', head: true }).eq('status', 'online'),
+      supabase.from('devices').select('*', { count: 'exact', head: true }).eq('status', 'offline'),
+      supabase.from('devices').select('*', { count: 'exact', head: true }),
+      supabase.from('monitors').select('*', { count: 'exact', head: true }).eq('last_status', 'up'),
+      supabase.from('monitors').select('*', { count: 'exact', head: true }).eq('last_status', 'down'),
+      supabase.from('monitors').select('*', { count: 'exact', head: true }),
+      supabase.from('contracts').select('*', { count: 'exact', head: true }).eq('status', 'active'),
+    ])
+
+    setStats({
+      ticketsTotal: ticketsTotal ?? 0,
+      ticketsOpen: ticketsOpen ?? 0,
+      ticketsPending: ticketsPending ?? 0,
+      ticketsInProgress: ticketsInProgress ?? 0,
+      companiesTotal: companiesTotal ?? 0,
+      devicesOnline: devicesOnline ?? 0,
+      devicesOffline: devicesOffline ?? 0,
+      devicesTotal: devicesTotal ?? 0,
+      monitorsUp: monitorsUp ?? 0,
+      monitorsDown: monitorsDown ?? 0,
+      monitorsTotal: monitorsTotal ?? 0,
+      contractsActive: contractsActive ?? 0,
+    })
+  }
+
+  async function fetchTicketTrend() {
+    // Last 14 days of ticket creation
+    const since = new Date()
+    since.setDate(since.getDate() - 13)
+    const { data } = await supabase
+      .from('tickets')
+      .select('created_at')
+      .gte('created_at', since.toISOString())
+      .order('created_at', { ascending: true })
+
+    // Build day buckets
+    const buckets: Record<string, number> = {}
+    for (let i = 0; i < 14; i++) {
+      const d = new Date()
+      d.setDate(d.getDate() - (13 - i))
+      buckets[d.toLocaleDateString('en-GB', { month: 'short', day: 'numeric' })] = 0
+    }
+    data?.forEach(t => {
+      const key = new Date(t.created_at).toLocaleDateString('en-GB', { month: 'short', day: 'numeric' })
+      if (key in buckets) buckets[key]++
+    })
+    setTicketTrend(Object.entries(buckets).map(([date, count]) => ({ date, count })))
+  }
+
+  async function fetchMonitorUptime() {
+    const { data } = await supabase
+      .from('monitors')
+      .select('name, uptime_percent')
+      .order('uptime_percent', { ascending: true })
+      .limit(8)
+
+    setMonitorUptime(
+      (data ?? []).map(m => ({
+        name: m.name.length > 18 ? m.name.slice(0, 16) + '…' : m.name,
+        uptime: Number(m.uptime_percent ?? 0),
+      }))
+    )
   }
 
   if (loading) {
@@ -145,9 +206,20 @@ export function DashboardPage() {
   }
 
   const s = stats!
-  const monitorUptime = s.monitorsTotal > 0
+  const overallUptime = s.monitorsTotal > 0
     ? Math.round((s.monitorsUp / s.monitorsTotal) * 100)
     : 100
+
+  const devicePieData = [
+    { name: 'Online', value: s.devicesOnline, fill: '#22c55e' },
+    { name: 'Offline', value: s.devicesOffline, fill: '#ef4444' },
+  ].filter(d => d.value > 0)
+
+  const ticketStatusData = [
+    { name: 'Pending', value: s.ticketsPending, fill: '#eab308' },
+    { name: 'Open', value: s.ticketsOpen, fill: '#3b82f6' },
+    { name: 'In Progress', value: s.ticketsInProgress, fill: '#8b5cf6' },
+  ].filter(d => d.value > 0)
 
   return (
     <div className="p-6 space-y-8">
@@ -235,10 +307,10 @@ export function DashboardPage() {
           />
           <StatCard
             title="Overall Uptime"
-            value={`${monitorUptime}%`}
+            value={`${overallUptime}%`}
             subtitle="Across all monitors"
             icon={<TrendingUp size={20} />}
-            color={monitorUptime >= 99 ? 'green' : monitorUptime >= 95 ? 'yellow' : 'red'}
+            color={overallUptime >= 99 ? 'green' : overallUptime >= 95 ? 'yellow' : 'red'}
           />
           <StatCard
             title="Total Monitors"
@@ -265,6 +337,94 @@ export function DashboardPage() {
             icon={<CheckCircle size={20} />}
             color="green"
           />
+        </div>
+      </div>
+
+      {/* Charts section */}
+      <div>
+        <SectionHeader icon={<TrendingUp size={16} />} title="Charts" />
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+
+          {/* Ticket volume — 14 day trend */}
+          <ChartCard title="Ticket Volume — Last 14 Days">
+            <ResponsiveContainer width="100%" height={200}>
+              <AreaChart data={ticketTrend} margin={{ top: 4, right: 8, bottom: 0, left: -20 }}>
+                <defs>
+                  <linearGradient id="ticketGrad" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="#8b5cf6" stopOpacity={0.3} />
+                    <stop offset="95%" stopColor="#8b5cf6" stopOpacity={0} />
+                  </linearGradient>
+                </defs>
+                <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
+                <XAxis dataKey="date" tick={{ fontSize: 11 }} tickLine={false} interval={1} />
+                <YAxis tick={{ fontSize: 11 }} tickLine={false} axisLine={false} allowDecimals={false} />
+                <Tooltip />
+                <Area type="monotone" dataKey="count" stroke="#8b5cf6" fill="url(#ticketGrad)" strokeWidth={2} name="Tickets" />
+              </AreaChart>
+            </ResponsiveContainer>
+          </ChartCard>
+
+          {/* Monitor uptime bar chart */}
+          {monitorUptime.length > 0 ? (
+            <ChartCard title="Monitor Uptime %">
+              <ResponsiveContainer width="100%" height={200}>
+                <BarChart data={monitorUptime} layout="vertical" margin={{ top: 0, right: 8, bottom: 0, left: 8 }}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" horizontal={false} />
+                  <XAxis type="number" domain={[0, 100]} tick={{ fontSize: 11 }} tickLine={false} unit="%" />
+                  <YAxis type="category" dataKey="name" tick={{ fontSize: 11 }} tickLine={false} width={80} />
+                  <Tooltip formatter={(v) => [`${v}%`, 'Uptime']} />
+                  <Bar dataKey="uptime" radius={[0, 4, 4, 0]}>
+                    {monitorUptime.map((m, i) => (
+                      <Cell key={i} fill={m.uptime >= 99 ? '#22c55e' : m.uptime >= 95 ? '#eab308' : '#ef4444'} />
+                    ))}
+                  </Bar>
+                </BarChart>
+              </ResponsiveContainer>
+            </ChartCard>
+          ) : (
+            <ChartCard title="Monitor Uptime %">
+              <div className="flex items-center justify-center h-[200px] text-sm text-gray-400">No monitors configured yet</div>
+            </ChartCard>
+          )}
+
+          {/* Ticket status donut */}
+          {ticketStatusData.length > 0 ? (
+            <ChartCard title="Open Tickets by Status">
+              <ResponsiveContainer width="100%" height={200}>
+                <PieChart>
+                  <Pie data={ticketStatusData} cx="50%" cy="50%" innerRadius={55} outerRadius={80} dataKey="value" paddingAngle={3}>
+                    {ticketStatusData.map((entry, i) => <Cell key={i} fill={entry.fill} />)}
+                  </Pie>
+                  <Tooltip />
+                  <Legend iconType="circle" iconSize={10} />
+                </PieChart>
+              </ResponsiveContainer>
+            </ChartCard>
+          ) : (
+            <ChartCard title="Open Tickets by Status">
+              <div className="flex items-center justify-center h-[200px] text-sm text-gray-400">No open tickets</div>
+            </ChartCard>
+          )}
+
+          {/* Device online/offline donut */}
+          {devicePieData.length > 0 ? (
+            <ChartCard title="Device Status">
+              <ResponsiveContainer width="100%" height={200}>
+                <PieChart>
+                  <Pie data={devicePieData} cx="50%" cy="50%" innerRadius={55} outerRadius={80} dataKey="value" paddingAngle={3}>
+                    {devicePieData.map((entry, i) => <Cell key={i} fill={entry.fill} />)}
+                  </Pie>
+                  <Tooltip />
+                  <Legend iconType="circle" iconSize={10} />
+                </PieChart>
+              </ResponsiveContainer>
+            </ChartCard>
+          ) : (
+            <ChartCard title="Device Status">
+              <div className="flex items-center justify-center h-[200px] text-sm text-gray-400">No devices registered yet</div>
+            </ChartCard>
+          )}
+
         </div>
       </div>
     </div>
