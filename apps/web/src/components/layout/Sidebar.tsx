@@ -5,7 +5,7 @@ import { supabase } from '@/lib/supabase'
 import toast from 'react-hot-toast'
 import {
   Ticket, Plus, Building2, FileText, Activity, MapPin,
-  Landmark, BookOpen, Monitor, Users, Shield, SlidersHorizontal, LogOut, LayoutDashboard
+  Landmark, BookOpen, Monitor, Users, Shield, SlidersHorizontal, LogOut, LayoutDashboard, Tag, Radio
 } from 'lucide-react'
 
 interface NavItem {
@@ -20,6 +20,7 @@ const navItems: NavItem[] = [
   { path: '/dashboard', label: 'Dashboard', sub: 'Overview', icon: <LayoutDashboard size={18} /> },
   { path: '/tickets', label: 'Tickets', sub: 'Tickets management', icon: <Ticket size={18} /> },
   { path: '/tickets/create', label: 'New Ticket', sub: 'Create new ticket', icon: <Plus size={18} /> },
+  { path: '/ticket-types', label: 'Ticket Types', sub: 'Manage ticket types', icon: <Tag size={18} />, adminOnly: true },
   { path: '/companies', label: 'Companies', sub: 'Companies management', icon: <Building2 size={18} /> },
   { path: '/contracts', label: 'Contracts', sub: 'Contracts management', icon: <FileText size={18} /> },
   { path: '/monitoring', label: 'Monitoring', sub: 'Monitoring', icon: <Activity size={18} /> },
@@ -30,6 +31,7 @@ const navItems: NavItem[] = [
   { path: '/user-company-access', label: 'Company Access', sub: 'Company Access management', icon: <Shield size={18} />, adminOnly: true },
   { path: '/user-site-access', label: 'Site Access', sub: 'Site Access management', icon: <SlidersHorizontal size={18} />, adminOnly: true },
   { path: '/user-management', label: 'User Management', sub: 'User Management', icon: <Users size={18} />, adminOnly: true },
+  { path: '/status', label: 'Status Page', sub: 'Public monitor status', icon: <Radio size={18} /> },
 ]
 
 export function Sidebar() {

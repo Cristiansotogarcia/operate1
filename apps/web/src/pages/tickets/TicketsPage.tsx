@@ -208,7 +208,7 @@ export function TicketsPage() {
                   </td>
                   <td className="px-4 py-3">
                     <div className="flex items-center gap-1">
-                      <button className="p-1 text-gray-400 hover:text-violet-600 transition-colors" title="View">
+                      <button onClick={() => navigate(`/tickets/${ticket.id}`)} className="p-1 text-gray-400 hover:text-violet-600 transition-colors" title="View">
                         <Eye size={15} />
                       </button>
                       {profile?.role === 'admin' && (

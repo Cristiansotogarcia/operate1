@@ -4,6 +4,7 @@ import { supabase } from '@/lib/supabase'
 import { useAuth } from '@/hooks/useAuth'
 import { Button } from '@/components/ui/Button'
 import { TENANT_ID } from '@/lib/supabase'
+import { newTicketSchema } from '@/lib/schemas'
 import toast from 'react-hot-toast'
 import type { Company, Site, TicketType } from '@operate1/types'
 
@@ -50,7 +51,8 @@ export function NewTicketPage() {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
-    if (!form.contact_email || !form.subject) { toast.error('Email and subject are required'); return }
+    const result = newTicketSchema.safeParse({ ...form, status: form.status as any })
+    if (!result.success) { toast.error(result.error.errors[0].message); return }
     setLoading(true)
     const { error } = await supabase.from('tickets').insert({
       tenant_id: TENANT_ID,

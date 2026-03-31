@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { supabase } from '@/lib/supabase'
+import { loginSchema } from '@/lib/schemas'
 import toast from 'react-hot-toast'
 
 export function LoginPage() {
@@ -12,6 +13,11 @@ export function LoginPage() {
 
   async function handleLogin(e: React.FormEvent) {
     e.preventDefault()
+    const result = loginSchema.safeParse({ email, password })
+    if (!result.success) {
+      toast.error(result.error.errors[0].message)
+      return
+    }
     setLoading(true)
     const { error } = await supabase.auth.signInWithPassword({ email, password })
     setLoading(false)

@@ -6,6 +6,8 @@ import { ResetPasswordPage } from './pages/auth/ResetPasswordPage'
 import { DashboardPage } from './pages/dashboard/DashboardPage'
 import { TicketsPage } from './pages/tickets/TicketsPage'
 import { NewTicketPage } from './pages/tickets/NewTicketPage'
+import { TicketDetailPage } from './pages/tickets/TicketDetailPage'
+import { TicketTypesPage } from './pages/ticket-types/TicketTypesPage'
 import { CompaniesPage } from './pages/companies/CompaniesPage'
 import { ContractsPage } from './pages/contracts/ContractsPage'
 import { SitesPage } from './pages/sites/SitesPage'
@@ -16,6 +18,7 @@ import { DevicesPage } from './pages/devices/DevicesPage'
 import { CompanyAccessPage } from './pages/access/CompanyAccessPage'
 import { SiteAccessPage } from './pages/access/SiteAccessPage'
 import { UserManagementPage } from './pages/users/UserManagementPage'
+import { PublicStatusPage } from './pages/status/PublicStatusPage'
 
 export const router = createHashRouter([
   {
@@ -25,6 +28,11 @@ export const router = createHashRouter([
   {
     path: '/auth/reset',
     element: <ResetPasswordPage />,
+  },
+  {
+    // Public status page — no auth required
+    path: '/status',
+    element: <PublicStatusPage />,
   },
   {
     path: '/',
@@ -38,6 +46,8 @@ export const router = createHashRouter([
       { path: 'dashboard', element: <DashboardPage /> },
       { path: 'tickets', element: <TicketsPage /> },
       { path: 'tickets/create', element: <NewTicketPage /> },
+      { path: 'tickets/:id', element: <TicketDetailPage /> },
+      { path: 'ticket-types', element: <TicketTypesPage /> },
       { path: 'companies', element: <CompaniesPage /> },
       { path: 'contracts', element: <ContractsPage /> },
       { path: 'monitoring', element: <MonitoringPage /> },
