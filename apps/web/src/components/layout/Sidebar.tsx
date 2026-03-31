@@ -5,7 +5,7 @@ import { supabase } from '@/lib/supabase'
 import toast from 'react-hot-toast'
 import {
   Ticket, Plus, Building2, FileText, Activity, MapPin,
-  Landmark, BookOpen, Monitor, Users, Shield, SlidersHorizontal, LogOut
+  Landmark, BookOpen, Monitor, Users, Shield, SlidersHorizontal, LogOut, LayoutDashboard
 } from 'lucide-react'
 
 interface NavItem {
@@ -17,6 +17,7 @@ interface NavItem {
 }
 
 const navItems: NavItem[] = [
+  { path: '/dashboard', label: 'Dashboard', sub: 'Overview', icon: <LayoutDashboard size={18} /> },
   { path: '/tickets', label: 'Tickets', sub: 'Tickets management', icon: <Ticket size={18} /> },
   { path: '/tickets/create', label: 'New Ticket', sub: 'Create new ticket', icon: <Plus size={18} /> },
   { path: '/companies', label: 'Companies', sub: 'Companies management', icon: <Building2 size={18} /> },

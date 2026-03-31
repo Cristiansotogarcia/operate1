@@ -2,6 +2,8 @@ import { createHashRouter, Navigate } from 'react-router-dom'
 import { MainLayout } from './components/layout/MainLayout'
 import { ProtectedRoute } from './components/shared/ProtectedRoute'
 import { LoginPage } from './pages/auth/LoginPage'
+import { ResetPasswordPage } from './pages/auth/ResetPasswordPage'
+import { DashboardPage } from './pages/dashboard/DashboardPage'
 import { TicketsPage } from './pages/tickets/TicketsPage'
 import { NewTicketPage } from './pages/tickets/NewTicketPage'
 import { CompaniesPage } from './pages/companies/CompaniesPage'
@@ -21,6 +23,10 @@ export const router = createHashRouter([
     element: <LoginPage />,
   },
   {
+    path: '/auth/reset',
+    element: <ResetPasswordPage />,
+  },
+  {
     path: '/',
     element: (
       <ProtectedRoute>
@@ -28,7 +34,8 @@ export const router = createHashRouter([
       </ProtectedRoute>
     ),
     children: [
-      { index: true, element: <Navigate to="/tickets" replace /> },
+      { index: true, element: <Navigate to="/dashboard" replace /> },
+      { path: 'dashboard', element: <DashboardPage /> },
       { path: 'tickets', element: <TicketsPage /> },
       { path: 'tickets/create', element: <NewTicketPage /> },
       { path: 'companies', element: <CompaniesPage /> },

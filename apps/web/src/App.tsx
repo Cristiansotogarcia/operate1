@@ -2,6 +2,7 @@ import { RouterProvider } from 'react-router-dom'
 import { Toaster } from 'react-hot-toast'
 import { router } from './router'
 import { useAuthInit } from './hooks/useAuth'
+import { ErrorBoundary } from './components/shared/ErrorBoundary'
 
 function AppInner() {
   useAuthInit()
@@ -14,5 +15,9 @@ function AppInner() {
 }
 
 export default function App() {
-  return <AppInner />
+  return (
+    <ErrorBoundary>
+      <AppInner />
+    </ErrorBoundary>
+  )
 }

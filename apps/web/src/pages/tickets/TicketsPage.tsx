@@ -10,7 +10,7 @@ import { ConfirmDialog } from '@/components/ui/Modal'
 import { PageLoader } from '@/components/ui/Spinner'
 import { formatDate, exportToCsv } from '@/lib/utils'
 import { Pencil, Trash2, Eye } from 'lucide-react'
-import type { Ticket, TicketStatus } from '@operate1/types'
+import type { Ticket, TicketStatus, Profile } from '@operate1/types'
 import toast from 'react-hot-toast'
 
 const STATUS_OPTIONS: { value: string; label: string }[] = [
@@ -26,25 +26,35 @@ export function TicketsPage() {
   const navigate = useNavigate()
   const { profile } = useAuth()
   const [tickets, setTickets] = useState<Ticket[]>([])
+  const [adminUsers, setAdminUsers] = useState<Pick<Profile, 'id' | 'full_name' | 'username'>[]>([])
   const [loading, setLoading] = useState(true)
   const [search, setSearch] = useState('')
   const [statusFilter, setStatusFilter] = useState('')
   const [deleteTarget, setDeleteTarget] = useState<string | null>(null)
   const [deleting, setDeleting] = useState(false)
 
-  useEffect(() => { fetchTickets() }, [statusFilter])
+  useEffect(() => { fetchTickets(); fetchAdmins() }, [statusFilter])
 
   async function fetchTickets() {
     setLoading(true)
     let q = supabase
       .from('tickets')
-      .select('*, company:companies(name), site:sites(name), ticket_type:ticket_types(name)')
+      .select('*, company:companies(name), site:sites(name), ticket_type:ticket_types(name), assignee:profiles!tickets_assigned_to_fkey(id,full_name,username)')
       .order('created_at', { ascending: false })
     if (statusFilter) q = q.eq('status', statusFilter)
     const { data, error } = await q
     if (error) toast.error(error.message)
     setTickets((data as Ticket[]) || [])
     setLoading(false)
+  }
+
+  async function fetchAdmins() {
+    const { data } = await supabase
+      .from('profiles')
+      .select('id, full_name, username')
+      .eq('role', 'admin')
+      .eq('status', 'active')
+    setAdminUsers(data || [])
   }
 
   const filtered = tickets.filter(t =>
@@ -68,6 +78,13 @@ export function TicketsPage() {
     const { error } = await supabase.from('tickets').update({ status }).eq('id', id)
     if (error) { toast.error(error.message); return }
     toast.success('Status updated')
+    fetchTickets()
+  }
+
+  async function updateAssignee(id: string, assignedTo: string | null) {
+    const { error } = await supabase.from('tickets').update({ assigned_to: assignedTo }).eq('id', id)
+    if (error) { toast.error(error.message); return }
+    toast.success(assignedTo ? 'Ticket assigned' : 'Assignment cleared')
     fetchTickets()
   }
 
@@ -141,6 +158,7 @@ export function TicketsPage() {
                 <th className="text-left px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide">Site</th>
                 <th className="text-left px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide">Type</th>
                 <th className="text-left px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide">Subject</th>
+                <th className="text-left px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide">Assigned To</th>
                 <th className="text-left px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide">Actions</th>
               </tr>
             </thead>
@@ -170,6 +188,24 @@ export function TicketsPage() {
                       : '—'}
                   </td>
                   <td className="px-4 py-3 text-gray-900 max-w-xs truncate">{ticket.subject}</td>
+                  <td className="px-4 py-3">
+                    {profile?.role === 'admin' ? (
+                      <select
+                        value={ticket.assigned_to || ''}
+                        onChange={e => updateAssignee(ticket.id, e.target.value || null)}
+                        className="text-xs border border-gray-200 rounded px-2 py-1 bg-white text-gray-700 max-w-[120px]"
+                      >
+                        <option value="">Unassigned</option>
+                        {adminUsers.map(u => (
+                          <option key={u.id} value={u.id}>{u.full_name || u.username}</option>
+                        ))}
+                      </select>
+                    ) : (
+                      <span className="text-gray-500 text-xs">
+                        {(ticket as any).assignee?.full_name || (ticket as any).assignee?.username || '—'}
+                      </span>
+                    )}
+                  </td>
                   <td className="px-4 py-3">
                     <div className="flex items-center gap-1">
                       <button className="p-1 text-gray-400 hover:text-violet-600 transition-colors" title="View">
