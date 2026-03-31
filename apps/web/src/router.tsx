@@ -1,0 +1,47 @@
+import { createHashRouter, Navigate } from 'react-router-dom'
+import { MainLayout } from './components/layout/MainLayout'
+import { ProtectedRoute } from './components/shared/ProtectedRoute'
+import { LoginPage } from './pages/auth/LoginPage'
+import { TicketsPage } from './pages/tickets/TicketsPage'
+import { NewTicketPage } from './pages/tickets/NewTicketPage'
+import { CompaniesPage } from './pages/companies/CompaniesPage'
+import { ContractsPage } from './pages/contracts/ContractsPage'
+import { SitesPage } from './pages/sites/SitesPage'
+import { CostCentersPage } from './pages/cost-centers/CostCentersPage'
+import { MonitoringPage } from './pages/monitoring/MonitoringPage'
+import { KnowledgePage } from './pages/knowledge/KnowledgePage'
+import { DevicesPage } from './pages/devices/DevicesPage'
+import { CompanyAccessPage } from './pages/access/CompanyAccessPage'
+import { SiteAccessPage } from './pages/access/SiteAccessPage'
+import { UserManagementPage } from './pages/users/UserManagementPage'
+
+export const router = createHashRouter([
+  {
+    path: '/auth',
+    element: <LoginPage />,
+  },
+  {
+    path: '/',
+    element: (
+      <ProtectedRoute>
+        <MainLayout />
+      </ProtectedRoute>
+    ),
+    children: [
+      { index: true, element: <Navigate to="/tickets" replace /> },
+      { path: 'tickets', element: <TicketsPage /> },
+      { path: 'tickets/create', element: <NewTicketPage /> },
+      { path: 'companies', element: <CompaniesPage /> },
+      { path: 'contracts', element: <ContractsPage /> },
+      { path: 'monitoring', element: <MonitoringPage /> },
+      { path: 'sites', element: <SitesPage /> },
+      { path: 'costcenters', element: <CostCentersPage /> },
+      { path: 'knowledge', element: <KnowledgePage /> },
+      { path: 'devices', element: <DevicesPage /> },
+      { path: 'user-company-access', element: <CompanyAccessPage /> },
+      { path: 'user-site-access', element: <SiteAccessPage /> },
+      { path: 'user-management', element: <UserManagementPage /> },
+    ],
+  },
+  { path: '*', element: <Navigate to="/" replace /> },
+])

@@ -1,0 +1,9 @@
+{
+  "supabase_url": "https://yhdyuzdfocvtgyatnrqz.supabase.co",
+  "supabase_anon_key": "YOUR_ANON_KEY",
+  "registration_key": "PASTE_REGISTRATION_KEY_FROM_ADMIN_UI",
+  "device_id": null,
+  "api_secret": null,
+  "heartbeat_interval_ms": 30000,
+  "log_level": "info"
+}
