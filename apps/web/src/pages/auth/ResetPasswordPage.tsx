@@ -33,12 +33,12 @@ export function ResetPasswordPage() {
   return (
     <div
       className="min-h-screen flex items-center justify-center"
-      style={{ background: 'linear-gradient(135deg, #4c1d95 0%, #1e1b4b 50%, #312e81 100%)' }}
+      style={{ background: 'linear-gradient(135deg, #164e63 0%, #1e1b4b 50%, #312e81 100%)' }}
     >
       <div className="w-full max-w-md mx-4">
         <div className="bg-white rounded-2xl shadow-2xl p-8">
           <div className="text-center mb-8">
-            <h1 className="text-2xl font-bold text-violet-700">Operate1</h1>
+            <h1 className="text-2xl font-bold text-cyan-700">Operate1</h1>
             <p className="text-sm text-gray-500 mt-1">Set a new password</p>
           </div>
 
@@ -51,7 +51,7 @@ export function ResetPasswordPage() {
                 value={password}
                 onChange={e => setPassword(e.target.value)}
                 required
-                className="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent"
+                className="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent"
               />
             </div>
             <div>
@@ -62,13 +62,13 @@ export function ResetPasswordPage() {
                 value={confirm}
                 onChange={e => setConfirm(e.target.value)}
                 required
-                className="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent"
+                className="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent"
               />
             </div>
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-violet-700 hover:bg-violet-800 text-white font-semibold py-2.5 rounded-lg transition-colors disabled:opacity-50"
+              className="w-full bg-cyan-700 hover:bg-cyan-800 text-white font-semibold py-2.5 rounded-lg transition-colors disabled:opacity-50"
             >
               {loading ? 'Updating...' : 'Set New Password'}
             </button>

@@ -114,7 +114,7 @@ export function CompaniesPage() {
           placeholder="Search companies..."
           value={search}
           onChange={e => setSearch(e.target.value)}
-          className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-violet-500"
+          className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-cyan-500"
         />
       </div>
 
@@ -132,7 +132,7 @@ export function CompaniesPage() {
                   onClick={() => navigate(`/companies/${row.id}`)}
                   className="bg-white rounded-xl border border-gray-200 p-4 active:bg-gray-50 cursor-pointer"
                 >
-                  <p className="text-sm font-semibold text-violet-600 mb-1">{row.name}</p>
+                  <p className="text-sm font-semibold text-cyan-600 mb-1">{row.name}</p>
                   <div className="flex items-center gap-2 flex-wrap text-xs text-gray-500">
                     {activeContract ? (
                       <>
@@ -174,7 +174,7 @@ export function CompaniesPage() {
                     const activeContract = row.contracts?.find(c => c.status === 'active')
                     return (
                       <tr key={row.id} className="hover:bg-gray-50">
-                        <td className="px-4 py-3 font-medium text-violet-600 cursor-pointer hover:underline" onClick={() => navigate(`/companies/${row.id}`)}>{row.name}</td>
+                        <td className="px-4 py-3 font-medium text-cyan-600 cursor-pointer hover:underline" onClick={() => navigate(`/companies/${row.id}`)}>{row.name}</td>
                         <td className="px-4 py-3 text-gray-600">{activeContract ? 'Yes' : 'No active contract'}</td>
                         <td className="px-4 py-3">{activeContract ? <ContractTypeBadge type={activeContract.type as any} /> : '—'}</td>
                         <td className="px-4 py-3">{activeContract ? <ContractStatusBadge status={activeContract.status as any} /> : '—'}</td>
@@ -203,13 +203,13 @@ export function CompaniesPage() {
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Company Name *</label>
               <input required value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))}
-                className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-violet-500" />
+                className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-cyan-500" />
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Contact Person</label>
               <input value={form.contact_person} onChange={e => setForm(f => ({ ...f, contact_person: e.target.value }))}
                 placeholder="Primary contact"
-                className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-violet-500" />
+                className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-cyan-500" />
             </div>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -217,13 +217,13 @@ export function CompaniesPage() {
               <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
               <input type="email" value={form.email} onChange={e => setForm(f => ({ ...f, email: e.target.value }))}
                 placeholder="contact@company.com"
-                className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-violet-500" />
+                className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-cyan-500" />
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Phone</label>
               <input value={form.phone} onChange={e => setForm(f => ({ ...f, phone: e.target.value }))}
                 placeholder="+1 234 567 890"
-                className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-violet-500" />
+                className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-cyan-500" />
             </div>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -231,19 +231,19 @@ export function CompaniesPage() {
               <label className="block text-sm font-medium text-gray-700 mb-1">Website</label>
               <input value={form.website} onChange={e => setForm(f => ({ ...f, website: e.target.value }))}
                 placeholder="https://company.com"
-                className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-violet-500" />
+                className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-cyan-500" />
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Address</label>
               <input value={form.address} onChange={e => setForm(f => ({ ...f, address: e.target.value }))}
                 placeholder="Street, City, Country"
-                className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-violet-500" />
+                className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-cyan-500" />
             </div>
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Notes</label>
             <textarea value={form.notes} onChange={e => setForm(f => ({ ...f, notes: e.target.value }))}
-              rows={2} className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-violet-500" />
+              rows={2} className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-cyan-500" />
           </div>
           <div className="flex gap-3 justify-end pt-2">
             <Button type="button" variant="secondary" onClick={() => setModalOpen(false)}>Cancel</Button>

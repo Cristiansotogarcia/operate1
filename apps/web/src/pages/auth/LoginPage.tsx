@@ -46,7 +46,7 @@ export function LoginPage() {
   return (
     <div
       className="min-h-screen flex items-center justify-center"
-      style={{ background: 'linear-gradient(135deg, #4c1d95 0%, #1e1b4b 50%, #312e81 100%)' }}
+      style={{ background: 'linear-gradient(135deg, #0f172a 0%, #164e63 50%, #0f172a 100%)' }}
     >
       {/* Background circles */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
@@ -57,7 +57,7 @@ export function LoginPage() {
       <div className="relative w-full max-w-md mx-4">
         <div className="bg-white rounded-2xl shadow-2xl p-8">
           <div className="text-center mb-8">
-            <h1 className="text-2xl font-bold text-violet-700">Operate1</h1>
+            <h1 className="text-2xl font-bold bg-gradient-to-r from-emerald-500 via-cyan-500 to-blue-500 bg-clip-text text-transparent">Operate1</h1>
             <p className="text-sm text-gray-500 mt-1">
               {resetMode ? 'Reset your password' : 'Sign in to continue'}
             </p>
@@ -73,7 +73,7 @@ export function LoginPage() {
                   value={email}
                   onChange={e => setEmail(e.target.value)}
                   required
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent"
+                  className="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent"
                 />
               </div>
               <div>
@@ -84,14 +84,14 @@ export function LoginPage() {
                   value={password}
                   onChange={e => setPassword(e.target.value)}
                   required
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent"
+                  className="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent"
                 />
               </div>
               <div className="text-right">
                 <button
                   type="button"
                   onClick={() => setResetMode(true)}
-                  className="text-sm text-violet-600 hover:text-violet-700"
+                  className="text-sm text-cyan-600 hover:text-cyan-700"
                 >
                   Forgot your password?
                 </button>
@@ -99,7 +99,7 @@ export function LoginPage() {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full bg-violet-700 hover:bg-violet-800 text-white font-semibold py-2.5 rounded-lg transition-colors disabled:opacity-50"
+                className="w-full bg-cyan-700 hover:bg-cyan-800 text-white font-semibold py-2.5 rounded-lg transition-colors disabled:opacity-50"
               >
                 {loading ? 'Signing in...' : 'Sign In'}
               </button>
@@ -114,13 +114,13 @@ export function LoginPage() {
                   value={email}
                   onChange={e => setEmail(e.target.value)}
                   required
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-violet-500"
+                  className="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500"
                 />
               </div>
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full bg-violet-700 hover:bg-violet-800 text-white font-semibold py-2.5 rounded-lg transition-colors disabled:opacity-50"
+                className="w-full bg-cyan-700 hover:bg-cyan-800 text-white font-semibold py-2.5 rounded-lg transition-colors disabled:opacity-50"
               >
                 {loading ? 'Sending...' : 'Send Reset Link'}
               </button>
@@ -141,7 +141,7 @@ export function LoginPage() {
           <p className="text-white/50 text-xs mb-3">Install on any PC or server to start monitoring</p>
           <a
             href="https://github.com/Cristiansotogarcia/operate1/releases/latest/download/Operate1.Setup.1.0.2.exe"
-            className="inline-flex items-center gap-2 bg-violet-600 hover:bg-violet-700 text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors"
+            className="inline-flex items-center gap-2 bg-cyan-600 hover:bg-cyan-700 text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors"
           >
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
             Download for Windows

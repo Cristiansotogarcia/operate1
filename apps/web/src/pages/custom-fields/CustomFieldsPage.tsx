@@ -153,7 +153,7 @@ export function CustomFieldsPage() {
               <label className="block text-sm font-medium text-gray-700 mb-1">Label *</label>
               <input required value={form.label} onChange={e => setForm(f => ({ ...f, label: e.target.value, name: editing ? f.name : e.target.value }))}
                 placeholder="e.g. Asset Tag"
-                className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-violet-500" />
+                className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-cyan-500" />
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Field Type *</label>
@@ -171,7 +171,7 @@ export function CustomFieldsPage() {
                 <input value={newOption} onChange={e => setNewOption(e.target.value)}
                   placeholder="Add option..."
                   onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); addOption() } }}
-                  className="flex-1 border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-violet-500" />
+                  className="flex-1 border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-cyan-500" />
                 <Button type="button" size="sm" variant="outline" onClick={addOption}><Plus size={14} /></Button>
               </div>
               <div className="space-y-1">
@@ -188,12 +188,12 @@ export function CustomFieldsPage() {
           <div className="flex items-center gap-6">
             <label className="flex items-center gap-2 text-sm text-gray-700 cursor-pointer">
               <input type="checkbox" checked={form.is_required} onChange={e => setForm(f => ({ ...f, is_required: e.target.checked }))}
-                className="rounded border-gray-300 text-violet-600" />
+                className="rounded border-gray-300 text-cyan-600" />
               Required
             </label>
             <label className="flex items-center gap-2 text-sm text-gray-700 cursor-pointer">
               <input type="checkbox" checked={form.is_active} onChange={e => setForm(f => ({ ...f, is_active: e.target.checked }))}
-                className="rounded border-gray-300 text-violet-600" />
+                className="rounded border-gray-300 text-cyan-600" />
               Active
             </label>
           </div>

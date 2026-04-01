@@ -44,7 +44,7 @@ export function PublicStatusPage() {
       {/* Header */}
       <div
         className="py-12 text-center text-white"
-        style={{ background: 'linear-gradient(135deg, #4c1d95 0%, #1e1b4b 50%, #312e81 100%)' }}
+        style={{ background: 'linear-gradient(135deg, #164e63 0%, #1e1b4b 50%, #312e81 100%)' }}
       >
         <div className="flex items-center justify-center gap-3 mb-3">
           <Activity size={28} />

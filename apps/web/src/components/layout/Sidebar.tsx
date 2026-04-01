@@ -112,10 +112,11 @@ export function Sidebar({ open, onClose }: SidebarProps) {
         {/* Brand */}
         <div className="px-5 h-14 flex items-center justify-between border-b border-white/10">
           <div className="flex items-center gap-2.5">
-            <div className="w-7 h-7 rounded-lg bg-violet-600 flex items-center justify-center">
+            <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-emerald-500 via-cyan-500 to-blue-500 flex items-center justify-center">
               <svg viewBox="0 0 32 32" fill="none" className="w-4 h-4">
-                <path d="M8 16a8 8 0 1 1 16 0a8 8 0 0 1-16 0z" stroke="#fff" strokeWidth="3" fill="none"/>
-                <path d="M16 10v6l4 2" stroke="#fff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+                <circle cx="14" cy="16" r="7" stroke="#fff" strokeWidth="2.5" fill="none"/>
+                <path d="M22 10v12" stroke="#fff" strokeWidth="2.5" strokeLinecap="round"/>
+                <path d="M25 8v3M27 9v2M29 10v1" stroke="#fff" strokeWidth="1.5" strokeLinecap="round"/>
               </svg>
             </div>
             <span className="text-white font-semibold text-sm tracking-tight">Operate1</span>
@@ -152,7 +153,7 @@ export function Sidebar({ open, onClose }: SidebarProps) {
                       cn(
                         'flex items-center gap-2.5 mx-2 px-3 py-2.5 sm:py-[7px] text-sm sm:text-[13px] rounded-md transition-colors',
                         isActive
-                          ? 'bg-violet-600/20 text-violet-300 font-medium'
+                          ? 'bg-cyan-600/20 text-cyan-300 font-medium'
                           : 'text-slate-400 hover:bg-white/5 hover:text-slate-200'
                       )
                     }

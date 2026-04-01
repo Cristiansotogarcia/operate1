@@ -40,7 +40,7 @@ export function TopBar({ onToggleSidebar }: TopBarProps) {
         </button>
         <div className="w-px h-6 bg-gray-200" />
         <div className="flex items-center gap-2.5">
-          <div className="w-8 h-8 rounded-full bg-violet-600 flex items-center justify-center text-white text-xs font-semibold">
+          <div className="w-8 h-8 rounded-full bg-cyan-600 flex items-center justify-center text-white text-xs font-semibold">
             {getInitials(profile?.full_name || profile?.username)}
           </div>
           <div className="hidden sm:block">

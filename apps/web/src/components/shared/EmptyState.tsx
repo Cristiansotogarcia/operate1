@@ -17,7 +17,7 @@ export function EmptyState({ title, description, action }: EmptyStateProps) {
         <path d="M56 28 L59 31 L65 25" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
       </svg>
       <p className="text-gray-700 font-medium text-base">{title}</p>
-      {description && <p className="text-sm text-violet-500 mt-1">{description}</p>}
+      {description && <p className="text-sm text-cyan-500 mt-1">{description}</p>}
       {action && <div className="mt-4">{action}</div>}
     </div>
   )

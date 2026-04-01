@@ -196,7 +196,7 @@ export function AccountPage() {
                   value={verifyCode}
                   onChange={e => setVerifyCode(e.target.value.replace(/\D/g, ''))}
                   placeholder="000000"
-                  className="border border-gray-300 rounded-lg px-3 py-2 text-sm w-36 font-mono tracking-widest focus:outline-none focus:ring-2 focus:ring-violet-500"
+                  className="border border-gray-300 rounded-lg px-3 py-2 text-sm w-36 font-mono tracking-widest focus:outline-none focus:ring-2 focus:ring-cyan-500"
                 />
                 <Button onClick={verifyEnroll} loading={verifying} disabled={verifyCode.length !== 6}>
                   Verify & Enable

@@ -47,14 +47,14 @@ interface StatCardProps {
   value: number | string
   subtitle?: string
   icon: React.ReactNode
-  color: 'violet' | 'green' | 'yellow' | 'red' | 'blue' | 'slate'
+  color: 'cyan' | 'green' | 'yellow' | 'red' | 'blue' | 'slate'
   onClick?: () => void
   trend?: string
 }
 
 function StatCard({ title, value, subtitle, icon, color, onClick, trend }: StatCardProps) {
   const bg: Record<string, string> = {
-    violet: 'bg-violet-50 text-violet-600 border-violet-200',
+    cyan: 'bg-cyan-50 text-cyan-600 border-cyan-200',
     green:  'bg-emerald-50 text-emerald-600 border-emerald-200',
     yellow: 'bg-amber-50 text-amber-600 border-amber-200',
     red:    'bg-red-50 text-red-600 border-red-200',
@@ -82,7 +82,7 @@ function StatCard({ title, value, subtitle, icon, color, onClick, trend }: StatC
         {trend && <p className="text-xs text-emerald-500 font-medium mt-0.5">{trend}</p>}
       </div>
       {onClick && (
-        <ArrowRight size={16} className="text-gray-300 group-hover:text-violet-500 transition-colors shrink-0" />
+        <ArrowRight size={16} className="text-gray-300 group-hover:text-cyan-500 transition-colors shrink-0" />
       )}
     </button>
   )
@@ -123,7 +123,7 @@ function StatusBadge({ status }: { status: string }) {
   const map: Record<string, { label: string; cls: string }> = {
     pending:     { label: 'Pending',     cls: 'bg-amber-100 text-amber-700' },
     open:        { label: 'Open',        cls: 'bg-blue-100 text-blue-700' },
-    in_progress: { label: 'In Progress', cls: 'bg-violet-100 text-violet-700' },
+    in_progress: { label: 'In Progress', cls: 'bg-cyan-100 text-cyan-700' },
     resolved:    { label: 'Resolved',    cls: 'bg-emerald-100 text-emerald-700' },
     closed:      { label: 'Closed',      cls: 'bg-gray-100 text-gray-500' },
   }
@@ -188,15 +188,15 @@ function CompaniesDropdown({ companies, navigate }: { companies: CompanyRow[]; n
                 key={c.id}
                 type="button"
                 onClick={() => { navigate(`/companies/${c.id}`); setOpen(false) }}
-                className="w-full flex items-center justify-between px-3 py-2 text-left hover:bg-violet-50 transition-colors group"
+                className="w-full flex items-center justify-between px-3 py-2 text-left hover:bg-cyan-50 transition-colors group"
               >
                 <div className="min-w-0">
-                  <p className="text-sm font-medium text-gray-700 truncate group-hover:text-violet-700">{c.name}</p>
+                  <p className="text-sm font-medium text-gray-700 truncate group-hover:text-cyan-700">{c.name}</p>
                   <p className="text-[10px] text-gray-400">
                     {c.contracts?.length ?? 0} contract{c.contracts?.length !== 1 ? 's' : ''} &middot; {c.sites?.length ?? 0} site{c.sites?.length !== 1 ? 's' : ''}
                   </p>
                 </div>
-                <ExternalLink size={12} className="text-gray-300 group-hover:text-violet-500 shrink-0" />
+                <ExternalLink size={12} className="text-gray-300 group-hover:text-cyan-500 shrink-0" />
               </button>
             ))}
           </div>
@@ -204,7 +204,7 @@ function CompaniesDropdown({ companies, navigate }: { companies: CompanyRow[]; n
             <button
               type="button"
               onClick={() => { navigate('/companies'); setOpen(false) }}
-              className="w-full text-center text-xs font-medium text-violet-600 hover:text-violet-700 py-1.5 rounded-lg hover:bg-violet-50 transition-colors"
+              className="w-full text-center text-xs font-medium text-cyan-600 hover:text-cyan-700 py-1.5 rounded-lg hover:bg-cyan-50 transition-colors"
             >
               View All Companies
             </button>
@@ -378,7 +378,7 @@ export function DashboardPage() {
     return (
       <div className="flex items-center justify-center h-full min-h-[400px]">
         <div className="text-center">
-          <div className="w-10 h-10 border-3 border-violet-200 border-t-violet-600 rounded-full animate-spin mx-auto" />
+          <div className="w-10 h-10 border-3 border-cyan-200 border-t-cyan-600 rounded-full animate-spin mx-auto" />
           <p className="text-sm text-gray-400 mt-3">Loading dashboard...</p>
         </div>
       </div>
@@ -401,7 +401,7 @@ export function DashboardPage() {
   const ticketStatusData = [
     { name: 'Pending', value: s.ticketsPending, fill: '#f59e0b' },
     { name: 'Open', value: s.ticketsOpen, fill: '#3b82f6' },
-    { name: 'In Progress', value: s.ticketsInProgress, fill: '#8b5cf6' },
+    { name: 'In Progress', value: s.ticketsInProgress, fill: '#06b6d4' },
   ].filter(d => d.value > 0)
 
   const hour = new Date().getHours()
@@ -474,7 +474,7 @@ export function DashboardPage() {
             <button
               type="button"
               onClick={() => navigate('/tickets/create')}
-              className="text-xs font-medium text-violet-600 hover:text-violet-700 transition-colors"
+              className="text-xs font-medium text-cyan-600 hover:text-cyan-700 transition-colors"
             >
               + New Ticket
             </button>
@@ -509,7 +509,7 @@ export function DashboardPage() {
             value={s.ticketsInProgress}
             subtitle="Being worked"
             icon={<TrendingUp size={20} />}
-            color="violet"
+            color="cyan"
             onClick={() => navigate('/tickets')}
           />
         </div>
@@ -529,7 +529,7 @@ export function DashboardPage() {
             <button
               type="button"
               onClick={() => navigate('/monitoring')}
-              className="text-xs font-medium text-violet-600 hover:text-violet-700 transition-colors"
+              className="text-xs font-medium text-cyan-600 hover:text-cyan-700 transition-colors"
             >
               View All
             </button>
@@ -547,7 +547,7 @@ export function DashboardPage() {
               >
                 <PulseDot color={m.last_status === 'up' ? 'green' : m.last_status === 'down' ? 'red' : 'gray'} />
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-gray-700 truncate group-hover:text-violet-600">{m.name}</p>
+                  <p className="text-sm font-medium text-gray-700 truncate group-hover:text-cyan-600">{m.name}</p>
                   <p className="text-[11px] text-gray-400 truncate">{m.target}</p>
                 </div>
                 <div className="text-right shrink-0">
@@ -576,7 +576,7 @@ export function DashboardPage() {
             <button
               type="button"
               onClick={() => navigate('/tickets')}
-              className="text-xs font-medium text-violet-600 hover:text-violet-700 transition-colors"
+              className="text-xs font-medium text-cyan-600 hover:text-cyan-700 transition-colors"
             >
               View All
             </button>
@@ -594,7 +594,7 @@ export function DashboardPage() {
               >
                 <PriorityDot priority={t.priority} />
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-gray-700 truncate group-hover:text-violet-600">{t.title}</p>
+                  <p className="text-sm font-medium text-gray-700 truncate group-hover:text-cyan-600">{t.title}</p>
                   <p className="text-[11px] text-gray-400">
                     {t.company?.name ?? 'Unassigned'} &middot; {timeAgo(t.created_at)}
                   </p>
@@ -676,7 +676,7 @@ export function DashboardPage() {
             title="Device Fleet"
             action={
               <button type="button" onClick={() => navigate('/devices')}
-                className="text-xs font-medium text-violet-600 hover:text-violet-700 transition-colors">
+                className="text-xs font-medium text-cyan-600 hover:text-cyan-700 transition-colors">
                 View All
               </button>
             }
@@ -692,7 +692,7 @@ export function DashboardPage() {
                 >
                   <PulseDot color={d.status === 'online' ? 'green' : 'red'} />
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium text-gray-700 truncate group-hover:text-violet-600">{d.name}</p>
+                    <p className="text-sm font-medium text-gray-700 truncate group-hover:text-cyan-600">{d.name}</p>
                     <div className="flex items-center gap-3 text-[11px] text-gray-400 mt-0.5">
                       {d.cpu_percent != null && <span>CPU {d.cpu_percent}%</span>}
                       {d.ram_percent != null && <span>RAM {d.ram_percent}%</span>}
@@ -757,7 +757,7 @@ export function DashboardPage() {
             <button
               type="button"
               onClick={() => navigate('/companies')}
-              className="text-xs font-medium text-violet-600 hover:text-violet-700 transition-colors"
+              className="text-xs font-medium text-cyan-600 hover:text-cyan-700 transition-colors"
             >
               Manage
             </button>
@@ -792,8 +792,8 @@ export function DashboardPage() {
               <AreaChart data={ticketTrend} margin={{ top: 4, right: 8, bottom: 0, left: -20 }}>
                 <defs>
                   <linearGradient id="ticketGrad" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#8b5cf6" stopOpacity={0.25} />
-                    <stop offset="95%" stopColor="#8b5cf6" stopOpacity={0} />
+                    <stop offset="5%" stopColor="#06b6d4" stopOpacity={0.25} />
+                    <stop offset="95%" stopColor="#06b6d4" stopOpacity={0} />
                   </linearGradient>
                 </defs>
                 <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
@@ -802,7 +802,7 @@ export function DashboardPage() {
                 <Tooltip
                   contentStyle={{ borderRadius: '8px', border: '1px solid #e2e8f0', boxShadow: '0 4px 12px rgba(0,0,0,0.08)' }}
                 />
-                <Area type="monotone" dataKey="count" stroke="#8b5cf6" fill="url(#ticketGrad)" strokeWidth={2.5} name="Tickets" />
+                <Area type="monotone" dataKey="count" stroke="#06b6d4" fill="url(#ticketGrad)" strokeWidth={2.5} name="Tickets" />
               </AreaChart>
             </ResponsiveContainer>
           </ChartCard>

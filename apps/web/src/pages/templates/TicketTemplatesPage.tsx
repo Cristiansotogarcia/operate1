@@ -121,7 +121,7 @@ export function TicketTemplatesPage() {
             <div key={r.id} className="bg-white rounded-xl border border-gray-200 p-5 flex flex-col">
               <div className="flex items-start justify-between gap-2 mb-3">
                 <div className="flex items-center gap-2 min-w-0">
-                  <FileText size={16} className="text-violet-500 shrink-0" />
+                  <FileText size={16} className="text-cyan-500 shrink-0" />
                   <h3 className="text-sm font-semibold text-gray-900 truncate">{r.name}</h3>
                 </div>
                 {!r.is_active && <Badge variant="gray">Inactive</Badge>}
@@ -136,7 +136,7 @@ export function TicketTemplatesPage() {
               {isAdmin && (
                 <div className="flex items-center gap-1 mt-auto pt-3 border-t border-gray-100">
                   <button onClick={() => openEdit(r)} className="p-1.5 text-gray-400 hover:text-amber-600" title="Edit"><Pencil size={15} /></button>
-                  <button onClick={() => duplicate(r)} className="p-1.5 text-gray-400 hover:text-violet-600" title="Duplicate"><Copy size={15} /></button>
+                  <button onClick={() => duplicate(r)} className="p-1.5 text-gray-400 hover:text-cyan-600" title="Duplicate"><Copy size={15} /></button>
                   <button onClick={() => setDeleteTarget(r.id)} className="p-1.5 text-gray-400 hover:text-red-600" title="Delete"><Trash2 size={15} /></button>
                 </div>
               )}
@@ -151,19 +151,19 @@ export function TicketTemplatesPage() {
             <label className="block text-sm font-medium text-gray-700 mb-1">Template Name *</label>
             <input required value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))}
               placeholder="e.g. Password Reset, VPN Issue"
-              className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-violet-500" />
+              className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-cyan-500" />
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Subject</label>
             <input value={form.subject} onChange={e => setForm(f => ({ ...f, subject: e.target.value }))}
               placeholder="Pre-filled ticket subject"
-              className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-violet-500" />
+              className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-cyan-500" />
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
             <textarea rows={4} value={form.description} onChange={e => setForm(f => ({ ...f, description: e.target.value }))}
               placeholder="Pre-filled ticket description / steps..."
-              className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-violet-500" />
+              className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-cyan-500" />
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div>
@@ -193,7 +193,7 @@ export function TicketTemplatesPage() {
           </div>
           <label className="flex items-center gap-2 text-sm text-gray-700 cursor-pointer">
             <input type="checkbox" checked={form.is_active} onChange={e => setForm(f => ({ ...f, is_active: e.target.checked }))}
-              className="rounded border-gray-300 text-violet-600" />
+              className="rounded border-gray-300 text-cyan-600" />
             Active
           </label>
           <div className="flex gap-3 justify-end pt-2">

@@ -100,7 +100,7 @@ export function UserManagementPage() {
 
       <div className="bg-white rounded-xl border border-gray-200 p-4 mb-6">
         <input placeholder="Search users by name or email..." value={search} onChange={e => setSearch(e.target.value)}
-          className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-violet-500" />
+          className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-cyan-500" />
       </div>
 
       <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
@@ -138,18 +138,18 @@ export function UserManagementPage() {
             <>
               <div><label className="block text-sm font-medium text-gray-700 mb-1">Email *</label>
                 <input required type="email" value={form.email} onChange={e => setForm(f => ({ ...f, email: e.target.value }))}
-                  className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-violet-500" /></div>
+                  className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-cyan-500" /></div>
               <div><label className="block text-sm font-medium text-gray-700 mb-1">Password *</label>
                 <input required type="password" minLength={6} value={form.password} onChange={e => setForm(f => ({ ...f, password: e.target.value }))}
-                  className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-violet-500" /></div>
+                  className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-cyan-500" /></div>
             </>
           )}
           <div><label className="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
             <input value={form.full_name} onChange={e => setForm(f => ({ ...f, full_name: e.target.value }))}
-              className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-violet-500" /></div>
+              className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-cyan-500" /></div>
           <div><label className="block text-sm font-medium text-gray-700 mb-1">Username</label>
             <input value={form.username} onChange={e => setForm(f => ({ ...f, username: e.target.value }))}
-              className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-violet-500" /></div>
+              className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-cyan-500" /></div>
           <div><label className="block text-sm font-medium text-gray-700 mb-1">Role</label>
             <select value={form.role} onChange={e => setForm(f => ({ ...f, role: e.target.value }))}
               className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm bg-white">

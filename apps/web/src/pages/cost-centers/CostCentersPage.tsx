@@ -71,7 +71,7 @@ export function CostCentersPage() {
 
       <div className="bg-white rounded-xl border border-gray-200 p-4 mb-6">
         <input placeholder="Search by code or description..." value={search} onChange={e => setSearch(e.target.value)}
-          className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-violet-500" />
+          className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-cyan-500" />
       </div>
 
       {filtered.length === 0 ? <EmptyState title="No cost centers found" /> : (
@@ -91,7 +91,7 @@ export function CostCentersPage() {
                   <td className="px-4 py-3 text-gray-400 text-xs font-mono">{r.id}</td>
                   {isAdmin && <td className="px-4 py-3">
                     <div className="flex items-center gap-1">
-                      <button className="p-1 text-gray-400 hover:text-violet-600"><Eye size={15} /></button>
+                      <button className="p-1 text-gray-400 hover:text-cyan-600"><Eye size={15} /></button>
                       <button onClick={() => openEdit(r)} className="p-1 text-gray-400 hover:text-amber-600"><Pencil size={15} /></button>
                       <button onClick={() => setDeleteTarget(r.id)} className="p-1 text-gray-400 hover:text-red-600"><Trash2 size={15} /></button>
                     </div>
@@ -107,10 +107,10 @@ export function CostCentersPage() {
         <form onSubmit={handleSave} className="space-y-4">
           <div><label className="block text-sm font-medium text-gray-700 mb-1">Code *</label>
             <input required value={form.code} onChange={e => setForm(f => ({ ...f, code: e.target.value }))}
-              className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-violet-500" /></div>
+              className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-cyan-500" /></div>
           <div><label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
             <input value={form.description} onChange={e => setForm(f => ({ ...f, description: e.target.value }))}
-              className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-violet-500" /></div>
+              className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-cyan-500" /></div>
           <div className="flex gap-3 justify-end pt-2">
             <Button type="button" variant="secondary" onClick={() => setModalOpen(false)}>Cancel</Button>
             <Button type="submit" loading={saving}>{editing ? 'Update' : 'Create'}</Button>

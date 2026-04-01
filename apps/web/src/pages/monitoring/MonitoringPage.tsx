@@ -132,7 +132,7 @@ export function MonitoringPage() {
         <p className="text-sm font-semibold text-gray-700 mb-3">Search & Filters</p>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
           <input placeholder="Name, URL, IP..." value={search} onChange={e => setSearch(e.target.value)}
-            className="border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-violet-500" />
+            className="border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-cyan-500" />
           <select value={typeFilter} onChange={e => setTypeFilter(e.target.value)}
             className="border border-gray-300 rounded-md px-3 py-2 text-sm bg-white">
             <option value="">All Types</option><option value="http">HTTP</option><option value="icmp">ICMP</option><option value="tcp">TCP</option>
@@ -187,7 +187,7 @@ export function MonitoringPage() {
                       <span>{m.last_checked_at ? timeAgo(m.last_checked_at) : 'Never'}</span>
                       <button
                         onClick={() => toggleHistory(m.id)}
-                        className="flex items-center gap-1 text-violet-600 hover:text-violet-700 font-medium"
+                        className="flex items-center gap-1 text-cyan-600 hover:text-cyan-700 font-medium"
                       >
                         {isExpanded ? <><ChevronUp size={13} />Hide history</> : <><ChevronDown size={13} />Check history</>}
                       </button>
@@ -214,8 +214,8 @@ export function MonitoringPage() {
                           <AreaChart data={history} margin={{ top: 4, right: 4, bottom: 0, left: -20 }}>
                             <defs>
                               <linearGradient id={`grad-${m.id}`} x1="0" y1="0" x2="0" y2="1">
-                                <stop offset="5%" stopColor="#8b5cf6" stopOpacity={0.25} />
-                                <stop offset="95%" stopColor="#8b5cf6" stopOpacity={0} />
+                                <stop offset="5%" stopColor="#06b6d4" stopOpacity={0.25} />
+                                <stop offset="95%" stopColor="#06b6d4" stopOpacity={0} />
                               </linearGradient>
                             </defs>
                             <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
@@ -225,7 +225,7 @@ export function MonitoringPage() {
                             <Area
                               type="monotone"
                               dataKey="ms"
-                              stroke="#8b5cf6"
+                              stroke="#06b6d4"
                               fill={`url(#grad-${m.id})`}
                               strokeWidth={1.5}
                               connectNulls={false}
@@ -233,7 +233,7 @@ export function MonitoringPage() {
                                 const { cx, cy, payload } = props
                                 return payload.status === 'down'
                                   ? <circle key={`dot-${cx}-${cy}`} cx={cx} cy={cy || 0} r={4} fill="#ef4444" stroke="white" strokeWidth={1} />
-                                  : <circle key={`dot-${cx}-${cy}`} cx={cx} cy={cy} r={2} fill="#8b5cf6" stroke="none" />
+                                  : <circle key={`dot-${cx}-${cy}`} cx={cx} cy={cy} r={2} fill="#06b6d4" stroke="none" />
                               }}
                             />
                           </AreaChart>
@@ -268,7 +268,7 @@ export function MonitoringPage() {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div><label className="block text-sm font-medium text-gray-700 mb-1">Name *</label>
               <input required value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))}
-                className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-violet-500" /></div>
+                className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-cyan-500" /></div>
             <div><label className="block text-sm font-medium text-gray-700 mb-1">Type *</label>
               <select value={form.type} onChange={e => setForm(f => ({ ...f, type: e.target.value }))}
                 className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm bg-white">
@@ -279,11 +279,11 @@ export function MonitoringPage() {
             <div><label className="block text-sm font-medium text-gray-700 mb-1">Target (URL/Host) *</label>
               <input required placeholder={form.type === 'http' ? 'https://example.com' : 'hostname or IP'} value={form.target}
                 onChange={e => setForm(f => ({ ...f, target: e.target.value }))}
-                className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-violet-500" /></div>
+                className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-cyan-500" /></div>
             {form.type === 'tcp' && (
               <div><label className="block text-sm font-medium text-gray-700 mb-1">Port *</label>
                 <input required type="number" value={form.port} onChange={e => setForm(f => ({ ...f, port: e.target.value }))}
-                  className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-violet-500" /></div>
+                  className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-cyan-500" /></div>
             )}
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
@@ -299,7 +299,7 @@ export function MonitoringPage() {
               </select></div>
             <div><label className="block text-sm font-medium text-gray-700 mb-1">Interval (seconds)</label>
               <input type="number" min="10" value={form.interval_seconds} onChange={e => setForm(f => ({ ...f, interval_seconds: e.target.value }))}
-                className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-violet-500" /></div>
+                className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-cyan-500" /></div>
           </div>
           <div className="flex gap-3 justify-end pt-2">
             <Button type="button" variant="secondary" onClick={() => setModalOpen(false)}>Cancel</Button>

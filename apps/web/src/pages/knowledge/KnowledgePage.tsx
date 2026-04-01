@@ -148,7 +148,7 @@ export function KnowledgePage() {
         <p className="text-sm font-semibold text-gray-700 mb-3">Search & Filters</p>
         <div className="grid grid-cols-2 md:grid-cols-6 gap-3">
           <input placeholder="Search by title, content..." value={search} onChange={e => setSearch(e.target.value)}
-            className="border border-gray-300 rounded-md px-3 py-2 text-sm col-span-2 md:col-span-1 focus:outline-none focus:ring-1 focus:ring-violet-500" />
+            className="border border-gray-300 rounded-md px-3 py-2 text-sm col-span-2 md:col-span-1 focus:outline-none focus:ring-1 focus:ring-cyan-500" />
           <select value={typeFilter} onChange={e => setTypeFilter(e.target.value)} className="border border-gray-300 rounded-md px-3 py-2 text-sm bg-white">
             <option value="">All Types</option><option value="internal">Internal</option><option value="public">Public</option></select>
           <select value={statusFilter} onChange={e => setStatusFilter(e.target.value)} className="border border-gray-300 rounded-md px-3 py-2 text-sm bg-white">
@@ -182,7 +182,7 @@ export function KnowledgePage() {
                     <td className="px-4 py-3 text-gray-600">{(a.category as any)?.name || '—'}</td>
                     <td className="px-4 py-3 text-gray-600">{(a.company as any)?.name || 'Shared'}</td>
                     <td className="px-4 py-3">
-                      <button onClick={() => toggleAttachments(a.id)} className="flex items-center gap-1 text-xs text-violet-600 hover:text-violet-700">
+                      <button onClick={() => toggleAttachments(a.id)} className="flex items-center gap-1 text-xs text-cyan-600 hover:text-cyan-700">
                         <Paperclip size={13} />
                         {expandedId === a.id ? 'Hide' : 'Files'}
                       </button>
@@ -205,7 +205,7 @@ export function KnowledgePage() {
                                 <span className="text-gray-400">{formatBytes(att.file_size)}</span>
                               </div>
                               <div className="flex items-center gap-2">
-                                <button onClick={() => downloadKbFile(att)} className="text-gray-400 hover:text-violet-600"><Download size={13} /></button>
+                                <button onClick={() => downloadKbFile(att)} className="text-gray-400 hover:text-cyan-600"><Download size={13} /></button>
                                 {isAdmin && <button onClick={() => deleteKbAttachment(att)} className="text-gray-400 hover:text-red-500"><Trash2 size={13} /></button>}
                               </div>
                             </div>
@@ -214,7 +214,7 @@ export function KnowledgePage() {
                             <p className="text-xs text-gray-400 py-1">No files attached.</p>
                           )}
                           {isAdmin && (
-                            <label className="mt-2 flex items-center gap-1 text-xs text-violet-600 hover:text-violet-700 cursor-pointer font-medium">
+                            <label className="mt-2 flex items-center gap-1 text-xs text-cyan-600 hover:text-cyan-700 cursor-pointer font-medium">
                               <Upload size={12} />{attUploading ? 'Uploading…' : 'Attach file (max 5 MB)'}
                               <input type="file" className="hidden" disabled={attUploading} onChange={e => uploadKbFile(a.id, e)} />
                             </label>
@@ -234,10 +234,10 @@ export function KnowledgePage() {
         <form onSubmit={handleSave} className="space-y-4">
           <div><label className="block text-sm font-medium text-gray-700 mb-1">Title *</label>
             <input required value={form.title} onChange={e => setForm(f => ({ ...f, title: e.target.value }))}
-              className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-violet-500" /></div>
+              className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-cyan-500" /></div>
           <div><label className="block text-sm font-medium text-gray-700 mb-1">Body</label>
             <textarea rows={8} value={form.body} onChange={e => setForm(f => ({ ...f, body: e.target.value }))}
-              className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-violet-500" /></div>
+              className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-cyan-500" /></div>
           <div className="grid grid-cols-2 gap-4">
             <div><label className="block text-sm font-medium text-gray-700 mb-1">Type</label>
               <select value={form.type} onChange={e => setForm(f => ({ ...f, type: e.target.value }))} className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm bg-white">

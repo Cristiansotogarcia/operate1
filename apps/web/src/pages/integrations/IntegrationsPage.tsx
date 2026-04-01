@@ -204,13 +204,13 @@ export function IntegrationsPage() {
       <div className="flex border-b border-gray-200 mb-6">
         <button
           onClick={() => setTab('email')}
-          className={`px-5 py-2.5 text-sm font-medium transition-colors ${tab === 'email' ? 'border-b-2 border-violet-600 text-violet-700' : 'text-gray-500 hover:text-gray-700'}`}
+          className={`px-5 py-2.5 text-sm font-medium transition-colors ${tab === 'email' ? 'border-b-2 border-cyan-600 text-cyan-700' : 'text-gray-500 hover:text-gray-700'}`}
         >
           <Mail size={14} className="inline mr-1.5" />Email Routes ({routes.length})
         </button>
         <button
           onClick={() => setTab('webhooks')}
-          className={`px-5 py-2.5 text-sm font-medium transition-colors ${tab === 'webhooks' ? 'border-b-2 border-violet-600 text-violet-700' : 'text-gray-500 hover:text-gray-700'}`}
+          className={`px-5 py-2.5 text-sm font-medium transition-colors ${tab === 'webhooks' ? 'border-b-2 border-cyan-600 text-cyan-700' : 'text-gray-500 hover:text-gray-700'}`}
         >
           <Webhook size={14} className="inline mr-1.5" />Webhooks ({webhooks.length})
         </button>
@@ -240,14 +240,14 @@ export function IntegrationsPage() {
                 <tbody className="divide-y divide-gray-100">
                   {routes.map(r => (
                     <tr key={r.id} className="hover:bg-gray-50">
-                      <td className="px-4 py-3 font-mono text-sm text-violet-600">{r.inbound_address}</td>
+                      <td className="px-4 py-3 font-mono text-sm text-cyan-600">{r.inbound_address}</td>
                       <td className="px-4 py-3 text-gray-600">{r.company?.name ?? <span className="text-gray-300">Any</span>}</td>
                       <td className="px-4 py-3 text-gray-600">{r.ticket_type?.name ?? <span className="text-gray-300">None</span>}</td>
                       <td className="px-4 py-3"><Badge variant="gray">{r.default_status}</Badge></td>
                       <td className="px-4 py-3"><Badge variant={r.is_active ? 'success' : 'gray'}>{r.is_active ? 'Yes' : 'No'}</Badge></td>
                       <td className="px-4 py-3">
                         <div className="flex gap-2 justify-end">
-                          <button onClick={() => openEditRoute(r)} className="text-gray-400 hover:text-violet-600"><Edit2 size={14} /></button>
+                          <button onClick={() => openEditRoute(r)} className="text-gray-400 hover:text-cyan-600"><Edit2 size={14} /></button>
                           <button onClick={() => setDeleteRoute(r)} className="text-gray-400 hover:text-red-500"><Trash2 size={14} /></button>
                         </div>
                       </td>
@@ -303,7 +303,7 @@ export function IntegrationsPage() {
                           >
                             <Play size={14} />
                           </button>
-                          <button onClick={() => openEditWh(w)} className="text-gray-400 hover:text-violet-600"><Edit2 size={14} /></button>
+                          <button onClick={() => openEditWh(w)} className="text-gray-400 hover:text-cyan-600"><Edit2 size={14} /></button>
                           <button onClick={() => setDeleteWh(w)} className="text-gray-400 hover:text-red-500"><Trash2 size={14} /></button>
                         </div>
                       </td>
@@ -341,7 +341,7 @@ export function IntegrationsPage() {
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Company (optional)</label>
             <select value={routeForm.company_id} onChange={e => rf('company_id', e.target.value)}
-              className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-violet-500">
+              className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500">
               <option value="">Any company</option>
               {companies.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
             </select>
@@ -349,7 +349,7 @@ export function IntegrationsPage() {
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Ticket Type (optional)</label>
             <select value={routeForm.ticket_type_id} onChange={e => rf('ticket_type_id', e.target.value)}
-              className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-violet-500">
+              className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500">
               <option value="">None</option>
               {ticketTypes.map(t => <option key={t.id} value={t.id}>{t.name}</option>)}
             </select>
@@ -357,7 +357,7 @@ export function IntegrationsPage() {
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Default Status</label>
             <select value={routeForm.default_status} onChange={e => rf('default_status', e.target.value)}
-              className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-violet-500">
+              className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500">
               <option value="pending">Pending</option>
               <option value="open">Open</option>
               <option value="in_progress">In Progress</option>
@@ -391,7 +391,7 @@ export function IntegrationsPage() {
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Provider</label>
             <select value={whForm.provider} onChange={e => setWhForm(f => ({...f, provider: e.target.value as WebhookProvider}))}
-              className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-violet-500">
+              className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500">
               <option value="slack">Slack</option>
               <option value="teams">Microsoft Teams</option>
               <option value="generic">Generic (JSON POST)</option>

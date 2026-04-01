@@ -86,7 +86,7 @@ export function SitesPage() {
       <div className="bg-white rounded-xl border border-gray-200 p-4 mb-6">
         <div className="flex gap-3">
           <input placeholder="Search site by name..." value={search} onChange={e => setSearch(e.target.value)}
-            className="flex-1 border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-violet-500" />
+            className="flex-1 border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-cyan-500" />
           <select value={companyFilter} onChange={e => setCompanyFilter(e.target.value)}
             className="border border-gray-300 rounded-md px-3 py-2 text-sm bg-white">
             <option value="">All companies</option>
@@ -110,7 +110,7 @@ export function SitesPage() {
               {filtered.map(r => (
                 <tr key={r.id} className="hover:bg-gray-50">
                   <td className="px-4 py-3 font-medium">{r.name}</td>
-                  <td className="px-4 py-3 text-violet-600">{r.company?.name}</td>
+                  <td className="px-4 py-3 text-cyan-600">{r.company?.name}</td>
                   <td className="px-4 py-3 text-gray-600">{r.cost_center ? `${r.cost_center.code} - ${r.cost_center.description || r.cost_center.code}` : '—'}</td>
                   {isAdmin && <td className="px-4 py-3">
                     <div className="flex items-center gap-1">
@@ -129,7 +129,7 @@ export function SitesPage() {
         <form onSubmit={handleSave} className="space-y-4">
           <div><label className="block text-sm font-medium text-gray-700 mb-1">Name *</label>
             <input required value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))}
-              className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-violet-500" /></div>
+              className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-cyan-500" /></div>
           <div><label className="block text-sm font-medium text-gray-700 mb-1">Company *</label>
             <select required value={form.company_id} onChange={e => setForm(f => ({ ...f, company_id: e.target.value }))}
               className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm bg-white">

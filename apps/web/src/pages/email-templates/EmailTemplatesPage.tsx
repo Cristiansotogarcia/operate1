@@ -115,12 +115,12 @@ export function EmailTemplatesPage() {
 
       <div className="bg-white rounded-xl border border-gray-200 p-4 mb-6">
         <p className="text-sm text-gray-500">
-          Use placeholders in subject and body: <code className="text-violet-600 bg-violet-50 px-1 rounded text-xs">{'{{ticket_number}}'}</code>,{' '}
-          <code className="text-violet-600 bg-violet-50 px-1 rounded text-xs">{'{{subject}}'}</code>,{' '}
-          <code className="text-violet-600 bg-violet-50 px-1 rounded text-xs">{'{{status}}'}</code>,{' '}
-          <code className="text-violet-600 bg-violet-50 px-1 rounded text-xs">{'{{priority}}'}</code>,{' '}
-          <code className="text-violet-600 bg-violet-50 px-1 rounded text-xs">{'{{contact_email}}'}</code>,{' '}
-          <code className="text-violet-600 bg-violet-50 px-1 rounded text-xs">{'{{description}}'}</code>
+          Use placeholders in subject and body: <code className="text-cyan-600 bg-cyan-50 px-1 rounded text-xs">{'{{ticket_number}}'}</code>,{' '}
+          <code className="text-cyan-600 bg-cyan-50 px-1 rounded text-xs">{'{{subject}}'}</code>,{' '}
+          <code className="text-cyan-600 bg-cyan-50 px-1 rounded text-xs">{'{{status}}'}</code>,{' '}
+          <code className="text-cyan-600 bg-cyan-50 px-1 rounded text-xs">{'{{priority}}'}</code>,{' '}
+          <code className="text-cyan-600 bg-cyan-50 px-1 rounded text-xs">{'{{contact_email}}'}</code>,{' '}
+          <code className="text-cyan-600 bg-cyan-50 px-1 rounded text-xs">{'{{description}}'}</code>
         </p>
       </div>
 
@@ -143,7 +143,7 @@ export function EmailTemplatesPage() {
                   </div>
                 </div>
                 <div className="flex items-center gap-1 shrink-0">
-                  <button onClick={() => preview(r)} className="p-1.5 text-gray-400 hover:text-violet-600" title="Preview"><Eye size={15} /></button>
+                  <button onClick={() => preview(r)} className="p-1.5 text-gray-400 hover:text-cyan-600" title="Preview"><Eye size={15} /></button>
                   <button onClick={() => openEdit(r)} className="p-1.5 text-gray-400 hover:text-amber-600" title="Edit"><Pencil size={15} /></button>
                   <button onClick={() => setDeleteTarget(r.id)} className="p-1.5 text-gray-400 hover:text-red-600" title="Delete"><Trash2 size={15} /></button>
                 </div>
@@ -160,7 +160,7 @@ export function EmailTemplatesPage() {
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Name *</label>
               <input required value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))}
-                className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-violet-500" />
+                className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-cyan-500" />
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Event *</label>
@@ -174,16 +174,16 @@ export function EmailTemplatesPage() {
             <label className="block text-sm font-medium text-gray-700 mb-1">Subject Template *</label>
             <input required value={form.subject_template} onChange={e => setForm(f => ({ ...f, subject_template: e.target.value }))}
               placeholder="Ticket {{ticket_number}} — {{subject}}"
-              className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-violet-500" />
+              className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-cyan-500" />
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">HTML Body *</label>
             <textarea required rows={12} value={form.body_html} onChange={e => setForm(f => ({ ...f, body_html: e.target.value }))}
-              className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm font-mono focus:outline-none focus:ring-1 focus:ring-violet-500" />
+              className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm font-mono focus:outline-none focus:ring-1 focus:ring-cyan-500" />
           </div>
           <label className="flex items-center gap-2 text-sm text-gray-700 cursor-pointer">
             <input type="checkbox" checked={form.is_active} onChange={e => setForm(f => ({ ...f, is_active: e.target.checked }))}
-              className="rounded border-gray-300 text-violet-600" />
+              className="rounded border-gray-300 text-cyan-600" />
             Active
           </label>
           <div className="flex gap-3 justify-end pt-2">

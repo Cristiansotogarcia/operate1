@@ -126,7 +126,7 @@ export function TicketsPage() {
             placeholder="Email, name, subject..."
             value={search}
             onChange={e => setSearch(e.target.value)}
-            className="border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-violet-500 sm:col-span-2 md:col-span-1"
+            className="border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-cyan-500 sm:col-span-2 md:col-span-1"
           />
           <select
             value={statusFilter}
@@ -207,7 +207,7 @@ export function TicketsPage() {
                         </select>
                         <TicketStatusBadge status={ticket.status} />
                       </td>
-                      <td className="px-4 py-3 text-violet-600">{ticket.contact_email}</td>
+                      <td className="px-4 py-3 text-cyan-600">{ticket.contact_email}</td>
                       <td className="px-4 py-3 text-gray-700">{ticket.contact_name || '—'}</td>
                       <td className="px-4 py-3 text-gray-700">{(ticket.company as any)?.name || '—'}</td>
                       <td className="px-4 py-3 text-gray-700">{(ticket.site as any)?.name || '—'}</td>
@@ -237,7 +237,7 @@ export function TicketsPage() {
                       </td>
                       <td className="px-4 py-3">
                         <div className="flex items-center gap-1">
-                          <button onClick={() => navigate(`/tickets/${ticket.id}`)} className="p-1 text-gray-400 hover:text-violet-600 transition-colors" title="View">
+                          <button onClick={() => navigate(`/tickets/${ticket.id}`)} className="p-1 text-gray-400 hover:text-cyan-600 transition-colors" title="View">
                             <Eye size={15} />
                           </button>
                           {profile?.role === 'admin' && (

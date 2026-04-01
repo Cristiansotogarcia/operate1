@@ -244,7 +244,7 @@ export function ApiKeysPage() {
                 value={expiresIn}
                 onChange={e => setExpiresIn(e.target.value ? parseInt(e.target.value) : '')}
                 placeholder="Leave blank = never"
-                className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-violet-500"
+                className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500"
               />
             </div>
             <p className="text-xs text-gray-500">Keys are scoped to <code>worker:register</code> and allow agent registration only.</p>

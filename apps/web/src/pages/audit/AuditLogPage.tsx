@@ -85,7 +85,7 @@ export function AuditLogPage() {
         <select
           value={filterEntity}
           onChange={e => setFilterEntity(e.target.value)}
-          className="border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-violet-500"
+          className="border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500"
         >
           <option value="">All entity types</option>
           <option value="ticket">Ticket</option>
@@ -97,7 +97,7 @@ export function AuditLogPage() {
           placeholder="Filter by action…"
           value={filterAction}
           onChange={e => setFilterAction(e.target.value)}
-          className="border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-violet-500"
+          className="border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500"
         />
       </div>
 
@@ -137,7 +137,7 @@ export function AuditLogPage() {
                 <td className="px-4 py-3 max-w-xs">
                   {(log.old_values || log.new_values) ? (
                     <details className="cursor-pointer">
-                      <summary className="text-xs text-violet-600 hover:underline">View diff</summary>
+                      <summary className="text-xs text-cyan-600 hover:underline">View diff</summary>
                       <div className="mt-1 text-xs font-mono text-gray-600 space-y-1">
                         {log.old_values && (
                           <div className="text-red-600">- {JSON.stringify(log.old_values)}</div>
@@ -171,7 +171,7 @@ export function AuditLogPage() {
           <div className="px-4 py-3 border-t border-gray-200">
             <button
               onClick={loadMore}
-              className="text-sm text-violet-600 hover:underline"
+              className="text-sm text-cyan-600 hover:underline"
             >
               Load more
             </button>

@@ -119,15 +119,15 @@ export function PublicPortalPage() {
           <p className="text-gray-600 mb-4">
             Your support request has been received. Your ticket number is:
           </p>
-          <div className="bg-violet-50 border border-violet-200 rounded-lg px-4 py-3 mb-6">
-            <p className="text-2xl font-bold text-violet-700 font-mono">{submitted}</p>
+          <div className="bg-cyan-50 border border-cyan-200 rounded-lg px-4 py-3 mb-6">
+            <p className="text-2xl font-bold text-cyan-700 font-mono">{submitted}</p>
           </div>
           <p className="text-sm text-gray-500 mb-6">
             A member of our team will be in touch at <strong>{form.contact_email}</strong>.
           </p>
           <button
             onClick={() => { setSubmitted(null); setForm({ contact_email: '', contact_name: '', company_id: '', site_id: '', ticket_type_id: '', subject: '', description: '' }) }}
-            className="text-sm text-violet-600 hover:underline"
+            className="text-sm text-cyan-600 hover:underline"
           >
             Submit another request
           </button>
@@ -168,7 +168,7 @@ export function PublicPortalPage() {
                   value={form.contact_name}
                   onChange={e => set('contact_name', e.target.value)}
                   placeholder="John Smith"
-                  className={`w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-violet-500 ${errors.contact_name ? 'border-red-400' : 'border-gray-300'}`}
+                  className={`w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500 ${errors.contact_name ? 'border-red-400' : 'border-gray-300'}`}
                 />
                 {errors.contact_name && <p className="text-xs text-red-500 mt-1">{errors.contact_name}</p>}
               </div>
@@ -179,7 +179,7 @@ export function PublicPortalPage() {
                   value={form.contact_email}
                   onChange={e => set('contact_email', e.target.value)}
                   placeholder="you@company.com"
-                  className={`w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-violet-500 ${errors.contact_email ? 'border-red-400' : 'border-gray-300'}`}
+                  className={`w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500 ${errors.contact_email ? 'border-red-400' : 'border-gray-300'}`}
                 />
                 {errors.contact_email && <p className="text-xs text-red-500 mt-1">{errors.contact_email}</p>}
               </div>
@@ -191,7 +191,7 @@ export function PublicPortalPage() {
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Company</label>
                   <select value={form.company_id} onChange={e => set('company_id', e.target.value)}
-                    className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-violet-500">
+                    className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-cyan-500">
                     <option value="">Select company…</option>
                     {companies.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
                   </select>
@@ -200,7 +200,7 @@ export function PublicPortalPage() {
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">Site / Location</label>
                     <select value={form.site_id} onChange={e => set('site_id', e.target.value)}
-                      className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-violet-500">
+                      className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-cyan-500">
                       <option value="">Select site…</option>
                       {filteredSites.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
                     </select>
@@ -214,7 +214,7 @@ export function PublicPortalPage() {
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Request Type</label>
                 <select value={form.ticket_type_id} onChange={e => set('ticket_type_id', e.target.value)}
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-violet-500">
+                  className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-cyan-500">
                   <option value="">Select type…</option>
                   {ticketTypes.map(t => <option key={t.id} value={t.id}>{t.name}</option>)}
                 </select>
@@ -229,7 +229,7 @@ export function PublicPortalPage() {
                 value={form.subject}
                 onChange={e => set('subject', e.target.value)}
                 placeholder="Brief summary of your issue"
-                className={`w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-violet-500 ${errors.subject ? 'border-red-400' : 'border-gray-300'}`}
+                className={`w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500 ${errors.subject ? 'border-red-400' : 'border-gray-300'}`}
               />
               {errors.subject && <p className="text-xs text-red-500 mt-1">{errors.subject}</p>}
             </div>
@@ -242,7 +242,7 @@ export function PublicPortalPage() {
                 value={form.description}
                 onChange={e => set('description', e.target.value)}
                 placeholder="Please describe your issue in detail…"
-                className={`w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-violet-500 resize-none ${errors.description ? 'border-red-400' : 'border-gray-300'}`}
+                className={`w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500 resize-none ${errors.description ? 'border-red-400' : 'border-gray-300'}`}
               />
               {errors.description && <p className="text-xs text-red-500 mt-1">{errors.description}</p>}
             </div>
@@ -250,7 +250,7 @@ export function PublicPortalPage() {
             <button
               type="submit"
               disabled={submitting}
-              className="w-full bg-violet-600 hover:bg-violet-700 text-white rounded-lg px-4 py-2.5 text-sm font-medium transition-colors disabled:opacity-50"
+              className="w-full bg-cyan-600 hover:bg-cyan-700 text-white rounded-lg px-4 py-2.5 text-sm font-medium transition-colors disabled:opacity-50"
             >
               {submitting ? 'Submitting…' : 'Submit Request'}
             </button>
@@ -258,7 +258,7 @@ export function PublicPortalPage() {
         </div>
 
         <p className="text-center text-xs text-gray-400 mt-6">
-          Powered by Operate1 · <a href="/#/status" className="text-violet-500 hover:underline">System Status</a>
+          Powered by Operate1 · <a href="/#/status" className="text-cyan-500 hover:underline">System Status</a>
         </p>
       </div>
     </div>

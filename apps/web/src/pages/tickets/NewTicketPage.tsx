@@ -97,14 +97,14 @@ export function NewTicketPage() {
 
       {/* Template selector */}
       {templates.length > 0 && (
-        <div className="bg-violet-50 border border-violet-200 rounded-lg p-4">
+        <div className="bg-cyan-50 border border-cyan-200 rounded-lg p-4">
           <div className="flex items-center gap-2 mb-2">
-            <FileText size={16} className="text-violet-600" />
-            <label className="text-sm font-medium text-violet-700">Apply Template</label>
+            <FileText size={16} className="text-cyan-600" />
+            <label className="text-sm font-medium text-cyan-700">Apply Template</label>
           </div>
           <select
             onChange={e => { if (e.target.value) applyTemplate(e.target.value); e.target.value = '' }}
-            className="w-full border border-violet-300 rounded-md px-3 py-2 text-sm bg-white focus:outline-none focus:ring-1 focus:ring-violet-500"
+            className="w-full border border-cyan-300 rounded-md px-3 py-2 text-sm bg-white focus:outline-none focus:ring-1 focus:ring-cyan-500"
           >
             <option value="">Select a template to pre-fill fields...</option>
             {templates.map(t => <option key={t.id} value={t.id}>{t.name}</option>)}
@@ -116,12 +116,12 @@ export function NewTicketPage() {
         <div>
           <label className="text-sm font-medium text-gray-700 block mb-1">Email <span className="text-red-500">*</span></label>
           <input required type="email" placeholder="example@email.com" value={form.contact_email} onChange={e => set('contact_email', e.target.value)}
-            className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-violet-500" />
+            className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-cyan-500" />
         </div>
         <div>
           <label className="text-sm font-medium text-gray-700 block mb-1">Contact Name</label>
           <input type="text" placeholder="Full name" value={form.contact_name} onChange={e => set('contact_name', e.target.value)}
-            className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-violet-500" />
+            className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-cyan-500" />
         </div>
       </div>
 
@@ -129,7 +129,7 @@ export function NewTicketPage() {
         <div>
           <label className="text-sm font-medium text-gray-700 block mb-1">Company <span className="text-red-500">*</span></label>
           <select required value={form.company_id} onChange={e => set('company_id', e.target.value)}
-            className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm bg-white focus:outline-none focus:ring-1 focus:ring-violet-500">
+            className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm bg-white focus:outline-none focus:ring-1 focus:ring-cyan-500">
             <option value="">Select a company</option>
             {companies.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
           </select>
@@ -138,7 +138,7 @@ export function NewTicketPage() {
           <label className="text-sm font-medium text-gray-700 block mb-1">Site <span className="text-red-500">*</span></label>
           <select required value={form.site_id} onChange={e => set('site_id', e.target.value)}
             disabled={!form.company_id}
-            className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm bg-white focus:outline-none focus:ring-1 focus:ring-violet-500 disabled:bg-gray-50">
+            className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm bg-white focus:outline-none focus:ring-1 focus:ring-cyan-500 disabled:bg-gray-50">
             <option value="">{form.company_id ? 'Select a site' : 'First select a company'}</option>
             {sites.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
           </select>
@@ -148,7 +148,7 @@ export function NewTicketPage() {
       <div>
         <label className="text-sm font-medium text-gray-700 block mb-1">Ticket Type <span className="text-red-500">*</span></label>
         <select required value={form.ticket_type_id} onChange={e => set('ticket_type_id', e.target.value)}
-          className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm bg-white focus:outline-none focus:ring-1 focus:ring-violet-500">
+          className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm bg-white focus:outline-none focus:ring-1 focus:ring-cyan-500">
           <option value="">Select a type</option>
           {ticketTypes.map(t => <option key={t.id} value={t.id}>{t.name}</option>)}
         </select>
@@ -157,7 +157,7 @@ export function NewTicketPage() {
       <div>
         <label className="text-sm font-medium text-gray-700 block mb-1">Subject <span className="text-red-500">*</span></label>
         <input required type="text" placeholder="Brief summary of the issue" value={form.subject} onChange={e => set('subject', e.target.value)}
-          className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-violet-500" />
+          className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-cyan-500" />
       </div>
 
       <div>
@@ -165,7 +165,7 @@ export function NewTicketPage() {
         <textarea
           required rows={5} placeholder="Describe the problem or request in detail..."
           value={form.description} onChange={e => set('description', e.target.value)}
-          className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-violet-500"
+          className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-cyan-500"
         />
       </div>
 
@@ -173,7 +173,7 @@ export function NewTicketPage() {
         <div>
           <label className="text-sm font-medium text-gray-700 block mb-1">Status <span className="text-red-500">*</span></label>
           <select value={form.status} onChange={e => set('status', e.target.value)}
-            className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm bg-white focus:outline-none focus:ring-1 focus:ring-violet-500">
+            className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm bg-white focus:outline-none focus:ring-1 focus:ring-cyan-500">
             <option value="pending">Pending</option>
             <option value="open">Open</option>
             <option value="in_progress">In Progress</option>

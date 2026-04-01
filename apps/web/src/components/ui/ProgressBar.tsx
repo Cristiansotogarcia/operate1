@@ -9,7 +9,7 @@ interface ProgressBarProps {
 function getColor(value: number) {
   if (value >= 90) return 'bg-red-500'
   if (value >= 70) return 'bg-yellow-500'
-  return 'bg-violet-500'
+  return 'bg-cyan-500'
 }
 
 export function ProgressBar({ value, label, className }: ProgressBarProps) {

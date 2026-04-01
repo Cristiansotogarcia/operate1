@@ -157,7 +157,7 @@ export function SlaEscalationPage() {
               <label className="block text-sm font-medium text-gray-700 mb-1">Rule Name *</label>
               <input required value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))}
                 placeholder="e.g. Notify manager at 80%"
-                className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-violet-500" />
+                className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-cyan-500" />
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">SLA Policy *</label>
@@ -180,7 +180,7 @@ export function SlaEscalationPage() {
               <label className="block text-sm font-medium text-gray-700 mb-1">At % of deadline</label>
               <input type="number" min={1} max={100} value={form.trigger_percent}
                 onChange={e => setForm(f => ({ ...f, trigger_percent: parseInt(e.target.value) || 80 }))}
-                className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-violet-500" />
+                className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-cyan-500" />
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Action</label>
@@ -220,13 +220,13 @@ export function SlaEscalationPage() {
               <textarea rows={2} value={form.action_config.comment || ''}
                 onChange={e => setForm(f => ({ ...f, action_config: { ...f.action_config, comment: e.target.value } }))}
                 placeholder="e.g. SLA deadline approaching — please prioritize this ticket."
-                className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-violet-500" />
+                className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-cyan-500" />
             </div>
           )}
 
           <label className="flex items-center gap-2 text-sm text-gray-700 cursor-pointer">
             <input type="checkbox" checked={form.is_active} onChange={e => setForm(f => ({ ...f, is_active: e.target.checked }))}
-              className="rounded border-gray-300 text-violet-600" />
+              className="rounded border-gray-300 text-cyan-600" />
             Active
           </label>
 

@@ -241,7 +241,7 @@ export function DevicesPage() {
         <p className="text-sm font-semibold text-gray-700 mb-3">Search & Filters</p>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
           <input placeholder="Name, serial, asset tag..." value={search} onChange={e => setSearch(e.target.value)}
-            className="border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-violet-500" />
+            className="border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-cyan-500" />
           <select value={statusFilter} onChange={e => setStatusFilter(e.target.value)}
             className="border border-gray-300 rounded-md px-3 py-2 text-sm bg-white">
             <option value="">All Statuses</option><option value="online">Online</option><option value="offline">Offline</option>
@@ -272,7 +272,7 @@ export function DevicesPage() {
                       </div>
                       <div>
                         <h3 className="font-semibold text-gray-900">{d.name}</h3>
-                        <p className="text-xs text-violet-500 font-mono">{d.computer_name || 'Pending registration'}</p>
+                        <p className="text-xs text-cyan-500 font-mono">{d.computer_name || 'Pending registration'}</p>
                         {d.device_type && d.device_type !== 'workstation' && (
                           <p className="text-xs text-gray-400 capitalize">{d.device_type}</p>
                         )}
@@ -281,10 +281,10 @@ export function DevicesPage() {
                     <div className="flex items-center gap-2">
                       {isAdmin && (
                         <>
-                          <button onClick={() => regenerateCode(d)} className="text-gray-400 hover:text-violet-600" title="Generate pairing code">
+                          <button onClick={() => regenerateCode(d)} className="text-gray-400 hover:text-cyan-600" title="Generate pairing code">
                             <RefreshCw size={15} />
                           </button>
-                          <button onClick={() => openAssetModal(d)} className="text-gray-400 hover:text-violet-600" title="Edit asset details">
+                          <button onClick={() => openAssetModal(d)} className="text-gray-400 hover:text-cyan-600" title="Edit asset details">
                             <Edit2 size={15} />
                           </button>
                           <button onClick={() => setDeleteTarget(d.id)} className="text-gray-400 hover:text-red-500" title="Delete device">
@@ -307,7 +307,7 @@ export function DevicesPage() {
                       <span>{d.last_seen_at ? timeAgo(d.last_seen_at) : 'Never seen'}</span>
                       <button
                         onClick={() => setExpandedId(isExpanded ? null : d.id)}
-                        className="flex items-center gap-1 text-violet-600 hover:text-violet-700 font-medium"
+                        className="flex items-center gap-1 text-cyan-600 hover:text-cyan-700 font-medium"
                       >
                         {isExpanded ? <><ChevronUp size={13} />Less</> : <><ChevronDown size={13} />Asset details</>}
                       </button>
@@ -378,7 +378,7 @@ export function DevicesPage() {
           <div><label className="block text-sm font-medium text-gray-700 mb-1">Device Name *</label>
             <input required value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))}
               placeholder="e.g. Reception-PC, Server-01"
-              className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-violet-500" /></div>
+              className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-cyan-500" /></div>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div><label className="block text-sm font-medium text-gray-700 mb-1">Company</label>
               <select value={form.company_id} onChange={e => { setForm(f => ({ ...f, company_id: e.target.value, site_id: '' })); setFilteredSites(sites.filter(s => s.company_id === e.target.value)) }}
@@ -418,16 +418,16 @@ export function DevicesPage() {
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div><label className="block text-sm font-medium text-gray-700 mb-1">Asset Tag</label>
             <input value={assetForm.asset_tag} onChange={e => af('asset_tag', e.target.value)} placeholder="e.g. IT-0042"
-              className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-violet-500" /></div>
+              className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-cyan-500" /></div>
           <div><label className="block text-sm font-medium text-gray-700 mb-1">Serial Number</label>
             <input value={assetForm.serial_number} onChange={e => af('serial_number', e.target.value)} placeholder="e.g. SN-ABC123"
-              className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm font-mono focus:outline-none focus:ring-1 focus:ring-violet-500" /></div>
+              className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm font-mono focus:outline-none focus:ring-1 focus:ring-cyan-500" /></div>
           <div><label className="block text-sm font-medium text-gray-700 mb-1">Manufacturer</label>
             <input value={assetForm.manufacturer} onChange={e => af('manufacturer', e.target.value)} placeholder="e.g. Dell"
-              className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-violet-500" /></div>
+              className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-cyan-500" /></div>
           <div><label className="block text-sm font-medium text-gray-700 mb-1">Model</label>
             <input value={assetForm.model} onChange={e => af('model', e.target.value)} placeholder="e.g. OptiPlex 7090"
-              className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-violet-500" /></div>
+              className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-cyan-500" /></div>
           <div><label className="block text-sm font-medium text-gray-700 mb-1">Device Type</label>
             <select value={assetForm.device_type} onChange={e => af('device_type', e.target.value)}
               className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm bg-white">
@@ -441,13 +441,13 @@ export function DevicesPage() {
             </select></div>
           <div><label className="block text-sm font-medium text-gray-700 mb-1">Purchase Date</label>
             <input type="date" value={assetForm.purchased_at} onChange={e => af('purchased_at', e.target.value)}
-              className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-violet-500" /></div>
+              className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-cyan-500" /></div>
           <div><label className="block text-sm font-medium text-gray-700 mb-1">Warranty Expires</label>
             <input type="date" value={assetForm.warranty_expires_at} onChange={e => af('warranty_expires_at', e.target.value)}
-              className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-violet-500" /></div>
+              className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-cyan-500" /></div>
           <div className="col-span-2"><label className="block text-sm font-medium text-gray-700 mb-1">Notes</label>
             <textarea value={assetForm.notes} onChange={e => af('notes', e.target.value)} rows={3} placeholder="Any additional notes..."
-              className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-violet-500 resize-none" /></div>
+              className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-cyan-500 resize-none" /></div>
         </div>
       </Modal>
 
@@ -457,13 +457,13 @@ export function DevicesPage() {
           <p className="text-sm text-gray-600">
             Device <strong>{pairingCodeModal?.name}</strong> created. Enter this code in the Operate1 agent on the target machine.
           </p>
-          <div className="bg-violet-50 border-2 border-violet-200 rounded-xl py-5 px-4">
-            <p className="text-4xl font-bold font-mono tracking-[12px] text-violet-700">
+          <div className="bg-cyan-50 border-2 border-cyan-200 rounded-xl py-5 px-4">
+            <p className="text-4xl font-bold font-mono tracking-[12px] text-cyan-700">
               {pairingCodeModal?.code}
             </p>
           </div>
           <div className="flex justify-center">
-            <button onClick={handleCopyCode} className="flex items-center gap-1.5 px-3 py-1.5 text-sm text-violet-600 hover:bg-violet-50 rounded-md transition-colors">
+            <button onClick={handleCopyCode} className="flex items-center gap-1.5 px-3 py-1.5 text-sm text-cyan-600 hover:bg-cyan-50 rounded-md transition-colors">
               {copied ? <><Check size={14} className="text-green-600" /> Copied</> : <><Copy size={14} /> Copy code</>}
             </button>
           </div>

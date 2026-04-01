@@ -272,7 +272,7 @@ export function TicketDetailPage() {
                   onClick={() => setActiveTab(tab)}
                   className={`px-5 py-3 text-sm font-medium capitalize transition-colors ${
                     activeTab === tab
-                      ? 'border-b-2 border-violet-600 text-violet-700'
+                      ? 'border-b-2 border-cyan-600 text-cyan-700'
                       : 'text-gray-500 hover:text-gray-700'
                   }`}
                 >
@@ -314,7 +314,7 @@ export function TicketDetailPage() {
                       onChange={e => setCommentText(e.target.value)}
                       placeholder="Add a comment..."
                       rows={3}
-                      className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-violet-500 resize-none"
+                      className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500 resize-none"
                     />
                     <div className="flex items-center justify-between">
                       {isAdmin && (
@@ -323,7 +323,7 @@ export function TicketDetailPage() {
                             type="checkbox"
                             checked={isInternal}
                             onChange={e => setIsInternal(e.target.checked)}
-                            className="rounded border-gray-300 text-violet-600"
+                            className="rounded border-gray-300 text-cyan-600"
                           />
                           Internal note
                         </label>
@@ -378,7 +378,7 @@ export function TicketDetailPage() {
                           placeholder="Description (optional)"
                           value={timeDesc}
                           onChange={e => setTimeDesc(e.target.value)}
-                          className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-violet-500"
+                          className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500"
                         />
                       </div>
                       <div className="w-full sm:w-28">
@@ -387,7 +387,7 @@ export function TicketDetailPage() {
                           min={1}
                           value={timeMinutes}
                           onChange={e => setTimeMinutes(parseInt(e.target.value) || 0)}
-                          className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-violet-500"
+                          className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500"
                           placeholder="Minutes"
                         />
                       </div>
@@ -398,7 +398,7 @@ export function TicketDetailPage() {
                           type="checkbox"
                           checked={timeBillable}
                           onChange={e => setTimeBillable(e.target.checked)}
-                          className="rounded border-gray-300 text-violet-600"
+                          className="rounded border-gray-300 text-cyan-600"
                         />
                         Billable
                       </label>
@@ -425,7 +425,7 @@ export function TicketDetailPage() {
                             </div>
                           </div>
                           <div className="flex items-center gap-2">
-                            <button onClick={() => downloadFile(att)} className="text-gray-400 hover:text-violet-600">
+                            <button onClick={() => downloadFile(att)} className="text-gray-400 hover:text-cyan-600">
                               <Download size={14} />
                             </button>
                             {isAdmin && (
@@ -440,7 +440,7 @@ export function TicketDetailPage() {
                   )}
 
                   <div className="border-t border-gray-100 pt-4">
-                    <label className="flex items-center gap-2 cursor-pointer text-sm text-violet-600 hover:text-violet-700 font-medium">
+                    <label className="flex items-center gap-2 cursor-pointer text-sm text-cyan-600 hover:text-cyan-700 font-medium">
                       <Upload size={15} />
                       {uploading ? 'Uploading…' : 'Upload File'}
                       <input
@@ -495,7 +495,7 @@ export function TicketDetailPage() {
 
             <div>
               <p className="text-xs text-gray-400 uppercase font-semibold mb-1">Contact</p>
-              <p className="text-sm text-violet-600">{ticket.contact_email}</p>
+              <p className="text-sm text-cyan-600">{ticket.contact_email}</p>
               {ticket.contact_name && <p className="text-sm text-gray-600">{ticket.contact_name}</p>}
             </div>
 

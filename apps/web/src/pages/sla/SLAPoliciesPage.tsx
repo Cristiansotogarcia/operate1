@@ -170,7 +170,7 @@ export function SLAPoliciesPage() {
                   </td>
                   <td className="px-4 py-3">
                     <div className="flex items-center gap-2 justify-end">
-                      <button onClick={() => openEdit(p)} className="text-gray-400 hover:text-violet-600"><Edit2 size={15} /></button>
+                      <button onClick={() => openEdit(p)} className="text-gray-400 hover:text-cyan-600"><Edit2 size={15} /></button>
                       <button onClick={() => setDeleteTarget(p)} className="text-gray-400 hover:text-red-500"><Trash2 size={15} /></button>
                     </div>
                   </td>
@@ -209,7 +209,7 @@ export function SLAPoliciesPage() {
             <select
               value={form.ticket_type_id}
               onChange={e => f('ticket_type_id', e.target.value)}
-              className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-violet-500"
+              className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500"
             >
               <option value="">Any ticket type</option>
               {ticketTypes.map(t => (
@@ -223,7 +223,7 @@ export function SLAPoliciesPage() {
             <select
               value={form.priority}
               onChange={e => f('priority', e.target.value as TicketPriority)}
-              className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-violet-500"
+              className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500"
             >
               <option value="low">Low</option>
               <option value="normal">Normal</option>
@@ -240,7 +240,7 @@ export function SLAPoliciesPage() {
                 min={1}
                 value={form.response_minutes}
                 onChange={e => f('response_minutes', parseInt(e.target.value) || 0)}
-                className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-violet-500"
+                className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500"
               />
               <p className="text-xs text-gray-400 mt-1">= {minutesToLabel(form.response_minutes)}</p>
             </div>
@@ -251,7 +251,7 @@ export function SLAPoliciesPage() {
                 min={1}
                 value={form.resolve_minutes}
                 onChange={e => f('resolve_minutes', parseInt(e.target.value) || 0)}
-                className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-violet-500"
+                className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500"
               />
               <p className="text-xs text-gray-400 mt-1">= {minutesToLabel(form.resolve_minutes)}</p>
             </div>

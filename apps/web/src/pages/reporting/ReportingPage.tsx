@@ -204,14 +204,14 @@ export function ReportingPage() {
           type="date"
           value={dateFrom}
           onChange={e => setDateFrom(e.target.value)}
-          className="border border-gray-300 rounded-md px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-violet-500"
+          className="border border-gray-300 rounded-md px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500"
         />
         <span className="text-gray-400 text-sm">to</span>
         <input
           type="date"
           value={dateTo}
           onChange={e => setDateTo(e.target.value)}
-          className="border border-gray-300 rounded-md px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-violet-500"
+          className="border border-gray-300 rounded-md px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500"
         />
         <p className="text-xs text-gray-400 ml-2">Used for tickets and time entry reports</p>
       </div>
@@ -221,7 +221,7 @@ export function ReportingPage() {
         {REPORTS.map(report => (
           <div key={report.type} className="bg-white border border-gray-200 rounded-lg p-5 flex items-start justify-between">
             <div className="flex items-start gap-4">
-              <div className="p-2 bg-violet-50 rounded-lg text-violet-600">
+              <div className="p-2 bg-cyan-50 rounded-lg text-cyan-600">
                 {report.icon}
               </div>
               <div>

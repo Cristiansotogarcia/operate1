@@ -103,7 +103,7 @@ export function ContractsPage() {
       <div className="bg-white rounded-xl border border-gray-200 p-4 mb-6">
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
           <input placeholder="Contract number, name..." value={search} onChange={e => setSearch(e.target.value)}
-            className="border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-violet-500" />
+            className="border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-cyan-500" />
           <select value={typeFilter} onChange={e => setTypeFilter(e.target.value)} className="border border-gray-300 rounded-md px-3 py-2 text-sm bg-white">
             <option value="">All Types</option><option value="custom">Custom</option><option value="standard">Standard</option><option value="hourly">Hourly</option>
           </select>
@@ -123,7 +123,7 @@ export function ContractsPage() {
               <div key={r.id} className="bg-white rounded-xl border border-gray-200 p-4">
                 <div className="flex items-start justify-between gap-2 mb-2">
                   <div className="min-w-0">
-                    <p className="text-sm font-medium text-violet-600">{r.contract_number}</p>
+                    <p className="text-sm font-medium text-cyan-600">{r.contract_number}</p>
                     <p className="text-sm text-gray-900 truncate">{r.name}</p>
                   </div>
                   <ContractStatusBadge status={r.status} />
@@ -161,7 +161,7 @@ export function ContractsPage() {
                 <tbody className="divide-y divide-gray-50">
                   {filtered.map(r => (
                     <tr key={r.id} className="hover:bg-gray-50">
-                      <td className="px-4 py-3 font-medium text-violet-600">{r.contract_number}</td>
+                      <td className="px-4 py-3 font-medium text-cyan-600">{r.contract_number}</td>
                       <td className="px-4 py-3">{r.name}</td>
                       <td className="px-4 py-3">{(r.company as any)?.name || 'N/A'}</td>
                       <td className="px-4 py-3"><ContractTypeBadge type={r.type} /></td>
@@ -169,7 +169,7 @@ export function ContractsPage() {
                       <td className="px-4 py-3 text-xs text-gray-500">{formatDate(r.starts_at)}<br />{formatDate(r.ends_at)}</td>
                       <td className="px-4 py-3">
                         <div className="flex items-center gap-1">
-                          <button className="p-1 text-gray-400 hover:text-violet-600"><Eye size={15} /></button>
+                          <button className="p-1 text-gray-400 hover:text-cyan-600"><Eye size={15} /></button>
                           {isAdmin && <>
                             <button onClick={() => openEdit(r)} className="p-1 text-gray-400 hover:text-amber-600"><Pencil size={15} /></button>
                             <button onClick={() => setDeleteTarget(r.id)} className="p-1 text-gray-400 hover:text-red-600"><Trash2 size={15} /></button>
@@ -191,12 +191,12 @@ export function ContractsPage() {
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Contract # *</label>
               <input required value={form.contract_number} onChange={e => setForm(f => ({ ...f, contract_number: e.target.value }))}
-                className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-violet-500" />
+                className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-cyan-500" />
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Name *</label>
               <input required value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))}
-                className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-violet-500" />
+                className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-cyan-500" />
             </div>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">

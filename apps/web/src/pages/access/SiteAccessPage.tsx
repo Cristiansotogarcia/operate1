@@ -97,7 +97,7 @@ export function SiteAccessPage() {
 
       <div className="bg-white rounded-xl border border-gray-200 p-4 mb-6">
         <input placeholder="Search users by name or email..." value={search} onChange={e => setSearch(e.target.value)}
-          className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-violet-500" />
+          className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-cyan-500" />
       </div>
 
       <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
@@ -119,7 +119,7 @@ export function SiteAccessPage() {
                 <td className="px-4 py-3"><Badge variant="info">{u.companyAccess.length} companie(s)</Badge></td>
                 <td className="px-4 py-3"><Badge variant="purple">{u.siteAccess.length} site(s)</Badge></td>
                 <td className="px-4 py-3">
-                  <button onClick={() => openEdit(u)} className="p-1 text-gray-400 hover:text-violet-600"><Pencil size={15} /></button>
+                  <button onClick={() => openEdit(u)} className="p-1 text-gray-400 hover:text-cyan-600"><Pencil size={15} /></button>
                 </td>
               </tr>
             ))}
@@ -135,7 +135,7 @@ export function SiteAccessPage() {
             {availableSites.map(s => (
               <label key={s.id} className="flex items-center gap-3 p-2 rounded-md hover:bg-gray-50 cursor-pointer">
                 <input type="checkbox" checked={selected.has(s.id)} onChange={() => toggle(s.id)}
-                  className="h-4 w-4 rounded border-gray-300 text-violet-600 focus:ring-violet-500" />
+                  className="h-4 w-4 rounded border-gray-300 text-cyan-600 focus:ring-cyan-500" />
                 <span className="text-sm">{s.name} <span className="text-gray-400">({(s.company as any)?.name})</span></span>
               </label>
             ))}

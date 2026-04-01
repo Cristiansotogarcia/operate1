@@ -179,8 +179,8 @@ export function CompanyDetailPage() {
 
       <div className="flex items-start justify-between mb-6">
         <div className="flex items-center gap-3">
-          <div className="w-12 h-12 rounded-lg bg-violet-100 flex items-center justify-center">
-            <Building2 size={24} className="text-violet-600" />
+          <div className="w-12 h-12 rounded-lg bg-cyan-100 flex items-center justify-center">
+            <Building2 size={24} className="text-cyan-600" />
           </div>
           <div>
             <h1 className="text-xl font-bold text-gray-900">{company.name}</h1>
@@ -205,7 +205,7 @@ export function CompanyDetailPage() {
             onClick={() => setTab(t.key)}
             className={`px-5 py-2.5 text-sm font-medium transition-colors ${
               tab === t.key
-                ? 'border-b-2 border-violet-600 text-violet-700'
+                ? 'border-b-2 border-cyan-600 text-cyan-700'
                 : 'text-gray-500 hover:text-gray-700'
             }`}
           >
@@ -320,7 +320,7 @@ export function CompanyDetailPage() {
                 <tbody className="divide-y divide-gray-50">
                   {contracts.map(c => (
                     <tr key={c.id} className="hover:bg-gray-50">
-                      <td className="px-4 py-3 font-medium font-mono text-violet-600">{c.contract_number}</td>
+                      <td className="px-4 py-3 font-medium font-mono text-cyan-600">{c.contract_number}</td>
                       <td className="px-4 py-3"><ContractTypeBadge type={c.type as any} /></td>
                       <td className="px-4 py-3"><ContractStatusBadge status={c.status as any} /></td>
                       <td className="px-4 py-3 text-gray-600">{c.start_date ? new Date(c.start_date).toLocaleDateString() : '—'}</td>
@@ -346,12 +346,12 @@ export function CompanyDetailPage() {
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Company Name *</label>
               <input required value={companyForm.name} onChange={e => setCompanyForm(f => ({ ...f, name: e.target.value }))}
-                className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-violet-500" />
+                className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500" />
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Status</label>
               <select value={companyForm.status} onChange={e => setCompanyForm(f => ({ ...f, status: e.target.value }))}
-                className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-violet-500">
+                className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-cyan-500">
                 <option value="active">Active</option>
                 <option value="inactive">Inactive</option>
               </select>
@@ -362,13 +362,13 @@ export function CompanyDetailPage() {
               <label className="block text-sm font-medium text-gray-700 mb-1">Contact Person</label>
               <input value={companyForm.contact_person} onChange={e => setCompanyForm(f => ({ ...f, contact_person: e.target.value }))}
                 placeholder="Primary contact"
-                className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-violet-500" />
+                className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500" />
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
               <input type="email" value={companyForm.email} onChange={e => setCompanyForm(f => ({ ...f, email: e.target.value }))}
                 placeholder="contact@company.com"
-                className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-violet-500" />
+                className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500" />
             </div>
           </div>
           <div className="grid grid-cols-2 gap-4">
@@ -376,25 +376,25 @@ export function CompanyDetailPage() {
               <label className="block text-sm font-medium text-gray-700 mb-1">Phone</label>
               <input value={companyForm.phone} onChange={e => setCompanyForm(f => ({ ...f, phone: e.target.value }))}
                 placeholder="+1 234 567 890"
-                className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-violet-500" />
+                className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500" />
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Website</label>
               <input value={companyForm.website} onChange={e => setCompanyForm(f => ({ ...f, website: e.target.value }))}
                 placeholder="https://company.com"
-                className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-violet-500" />
+                className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500" />
             </div>
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Address</label>
             <input value={companyForm.address} onChange={e => setCompanyForm(f => ({ ...f, address: e.target.value }))}
               placeholder="Street, City, Country"
-              className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-violet-500" />
+              className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500" />
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Notes</label>
             <textarea value={companyForm.notes} onChange={e => setCompanyForm(f => ({ ...f, notes: e.target.value }))}
-              rows={3} className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-violet-500" />
+              rows={3} className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500" />
           </div>
         </form>
       </Modal>
@@ -411,18 +411,18 @@ export function CompanyDetailPage() {
             <label className="block text-sm font-medium text-gray-700 mb-1">Site Name *</label>
             <input required value={siteForm.name} onChange={e => setSiteForm(f => ({ ...f, name: e.target.value }))}
               placeholder="e.g. Main Office, Warehouse A"
-              className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-violet-500" />
+              className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500" />
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Address</label>
             <input value={siteForm.address} onChange={e => setSiteForm(f => ({ ...f, address: e.target.value }))}
               placeholder="Street, City, Country"
-              className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-violet-500" />
+              className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500" />
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Cost Center</label>
             <select value={siteForm.cost_center_id} onChange={e => setSiteForm(f => ({ ...f, cost_center_id: e.target.value }))}
-              className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-violet-500">
+              className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-cyan-500">
               <option value="">None</option>
               {costCenters.map(c => <option key={c.id} value={c.id}>{c.code} — {c.description || c.code}</option>)}
             </select>
