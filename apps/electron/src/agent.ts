@@ -1,5 +1,6 @@
 // Agent — collects metrics (battery, disk health, power state), pairs via code,
 // heartbeats via edge functions, runs endpoint monitor checks.
+// Light metrics (CPU/RAM/disk space) every 5s. Heavy metrics (battery/disk health) every 60s.
 
 import fs from 'fs'
 import path from 'path'
@@ -9,7 +10,6 @@ import { app, BrowserWindow } from 'electron'
 import { SUPABASE_ANON_KEY, FUNCTIONS_URL } from './config'
 import { startMonitoring, stopMonitoring, getActiveMonitorCount, setLogger } from './monitor-scheduler'
 
-// Config stored in %APPDATA%/Operate1/
 const CONFIG_DIR = app.getPath('userData')
 const CONFIG_PATH = path.join(CONFIG_DIR, 'agent.json')
 
@@ -20,7 +20,6 @@ export interface AgentConfig {
 }
 
 export interface AgentMetrics {
-  // System
   cpu_percent: number
   ram_total_gb: number
   ram_used_gb: number
@@ -28,23 +27,19 @@ export interface AgentMetrics {
   uptime_hours: number
   hostname: string
   platform: string
-  // Disk space
   disk_total_gb: number
   disk_used_gb: number
   disk_percent: number
-  // Disk health
-  disk_type: string | null       // 'SSD', 'HDD', 'NVMe'
+  disk_type: string | null
   disk_io_read_mb: number
   disk_io_write_mb: number
-  smart_status: string | null    // 'ok', 'caution', 'failing'
+  smart_status: string | null
   disk_temp_c: number | null
-  // Battery & power
   battery_percent: number | null
   battery_charging: boolean | null
   ac_connected: boolean | null
   power_source: 'ac' | 'battery' | 'ups' | null
   has_battery: boolean
-  // Agent
   agent_version: string
   active_monitors: number
 }
@@ -61,8 +56,23 @@ let config: AgentConfig = { device_id: null, api_secret: null, heartbeat_interva
 let status: AgentStatus = { connected: false, device_id: null, last_heartbeat: null, heartbeat_count: 0, error: null }
 let latestMetrics: AgentMetrics | null = null
 let heartbeatTimer: ReturnType<typeof setInterval> | null = null
-let metricsTimer: ReturnType<typeof setInterval> | null = null
+let lightTimer: ReturnType<typeof setInterval> | null = null
+let heavyTimer: ReturnType<typeof setInterval> | null = null
 let mainWin: BrowserWindow | null = null
+
+// Cached heavy metrics — updated every 60s, not every 5s
+let cachedHeavy = {
+  disk_type: null as string | null,
+  disk_io_read_mb: 0,
+  disk_io_write_mb: 0,
+  smart_status: null as string | null,
+  disk_temp_c: null as number | null,
+  battery_percent: null as number | null,
+  battery_charging: null as boolean | null,
+  ac_connected: null as boolean | null,
+  power_source: null as 'ac' | 'battery' | 'ups' | null,
+  has_battery: false,
+}
 
 export function setMainWindow(win: BrowserWindow) { mainWin = win }
 
@@ -136,100 +146,99 @@ export function unpair() {
   send('status-update', status)
 }
 
-// ─── Metrics collection ────────────────────────
-export async function collectMetrics(): Promise<AgentMetrics> {
-  const [cpu, mem, disk, diskLayout, diskIOraw, batteryRaw] = await Promise.all([
-    si.currentLoad(),
-    si.mem(),
-    si.fsSize(),
-    si.diskLayout().catch(() => null),
-    si.disksIO().catch(() => null),
-    si.battery().catch(() => null),
-  ])
+// ─── Light metrics (every 5s) — fast, low CPU ───
+async function collectLight(): Promise<void> {
+  try {
+    const [cpu, mem, disk] = await Promise.all([
+      si.currentLoad(),
+      si.mem(),
+      si.fsSize(),
+    ])
 
-  const d = disk?.[0] || { size: 0, used: 0, use: 0 }
-  const primaryDisk = diskLayout?.[0] ?? null
-  const diskIO = diskIOraw ?? { rIO_sec: 0, wIO_sec: 0 }
-  const battery = batteryRaw ?? { hasBattery: false, isCharging: false, percent: 0, acConnected: true }
+    const d = disk?.[0] || { size: 0, used: 0, use: 0 }
 
-  // Determine disk type
-  let diskType: string | null = null
-  if (primaryDisk) {
-    const iface = (primaryDisk.interfaceType || '').toLowerCase()
-    const name = (primaryDisk.name || '').toLowerCase()
-    if (iface.includes('nvme') || name.includes('nvme')) diskType = 'NVMe'
-    else if (primaryDisk.type === 'SSD' || iface.includes('ssd') || name.includes('ssd')) diskType = 'SSD'
-    else if (primaryDisk.type === 'HD') diskType = 'HDD'
-    else diskType = primaryDisk.type || null
-  }
-
-  // SMART status
-  let smartStatus: string | null = null
-  if (primaryDisk) {
-    const smart = (primaryDisk as any).smartStatus
-    if (smart === 'Ok' || smart === 'OK' || smart === 'PASSED') smartStatus = 'ok'
-    else if (smart) smartStatus = smart.toLowerCase().includes('fail') ? 'failing' : 'caution'
-  }
-
-  // Disk temperature
-  const diskTemp = primaryDisk?.temperature ?? null
-
-  // Disk I/O (bytes/sec → MB/s)
-  const ioData = diskIO as { rIO_sec?: number; wIO_sec?: number }
-  const readMb = Math.round(((ioData.rIO_sec || 0) / 1048576) * 10) / 10
-  const writeMb = Math.round(((ioData.wIO_sec || 0) / 1048576) * 10) / 10
-
-  // Power source determination
-  let powerSource: 'ac' | 'battery' | 'ups' | null = null
-  if (battery.hasBattery) {
-    if (battery.acConnected && battery.isCharging) powerSource = 'ac'
-    else if (battery.acConnected && !battery.isCharging && (battery.percent ?? 100) === 100) powerSource = 'ac'
-    else if (!battery.acConnected && battery.hasBattery) powerSource = 'battery'
-    else powerSource = 'ac'
-    // UPS heuristic: desktop with battery that's not charging and AC lost
-    if (!battery.acConnected && battery.hasBattery && battery.percent < 100) {
-      // Could be UPS — flag if not a laptop (laptops have hasBattery naturally)
-      const chassis = await si.chassis().catch(() => null)
-      const isLaptop = ['notebook', 'laptop', 'portable', 'sub notebook'].some(
-        t => (chassis?.type || '').toLowerCase().includes(t)
-      )
-      if (!isLaptop) powerSource = 'ups'
+    latestMetrics = {
+      cpu_percent: Math.round(cpu.currentLoad * 10) / 10,
+      ram_total_gb: Math.round((mem.total / 1073741824) * 10) / 10,
+      ram_used_gb: Math.round((mem.active / 1073741824) * 10) / 10,
+      ram_percent: Math.round((mem.active / mem.total) * 1000) / 10,
+      uptime_hours: Math.round((os.uptime() / 3600) * 10) / 10,
+      hostname: os.hostname(),
+      platform: `${os.type()} ${os.release()}`,
+      disk_total_gb: Math.round((d.size / 1073741824) * 10) / 10,
+      disk_used_gb: Math.round((d.used / 1073741824) * 10) / 10,
+      disk_percent: Math.round(d.use * 10) / 10,
+      // Merge cached heavy metrics
+      ...cachedHeavy,
+      agent_version: app.getVersion(),
+      active_monitors: getActiveMonitorCount(),
     }
-  } else {
-    powerSource = 'ac'
-  }
 
-  latestMetrics = {
-    cpu_percent: Math.round(cpu.currentLoad * 10) / 10,
-    ram_total_gb: Math.round((mem.total / 1073741824) * 10) / 10,
-    ram_used_gb: Math.round((mem.active / 1073741824) * 10) / 10,
-    ram_percent: Math.round((mem.active / mem.total) * 1000) / 10,
-    uptime_hours: Math.round((os.uptime() / 3600) * 10) / 10,
-    hostname: os.hostname(),
-    platform: `${os.type()} ${os.release()}`,
-    // Disk space
-    disk_total_gb: Math.round((d.size / 1073741824) * 10) / 10,
-    disk_used_gb: Math.round((d.used / 1073741824) * 10) / 10,
-    disk_percent: Math.round(d.use * 10) / 10,
-    // Disk health
-    disk_type: diskType,
-    disk_io_read_mb: readMb,
-    disk_io_write_mb: writeMb,
-    smart_status: smartStatus,
-    disk_temp_c: diskTemp,
-    // Battery & power
-    has_battery: battery.hasBattery,
-    battery_percent: battery.hasBattery ? Math.round(battery.percent) : null,
-    battery_charging: battery.hasBattery ? battery.isCharging : null,
-    ac_connected: battery.acConnected ?? null,
-    power_source: powerSource,
-    // Agent info
-    agent_version: app.getVersion(),
-    active_monitors: getActiveMonitorCount(),
-  }
+    send('metrics-update', latestMetrics)
+  } catch { /* swallow — will retry in 5s */ }
+}
 
-  send('metrics-update', latestMetrics)
-  return latestMetrics
+// ─── Heavy metrics (every 60s) — slow WMI calls ───
+async function collectHeavy(): Promise<void> {
+  try {
+    const [diskLayout, diskIOraw, batteryRaw] = await Promise.all([
+      si.diskLayout().catch(() => null),
+      si.disksIO().catch(() => null),
+      si.battery().catch(() => null),
+    ])
+
+    const primaryDisk = diskLayout?.[0] ?? null
+    const diskIO = diskIOraw ?? { rIO_sec: 0, wIO_sec: 0 }
+    const battery = batteryRaw ?? { hasBattery: false, isCharging: false, percent: 0, acConnected: true }
+
+    // Disk type
+    let diskType: string | null = null
+    if (primaryDisk) {
+      const iface = (primaryDisk.interfaceType || '').toLowerCase()
+      const name = (primaryDisk.name || '').toLowerCase()
+      if (iface.includes('nvme') || name.includes('nvme')) diskType = 'NVMe'
+      else if (primaryDisk.type === 'SSD' || iface.includes('ssd') || name.includes('ssd')) diskType = 'SSD'
+      else if (primaryDisk.type === 'HD') diskType = 'HDD'
+      else diskType = primaryDisk.type || null
+    }
+
+    // SMART status
+    let smartStatus: string | null = null
+    if (primaryDisk) {
+      const smart = (primaryDisk as any).smartStatus
+      if (smart === 'Ok' || smart === 'OK' || smart === 'PASSED') smartStatus = 'ok'
+      else if (smart) smartStatus = smart.toLowerCase().includes('fail') ? 'failing' : 'caution'
+    }
+
+    // Power source — simple logic, no chassis call
+    let powerSource: 'ac' | 'battery' | 'ups' | null = null
+    if (battery.hasBattery) {
+      powerSource = battery.acConnected ? 'ac' : 'battery'
+    } else {
+      powerSource = 'ac'
+    }
+
+    const ioData = diskIO as { rIO_sec?: number; wIO_sec?: number }
+
+    cachedHeavy = {
+      disk_type: diskType,
+      disk_io_read_mb: Math.round(((ioData.rIO_sec || 0) / 1048576) * 10) / 10,
+      disk_io_write_mb: Math.round(((ioData.wIO_sec || 0) / 1048576) * 10) / 10,
+      smart_status: smartStatus,
+      disk_temp_c: primaryDisk?.temperature ?? null,
+      has_battery: battery.hasBattery,
+      battery_percent: battery.hasBattery ? Math.round(battery.percent) : null,
+      battery_charging: battery.hasBattery ? battery.isCharging : null,
+      ac_connected: battery.acConnected ?? null,
+      power_source: powerSource,
+    }
+  } catch { /* swallow — will retry in 60s */ }
+}
+
+// ─── Public accessor for IPC ───────────────────
+export async function collectMetrics(): Promise<AgentMetrics> {
+  await collectLight()
+  return latestMetrics!
 }
 
 // ─── Heartbeat ──────────────────────────────────
@@ -237,7 +246,9 @@ async function sendHeartbeat() {
   if (!config.device_id || !config.api_secret) return
 
   try {
-    const m = await collectMetrics()
+    // Use latest cached metrics, don't re-collect
+    const m = latestMetrics
+    if (!m) return
 
     const resp = await fetch(`${FUNCTIONS_URL}/worker-heartbeat`, {
       method: 'POST',
@@ -251,7 +262,6 @@ async function sendHeartbeat() {
         cpu_percent: m.cpu_percent,
         ram_percent: m.ram_percent,
         disk_percent: m.disk_percent,
-        // Extended fields
         battery_percent: m.battery_percent,
         battery_charging: m.battery_charging,
         ac_connected: m.ac_connected,
@@ -308,26 +318,30 @@ export function startAgent() {
   if (!isPaired()) return
   status.device_id = config.device_id
 
-  // Wire up monitor scheduler logging
-  setLogger((msg) => {
-    send('monitor-log', msg)
-  })
+  setLogger((msg) => send('monitor-log', msg))
 
-  // Collect metrics every 5s
-  collectMetrics()
-  metricsTimer = setInterval(() => collectMetrics(), 5000)
+  // Light metrics every 5s (CPU, RAM, disk space — fast)
+  collectLight()
+  lightTimer = setInterval(() => collectLight(), 5000)
 
-  // Heartbeat every interval
-  sendHeartbeat()
+  // Heavy metrics every 60s (battery, disk health — slow WMI), delayed 3s
+  setTimeout(() => {
+    collectHeavy()
+    heavyTimer = setInterval(() => collectHeavy(), 60000)
+  }, 3000)
+
+  // First heartbeat after 2s, then on interval
+  setTimeout(() => sendHeartbeat(), 2000)
   heartbeatTimer = setInterval(() => sendHeartbeat(), config.heartbeat_interval_ms)
 
-  // Start monitoring scheduler — fetches and runs assigned checks
-  startMonitoring(config)
+  // Monitoring scheduler starts after 10s delay
+  setTimeout(() => startMonitoring(config), 10000)
 }
 
 export function stopAgent() {
   if (heartbeatTimer) { clearInterval(heartbeatTimer); heartbeatTimer = null }
-  if (metricsTimer) { clearInterval(metricsTimer); metricsTimer = null }
+  if (lightTimer) { clearInterval(lightTimer); lightTimer = null }
+  if (heavyTimer) { clearInterval(heavyTimer); heavyTimer = null }
   stopMonitoring()
 }
 

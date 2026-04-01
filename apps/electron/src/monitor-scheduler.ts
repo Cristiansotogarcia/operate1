@@ -19,12 +19,14 @@ let logFn: (msg: string) => void = console.log
 
 export function setLogger(fn: (msg: string) => void) { logFn = fn }
 
-export async function startMonitoring(config: AgentConfig): Promise<void> {
+export function startMonitoring(config: AgentConfig): void {
   if (!config.device_id || !config.api_secret) return
 
-  // Fetch and schedule immediately, then poll every 60s for changes
-  await fetchAndSchedule(config)
-  pollTimer = setInterval(() => fetchAndSchedule(config), 60000)
+  // First fetch after 5s, then poll every 60s — non-blocking
+  setTimeout(() => {
+    fetchAndSchedule(config)
+    pollTimer = setInterval(() => fetchAndSchedule(config), 60000)
+  }, 5000)
 }
 
 export function stopMonitoring(): void {

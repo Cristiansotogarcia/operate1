@@ -41,6 +41,13 @@ function createWindow() {
     mainWindow?.show()
     setMainWindow(mainWindow!)
 
+    // Start agent AFTER window is visible — don't block rendering
+    const cfg = loadConfig()
+    if (cfg && isPaired()) {
+      startAgent()
+      if (process.argv.includes('--hidden')) mainWindow?.hide()
+    }
+
     // Initialize updater with window ref
     initUpdater(mainWindow!, (ch, data) => {
       if (mainWindow && !mainWindow.isDestroyed()) {
@@ -99,15 +106,6 @@ app.whenReady().then(() => {
   createWindow()
   createTray()
   setupIpcHandlers()
-
-  // Auto-start agent if already paired
-  const cfg = loadConfig()
-  if (cfg && isPaired()) {
-    startAgent()
-    if (process.argv.includes('--hidden')) {
-      mainWindow?.hide()
-    }
-  }
 
   app.on('activate', () => {
     if (BrowserWindow.getAllWindows().length === 0) createWindow()
