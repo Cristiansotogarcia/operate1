@@ -1,7 +1,8 @@
 import { app, BrowserWindow, Tray, Menu, nativeImage } from 'electron'
 import path from 'path'
 import { setupIpcHandlers } from './ipc'
-import { loadConfig, startAgent, stopAgent, setMainWindow, isPaired } from './agent'
+import { loadConfig, startAgent, stopAgent, setMainWindow, isPaired, reportShutdown } from './agent'
+import { initUpdater, startUpdateChecker, stopUpdateChecker } from './updater'
 
 let mainWindow: BrowserWindow | null = null
 let tray: Tray | null = null
@@ -31,6 +32,14 @@ function createWindow() {
   mainWindow.once('ready-to-show', () => {
     mainWindow?.show()
     setMainWindow(mainWindow!)
+
+    // Initialize updater with window ref
+    initUpdater(mainWindow!, (ch, data) => {
+      if (mainWindow && !mainWindow.isDestroyed()) {
+        mainWindow.webContents.send(ch, data)
+      }
+    })
+    startUpdateChecker()
   })
 
   // Always minimize to tray — never close
@@ -70,11 +79,15 @@ function createTray() {
 }
 
 // Prevent quitting — the app should always run
-app.on('before-quit', (e) => {
+app.on('before-quit', async (e) => {
   // Only allow quit if explicitly forced (e.g., during uninstall)
   if (!process.env.OPERATE1_FORCE_QUIT) {
     e.preventDefault()
     mainWindow?.hide()
+  } else {
+    // Report graceful shutdown before quitting
+    await reportShutdown('graceful')
+    stopUpdateChecker()
   }
 })
 

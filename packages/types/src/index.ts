@@ -157,10 +157,35 @@ export interface Device {
   cpu_percent: number | null
   ram_percent: number | null
   disk_percent: number | null
+  // Extended metrics
+  battery_percent: number | null
+  battery_charging: boolean | null
+  ac_connected: boolean | null
+  power_source: 'ac' | 'battery' | 'ups' | null
+  disk_type: string | null
+  disk_io_read_mb: number | null
+  disk_io_write_mb: number | null
+  smart_status: string | null
+  disk_temp_c: number | null
+  agent_version: string | null
+  last_shutdown: string | null
+  last_boot_at: string | null
   created_at: string
   updated_at: string
   // joined
   company?: Company
+}
+
+export interface AgentUpdate {
+  id: string
+  tenant_id: string
+  version: string
+  download_url: string
+  release_notes: string | null
+  is_mandatory: boolean
+  platform: string
+  published_at: string
+  created_at: string
 }
 
 export interface DeviceHeartbeat {

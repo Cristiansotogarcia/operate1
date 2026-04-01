@@ -168,7 +168,7 @@ export function Sidebar({ open, onClose }: SidebarProps) {
 
         {/* Footer */}
         <div className="px-4 py-3 border-t border-white/10">
-          <p className="text-[10px] text-slate-600 text-center">Operate1 v1.1.5</p>
+          <p className="text-[10px] text-slate-600 text-center">Operate1 v1.2.0</p>
         </div>
       </div>
     </>
