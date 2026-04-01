@@ -8,10 +8,11 @@ let mainWindow: BrowserWindow | null = null
 let tray: Tray | null = null
 let allowQuit = false
 
-// Resolve paths correctly whether running from source or packaged asar
+// Resolve asset paths — extraResources puts them outside the asar
 function assetPath(filename: string): string {
-  // In packaged app: __dirname is inside app.asar/dist/
-  // Assets are at app.asar/assets/ (sibling to dist/)
+  if (app.isPackaged) {
+    return path.join(process.resourcesPath, 'assets', filename)
+  }
   return path.join(__dirname, '..', 'assets', filename)
 }
 
@@ -87,9 +88,9 @@ function createTray() {
 }
 
 // Allow quit when NSIS installer sends kill signal or user explicitly quits
-app.on('before-quit', async () => {
+app.on('before-quit', () => {
   allowQuit = true
-  await reportShutdown('graceful').catch(() => {})
+  reportShutdown('graceful').catch(() => {})
   stopUpdateChecker()
   stopAgent()
 })

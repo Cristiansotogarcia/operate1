@@ -17,4 +17,5 @@ contextBridge.exposeInMainWorld('agent', {
   onUpdateAvailable: (cb: (data: any) => void) => ipcRenderer.on('update-available', (_e, d) => cb(d)),
   onMonitorLog: (cb: (msg: string) => void) => ipcRenderer.on('monitor-log', (_e, d) => cb(d)),
   platform: process.platform,
+  getAssetPath: (filename: string) => ipcRenderer.invoke('agent:asset-path', filename),
 })

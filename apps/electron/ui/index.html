@@ -106,7 +106,7 @@
 <div id="pairingScreen">
   <div class="pair-card">
     <div class="pair-logo">
-      <img src="../assets/icon.png" alt="Operate1">
+      <img class="brand-icon" alt="Operate1">
     </div>
     <h1>Operate1 Agent</h1>
     <p>Enter the pairing code from your IT administrator</p>
@@ -122,7 +122,7 @@
   <div class="app-layout">
     <div class="sidebar">
       <div class="sb-brand">
-        <img src="../assets/icon.png" alt="Operate1">
+        <img class="brand-icon" alt="Operate1">
         <span>Operate1</span>
       </div>
       <div class="sb-nav">
@@ -241,7 +241,11 @@
 <script>
   const $ = id => document.getElementById(id)
 
-  // ─── Version display ───
+  // ─── Load icons + version ───
+  ;(async () => {
+    const iconUrl = await agent.getAssetPath('icon.png')
+    document.querySelectorAll('.brand-icon').forEach(img => img.src = iconUrl)
+  })()
   ;(async () => {
     const ver = await agent.getAppVersion()
     $('pairVer').textContent = 'v' + ver

@@ -27,8 +27,10 @@
     },
     "files": [
       "dist/**/*",
-      "ui/**/*",
-      "assets/**/*"
+      "ui/**/*"
+    ],
+    "extraResources": [
+      { "from": "assets", "to": "assets" }
     ],
     "asarUnpack": [
       "node_modules/systeminformation/**"
