@@ -30,10 +30,14 @@ create index if not exists devices_site_id_idx on devices(site_id);
 -- RLS
 alter table pairing_codes enable row level security;
 
-create policy "pairing_codes_admin_all" on pairing_codes
-  for all using (
-    tenant_id = auth_tenant_id()
-    and auth_role() = 'admin'
-  );
+do $$ begin
+  if not exists (select 1 from pg_policies where policyname = 'pairing_codes_admin_all' and tablename = 'pairing_codes') then
+    create policy "pairing_codes_admin_all" on pairing_codes
+      for all using (
+        tenant_id = auth_tenant_id()
+        and auth_role() = 'admin'
+      );
+  end if;
+end $$;
 
 notify pgrst, 'reload schema';
