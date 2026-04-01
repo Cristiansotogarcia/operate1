@@ -6,91 +6,58 @@ export function useAuthInit() {
   const { setUser, setSession, setProfile, setLoading, reset } = useAuthStore()
 
   useEffect(() => {
-    let initialised = false
-
-    // Get initial session — must ALWAYS call setLoading(false)
-    supabase.auth.getSession()
-      .then(({ data: { session } }) => {
-        if (initialised) return
-        initialised = true
-        setSession(session)
-        setUser(session?.user ?? null)
-        if (session?.user) {
-          fetchProfile(session.user.id).finally(() => setLoading(false))
-        } else {
-          setLoading(false)
-        }
-      })
-      .catch(() => {
-        // Session restore failed (expired refresh token, network error, etc.)
-        if (!initialised) {
-          initialised = true
-          reset() // clears everything and sets loading=false
-        }
-      })
-
-    // Safety net: if nothing resolves within 5s, stop loading
-    const timeout = setTimeout(() => {
-      if (!initialised) {
-        initialised = true
-        reset()
-      }
-    }, 5000)
-
-    // Listen for auth state changes
+    // Supabase v2: onAuthStateChange fires INITIAL_SESSION first,
+    // then TOKEN_REFRESHED if the access token was expired.
+    // We use this as the single source of truth — NOT getSession().
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
-        // Handle initial session event (Supabase v2 fires this)
-        if (event === 'INITIAL_SESSION') {
-          if (!initialised) {
-            initialised = true
-            setSession(session)
-            setUser(session?.user ?? null)
-            if (session?.user) {
-              fetchProfile(session.user.id).finally(() => setLoading(false))
-            } else {
-              setLoading(false)
-            }
-          }
-          return
-        }
+        // INITIAL_SESSION: first event on page load — session from localStorage
+        // TOKEN_REFRESHED: access token was expired, new one obtained
+        // SIGNED_IN: user just logged in
+        // SIGNED_OUT: user logged out
 
-        if (event === 'SIGNED_OUT' || !session?.user) {
+        if (event === 'SIGNED_OUT' || (!session?.user && event !== 'INITIAL_SESSION')) {
           reset()
           return
         }
 
-        // Always keep session in sync for token refreshes
-        setSession(session)
-        setUser(session.user)
+        if (session?.user) {
+          setSession(session)
+          setUser(session.user)
 
-        // Refetch profile on sign-in, user update, or identity change
-        const current = useAuthStore.getState()
-        if (event === 'SIGNED_IN' || event === 'USER_UPDATED' || current.profile?.id !== session.user.id) {
-          await fetchProfile(session.user.id)
+          const current = useAuthStore.getState()
+          // Fetch profile if we don't have one or user changed
+          if (!current.profile || current.profile.id !== session.user.id || event === 'USER_UPDATED') {
+            try {
+              const { data } = await supabase
+                .from('profiles')
+                .select('*')
+                .eq('id', session.user.id)
+                .single()
+              setProfile(data)
+            } catch {
+              setProfile(null)
+            }
+          }
+          setLoading(false)
+        } else if (event === 'INITIAL_SESSION') {
+          // No session on initial load — not logged in
+          setLoading(false)
         }
       }
     )
+
+    // Safety net: if onAuthStateChange never fires (shouldn't happen), unblock after 8s
+    const timeout = setTimeout(() => {
+      const { loading } = useAuthStore.getState()
+      if (loading) setLoading(false)
+    }, 8000)
 
     return () => {
       clearTimeout(timeout)
       subscription.unsubscribe()
     }
   }, [])
-
-  async function fetchProfile(userId: string) {
-    try {
-      const { data } = await supabase
-        .from('profiles')
-        .select('*')
-        .eq('id', userId)
-        .single()
-      setProfile(data)
-    } catch {
-      // Profile fetch failed — don't crash, just leave profile null
-      setProfile(null)
-    }
-  }
 }
 
 export function useAuth() {
