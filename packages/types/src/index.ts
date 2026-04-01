@@ -337,3 +337,116 @@ export interface UserSiteAccess {
   created_at: string
   site?: Site
 }
+
+// ── Competitive features (Phase 4) ──
+
+export interface TicketTemplate {
+  id: string
+  tenant_id: string
+  name: string
+  subject: string | null
+  description: string | null
+  priority: TicketPriority
+  ticket_type_id: string | null
+  company_id: string | null
+  tags: string[]
+  is_active: boolean
+  created_by: string | null
+  created_at: string
+  updated_at: string
+  ticket_type?: TicketType
+  company?: Company
+}
+
+export interface TicketView {
+  id: string
+  tenant_id: string
+  user_id: string
+  name: string
+  filters: Record<string, string>
+  sort_by: string
+  sort_dir: string
+  is_default: boolean
+  is_shared: boolean
+  created_at: string
+  updated_at: string
+}
+
+export interface CustomRole {
+  id: string
+  tenant_id: string
+  name: string
+  description: string | null
+  is_system: boolean
+  created_at: string
+  updated_at: string
+  permissions?: RolePermission[]
+}
+
+export interface RolePermission {
+  id: string
+  role_id: string
+  module: string
+  can_view: boolean
+  can_create: boolean
+  can_edit: boolean
+  can_delete: boolean
+}
+
+export type EscalationTrigger = 'response_warning' | 'response_breach' | 'resolve_warning' | 'resolve_breach'
+export type EscalationAction = 'notify' | 'reassign' | 'change_priority' | 'add_comment'
+
+export interface SlaEscalationRule {
+  id: string
+  tenant_id: string
+  sla_policy_id: string
+  name: string
+  trigger_type: EscalationTrigger
+  trigger_percent: number
+  action_type: EscalationAction
+  action_config: Record<string, unknown>
+  is_active: boolean
+  created_at: string
+  updated_at: string
+  sla_policy?: SlaPolicy
+}
+
+export interface EmailTemplate {
+  id: string
+  tenant_id: string
+  name: string
+  event: string
+  subject_template: string
+  body_html: string
+  is_active: boolean
+  created_at: string
+  updated_at: string
+}
+
+export type CustomFieldType = 'text' | 'number' | 'select' | 'checkbox' | 'date' | 'textarea'
+
+export interface CustomFieldDefinition {
+  id: string
+  tenant_id: string
+  entity_type: string
+  name: string
+  label: string
+  field_type: CustomFieldType
+  options: string[]
+  is_required: boolean
+  sort_order: number
+  is_active: boolean
+  created_at: string
+  updated_at: string
+}
+
+export interface CustomFieldValue {
+  id: string
+  tenant_id: string
+  field_id: string
+  entity_id: string
+  value: string | null
+  created_at: string
+  updated_at: string
+  definition?: CustomFieldDefinition
+}

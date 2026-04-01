@@ -6,7 +6,8 @@ import {
   Ticket, Plus, Building2, FileText, Activity, MapPin,
   Landmark, BookOpen, Monitor, Users, Shield, SlidersHorizontal,
   LayoutDashboard, Tag, Radio, ScrollText, Clock, Key, BarChart2,
-  Webhook, UserCircle, ExternalLink
+  Webhook, UserCircle, ExternalLink, FileCode, AlertTriangle,
+  Mail, Columns, Lock
 } from 'lucide-react'
 
 interface NavItem {
@@ -35,6 +36,8 @@ const navSections: NavSection[] = [
       { path: '/tickets/create', label: 'New Ticket', icon: <Plus size={18} /> },
       { path: '/ticket-types', label: 'Ticket Types', icon: <Tag size={18} />, adminOnly: true },
       { path: '/sla', label: 'SLA Policies', icon: <Clock size={18} />, adminOnly: true },
+      { path: '/sla/escalation', label: 'Escalation Rules', icon: <AlertTriangle size={18} />, adminOnly: true },
+      { path: '/templates', label: 'Templates', icon: <FileCode size={18} />, adminOnly: true },
       { path: '/knowledge', label: 'Knowledge Base', icon: <BookOpen size={18} /> },
     ],
   },
@@ -64,6 +67,9 @@ const navSections: NavSection[] = [
       { path: '/user-company-access', label: 'Company Access', icon: <Shield size={18} />, adminOnly: true },
       { path: '/user-site-access', label: 'Site Access', icon: <SlidersHorizontal size={18} />, adminOnly: true },
       { path: '/user-management', label: 'Users', icon: <Users size={18} />, adminOnly: true },
+      { path: '/roles', label: 'Roles & Perms', icon: <Lock size={18} />, adminOnly: true },
+      { path: '/custom-fields', label: 'Custom Fields', icon: <Columns size={18} />, adminOnly: true },
+      { path: '/email-templates', label: 'Email Templates', icon: <Mail size={18} />, adminOnly: true },
     ],
   },
   {

@@ -5,8 +5,9 @@ import { useAuth } from '@/hooks/useAuth'
 import { Button } from '@/components/ui/Button'
 import { TENANT_ID } from '@/lib/supabase'
 import { newTicketSchema } from '@/lib/schemas'
+import { FileText } from 'lucide-react'
 import toast from 'react-hot-toast'
-import type { Company, Site, TicketType } from '@operate1/types'
+import type { Company, Site, TicketType, TicketTemplate } from '@operate1/types'
 
 export function NewTicketPage() {
   const navigate = useNavigate()
@@ -14,6 +15,7 @@ export function NewTicketPage() {
   const [companies, setCompanies] = useState<Company[]>([])
   const [sites, setSites] = useState<Site[]>([])
   const [ticketTypes, setTicketTypes] = useState<TicketType[]>([])
+  const [templates, setTemplates] = useState<TicketTemplate[]>([])
   const [loading, setLoading] = useState(false)
 
   const [form, setForm] = useState({
@@ -31,12 +33,14 @@ export function NewTicketPage() {
   useEffect(() => { if (form.company_id) fetchSites(form.company_id) }, [form.company_id])
 
   async function fetchData() {
-    const [{ data: co }, { data: tt }] = await Promise.all([
+    const [{ data: co }, { data: tt }, { data: tpl }] = await Promise.all([
       supabase.from('companies').select('*').eq('status', 'active').order('name'),
       supabase.from('ticket_types').select('*').order('name'),
+      supabase.from('ticket_templates').select('*').eq('is_active', true).order('name'),
     ])
     setCompanies(co || [])
     setTicketTypes(tt || [])
+    setTemplates((tpl as TicketTemplate[]) || [])
   }
 
   async function fetchSites(companyId: string) {
@@ -47,6 +51,19 @@ export function NewTicketPage() {
 
   function set(field: string, value: string) {
     setForm(f => ({ ...f, [field]: value }))
+  }
+
+  function applyTemplate(templateId: string) {
+    const tpl = templates.find(t => t.id === templateId)
+    if (!tpl) return
+    setForm(f => ({
+      ...f,
+      subject: tpl.subject || f.subject,
+      description: tpl.description || f.description,
+      ticket_type_id: tpl.ticket_type_id || f.ticket_type_id,
+      company_id: tpl.company_id || f.company_id,
+    }))
+    toast.success(`Template "${tpl.name}" applied`)
   }
 
   async function handleSubmit(e: React.FormEvent) {
@@ -78,7 +95,24 @@ export function NewTicketPage() {
     <form onSubmit={handleSubmit} className="space-y-5">
       <h2 className="text-xl font-bold text-gray-900 text-center mb-6">Register New Ticket</h2>
 
-      <div className="grid grid-cols-2 gap-4">
+      {/* Template selector */}
+      {templates.length > 0 && (
+        <div className="bg-violet-50 border border-violet-200 rounded-lg p-4">
+          <div className="flex items-center gap-2 mb-2">
+            <FileText size={16} className="text-violet-600" />
+            <label className="text-sm font-medium text-violet-700">Apply Template</label>
+          </div>
+          <select
+            onChange={e => { if (e.target.value) applyTemplate(e.target.value); e.target.value = '' }}
+            className="w-full border border-violet-300 rounded-md px-3 py-2 text-sm bg-white focus:outline-none focus:ring-1 focus:ring-violet-500"
+          >
+            <option value="">Select a template to pre-fill fields...</option>
+            {templates.map(t => <option key={t.id} value={t.id}>{t.name}</option>)}
+          </select>
+        </div>
+      )}
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div>
           <label className="text-sm font-medium text-gray-700 block mb-1">Email <span className="text-red-500">*</span></label>
           <input required type="email" placeholder="example@email.com" value={form.contact_email} onChange={e => set('contact_email', e.target.value)}
@@ -91,7 +125,7 @@ export function NewTicketPage() {
         </div>
       </div>
 
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div>
           <label className="text-sm font-medium text-gray-700 block mb-1">Company <span className="text-red-500">*</span></label>
           <select required value={form.company_id} onChange={e => set('company_id', e.target.value)}

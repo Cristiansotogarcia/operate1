@@ -29,6 +29,12 @@ import { IntegrationsPage } from './pages/integrations/IntegrationsPage'
 // Phase 3
 import { PublicPortalPage } from './pages/portal/PublicPortalPage'
 import { AccountPage } from './pages/account/AccountPage'
+// Phase 4 — Competitive features
+import { TicketTemplatesPage } from './pages/templates/TicketTemplatesPage'
+import { RolesPage } from './pages/roles/RolesPage'
+import { CustomFieldsPage } from './pages/custom-fields/CustomFieldsPage'
+import { EmailTemplatesPage } from './pages/email-templates/EmailTemplatesPage'
+import { SlaEscalationPage } from './pages/sla/SlaEscalationPage'
 
 export const router = createHashRouter([
   {
@@ -65,6 +71,8 @@ export const router = createHashRouter([
       { path: 'tickets/:id', element: <TicketDetailPage /> },
       { path: 'ticket-types', element: <TicketTypesPage /> },
       { path: 'sla', element: <SLAPoliciesPage /> },
+      { path: 'sla/escalation', element: <SlaEscalationPage /> },
+      { path: 'templates', element: <TicketTemplatesPage /> },
       { path: 'knowledge', element: <KnowledgePage /> },
       // Clients
       { path: 'companies', element: <CompaniesPage /> },
@@ -83,6 +91,9 @@ export const router = createHashRouter([
       { path: 'user-company-access', element: <CompanyAccessPage /> },
       { path: 'user-site-access', element: <SiteAccessPage /> },
       { path: 'user-management', element: <UserManagementPage /> },
+      { path: 'roles', element: <RolesPage /> },
+      { path: 'custom-fields', element: <CustomFieldsPage /> },
+      { path: 'email-templates', element: <EmailTemplatesPage /> },
       { path: 'account', element: <AccountPage /> },
     ],
   },
