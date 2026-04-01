@@ -5,7 +5,7 @@
   <title>Operate1 Agent</title>
   <style>
     *{margin:0;padding:0;box-sizing:border-box}
-    :root{--bg:#0f172a;--bg2:#1e293b;--card:#fff;--violet:#0891b2;--violet-dim:rgba(8,145,178,.15);--green:#22c55e;--red:#ef4444;--yellow:#eab308;--g50:#f8fafc;--g100:#f1f5f9;--g200:#e2e8f0;--g300:#cbd5e1;--g400:#94a3b8;--g500:#64748b;--g700:#334155;--g800:#1e293b;--g900:#0f172a}
+    :root{--bg:#0f172a;--bg2:#1e293b;--card:#fff;--brand:#0891b2;--brand-dim:rgba(8,145,178,.15);--green:#22c55e;--red:#ef4444;--yellow:#eab308;--g50:#f8fafc;--g100:#f1f5f9;--g200:#e2e8f0;--g300:#cbd5e1;--g400:#94a3b8;--g500:#64748b;--g700:#334155;--g800:#1e293b;--g900:#0f172a}
     body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--g50);color:var(--g800);height:100vh;overflow:hidden;-webkit-app-region:drag;user-select:none}
     button,input{-webkit-app-region:no-drag}
 
@@ -16,20 +16,20 @@
     .win-btn.x:hover{background:#fef2f2;color:var(--red)}
 
     /* ─── PAIRING SCREEN ─── */
-    #pairingScreen{display:flex;align-items:center;justify-content:center;height:100vh;background:linear-gradient(135deg,#0f172a 0%,#1e1b4b 100%)}
-    .pair-card{background:var(--card);border-radius:16px;padding:40px;width:380px;text-align:center;box-shadow:0 25px 50px rgba(0,0,0,.25)}
-    .pair-logo{width:56px;height:56px;background:var(--violet);border-radius:14px;display:flex;align-items:center;justify-content:center;margin:0 auto 20px}
-    .pair-logo svg{width:28px;height:28px}
-    .pair-card h1{font-size:20px;font-weight:700;color:var(--g900);margin-bottom:4px}
-    .pair-card p{font-size:13px;color:var(--g500);margin-bottom:24px}
-    .code-input{width:100%;padding:14px;border:2px solid var(--g200);border-radius:10px;text-align:center;font-size:24px;font-family:'Courier New',monospace;font-weight:700;letter-spacing:8px;text-transform:uppercase;outline:none;transition:.15s}
-    .code-input:focus{border-color:var(--violet);box-shadow:0 0 0 4px rgba(8,145,178,.1)}
-    .code-input::placeholder{font-size:14px;letter-spacing:2px;font-weight:400;color:var(--g300)}
-    .pair-btn{width:100%;padding:12px;border:none;border-radius:10px;background:var(--violet);color:#fff;font-size:14px;font-weight:600;cursor:pointer;margin-top:16px;transition:.15s}
-    .pair-btn:hover{background:#6d28d9}
+    #pairingScreen{display:flex;align-items:center;justify-content:center;height:100vh;background:linear-gradient(135deg,#0f172a 0%,#164e63 50%,#0f172a 100%)}
+    .pair-card{background:#0f172a;border:1px solid rgba(255,255,255,.1);border-radius:16px;padding:40px;width:380px;text-align:center;box-shadow:0 25px 50px rgba(0,0,0,.4)}
+    .pair-logo{margin:0 auto 20px}
+    .pair-logo img{height:80px}
+    .pair-card h1{font-size:20px;font-weight:700;color:#e2e8f0;margin-bottom:4px}
+    .pair-card p{font-size:13px;color:var(--g400);margin-bottom:24px}
+    .code-input{width:100%;padding:14px;background:rgba(255,255,255,.05);border:2px solid rgba(255,255,255,.1);border-radius:10px;text-align:center;font-size:24px;font-family:'Courier New',monospace;font-weight:700;letter-spacing:8px;text-transform:uppercase;outline:none;transition:.15s;color:#fff}
+    .code-input:focus{border-color:var(--brand);box-shadow:0 0 0 4px rgba(8,145,178,.15)}
+    .code-input::placeholder{font-size:14px;letter-spacing:2px;font-weight:400;color:var(--g500)}
+    .pair-btn{width:100%;padding:12px;border:none;border-radius:10px;background:var(--brand);color:#fff;font-size:14px;font-weight:600;cursor:pointer;margin-top:16px;transition:.15s}
+    .pair-btn:hover{background:#0e7490}
     .pair-btn:disabled{opacity:.5;cursor:not-allowed}
     .pair-error{color:var(--red);font-size:12px;margin-top:12px;min-height:18px}
-    .pair-footer{margin-top:20px;font-size:11px;color:var(--g400)}
+    .pair-footer{margin-top:20px;font-size:11px;color:var(--g500)}
 
     /* ─── AGENT DASHBOARD ─── */
     #agentDashboard{display:none;height:100vh}
@@ -38,23 +38,24 @@
     /* Sidebar */
     .sidebar{width:190px;background:var(--bg);display:flex;flex-direction:column;flex-shrink:0}
     .sb-brand{padding:14px 16px;display:flex;align-items:center;gap:10px;border-bottom:1px solid rgba(255,255,255,.08)}
-    .sb-logo{width:28px;height:28px;background:var(--violet);border-radius:8px;display:flex;align-items:center;justify-content:center}
-    .sb-logo svg{width:15px;height:15px}
-    .sb-brand span{color:#fff;font-weight:600;font-size:13px}
+    .sb-brand img{height:24px}
     .sb-nav{flex:1;padding:10px 6px}
     .sb-item{display:flex;align-items:center;gap:9px;padding:8px 10px;border-radius:6px;color:var(--g400);font-size:12px;cursor:pointer;transition:.15s}
     .sb-item:hover{background:rgba(255,255,255,.05);color:var(--g300)}
-    .sb-item.active{background:var(--violet-dim);color:#67e8f9;font-weight:500}
+    .sb-item.active{background:var(--brand-dim);color:#67e8f9;font-weight:500}
     .sb-item svg{opacity:.7;flex-shrink:0}
     .sb-footer{padding:10px 14px;border-top:1px solid rgba(255,255,255,.08)}
     .sb-status{display:flex;align-items:center;gap:7px;font-size:10px;color:var(--g500)}
     .dot{width:7px;height:7px;border-radius:50%}
     .dot.on{background:var(--green);box-shadow:0 0 6px rgba(34,197,94,.5)}
     .dot.off{background:var(--red)}
+    .dot.wait{background:var(--yellow);animation:pulse 1.5s infinite}
+    @keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
 
     /* Content */
     .main-area{flex:1;display:flex;flex-direction:column;overflow:hidden}
-    .topbar{height:40px;background:var(--card);border-bottom:1px solid var(--g200);display:flex;align-items:center;padding:0 16px;font-size:12px;font-weight:600;color:var(--g700);flex-shrink:0}
+    .topbar{height:40px;background:var(--card);border-bottom:1px solid var(--g200);display:flex;align-items:center;justify-content:space-between;padding:0 16px;font-size:12px;font-weight:600;color:var(--g700);flex-shrink:0}
+    .topbar-ver{font-size:10px;font-weight:400;color:var(--g400)}
     .content{flex:1;overflow-y:auto;padding:16px}
 
     /* Metric cards */
@@ -68,14 +69,14 @@
     .bg{background:var(--green)}.by{background:var(--yellow)}.br{background:var(--red)}
 
     /* Info cards */
-    .igrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    .igrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
     .icard{background:var(--card);border:1px solid var(--g200);border-radius:10px;padding:14px}
     .icard-title{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--g500);margin-bottom:10px}
     .irow{display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid var(--g100);font-size:11px}
     .irow:last-child{border:none}
     .ilabel{color:var(--g500)}.ival{font-weight:500;color:var(--g800)}
     .badge{display:inline-flex;align-items:center;gap:3px;padding:1px 7px;border-radius:3px;font-size:10px;font-weight:500}
-    .badge-g{background:#f0fdf4;color:#16a34a}.badge-r{background:#fef2f2;color:#dc2626}.badge-gr{background:var(--g100);color:var(--g500)}
+    .badge-g{background:#f0fdf4;color:#16a34a}.badge-r{background:#fef2f2;color:#dc2626}.badge-y{background:#fefce8;color:#ca8a04}.badge-gr{background:var(--g100);color:var(--g500)}
 
     /* Pages */
     .page{display:none}.page.active{display:block}
@@ -83,6 +84,10 @@
     /* Settings */
     .unpair-btn{padding:6px 14px;border:1px solid var(--red);border-radius:6px;background:none;color:var(--red);font-size:12px;font-weight:500;cursor:pointer;transition:.15s}
     .unpair-btn:hover{background:#fef2f2}
+
+    /* Update banner */
+    .update-bar{background:#fefce8;border:1px solid #fde68a;border-radius:8px;padding:10px 14px;margin-bottom:14px;display:flex;align-items:center;justify-content:space-between;font-size:11px}
+    .update-bar a{color:var(--brand);font-weight:600;text-decoration:none;cursor:pointer;-webkit-app-region:no-drag}
   </style>
 </head>
 <body>
@@ -101,17 +106,14 @@
 <div id="pairingScreen">
   <div class="pair-card">
     <div class="pair-logo">
-      <svg viewBox="0 0 32 32" fill="none">
-        <path d="M8 16a8 8 0 1 1 16 0a8 8 0 0 1-16 0z" stroke="#fff" stroke-width="3" fill="none"/>
-        <path d="M16 10v6l4 2" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-      </svg>
+      <img src="../assets/icon.png" alt="Operate1">
     </div>
     <h1>Operate1 Agent</h1>
     <p>Enter the pairing code from your IT administrator</p>
     <input class="code-input" id="codeInput" maxlength="6" placeholder="ABC123" autofocus>
     <button class="pair-btn" id="pairBtn" onclick="doPair()" disabled>Connect</button>
     <div class="pair-error" id="pairError"></div>
-    <div class="pair-footer">Operate1 Monitoring Agent v1.0.2</div>
+    <div class="pair-footer">Operate1 Agent <span id="pairVer">v--</span></div>
   </div>
 </div>
 
@@ -120,12 +122,7 @@
   <div class="app-layout">
     <div class="sidebar">
       <div class="sb-brand">
-        <div class="sb-logo">
-          <svg viewBox="0 0 32 32" fill="none">
-            <path d="M8 16a8 8 0 1 1 16 0a8 8 0 0 1-16 0z" stroke="#fff" stroke-width="3" fill="none"/>
-            <path d="M16 10v6l4 2" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-        </div>
+        <img src="../assets/icon.png" alt="Operate1">
         <span>Operate1</span>
       </div>
       <div class="sb-nav">
@@ -143,16 +140,24 @@
         </div>
       </div>
       <div class="sb-footer">
-        <div class="sb-status"><span class="dot off" id="sDot"></span><span id="sTxt">Connecting...</span></div>
+        <div class="sb-status"><span class="dot wait" id="sDot"></span><span id="sTxt">Starting...</span></div>
+        <div style="margin-top:4px;font-size:9px;color:var(--g500)" id="sbVer">v--</div>
       </div>
     </div>
 
     <div class="main-area">
-      <div class="topbar" id="pgTitle">Agent Status</div>
+      <div class="topbar">
+        <span id="pgTitle">Agent Status</span>
+        <span class="topbar-ver" id="topVer">Agent v--</span>
+      </div>
       <div class="content">
 
         <!-- STATUS -->
         <div class="page active" id="pg-status">
+          <div id="updateBanner" style="display:none" class="update-bar">
+            <span>Update available: <strong id="updateVer">--</strong></span>
+            <a id="updateLink" href="#" onclick="return false">Download</a>
+          </div>
           <div class="mgrid">
             <div class="mcard"><div class="mval" id="vCpu">--</div><div class="mlabel">CPU</div><div class="mbar"><div class="mfill bg" id="bCpu" style="width:0"></div></div></div>
             <div class="mcard"><div class="mval" id="vRam">--</div><div class="mlabel">RAM</div><div class="mbar"><div class="mfill bg" id="bRam" style="width:0"></div></div></div>
@@ -171,14 +176,30 @@
               <div class="irow"><span class="ilabel">Status</span><span class="ival" id="cSt">--</span></div>
               <div class="irow"><span class="ilabel">Last Heartbeat</span><span class="ival" id="cHb">--</span></div>
               <div class="irow"><span class="ilabel">Heartbeats</span><span class="ival" id="cCt">0</span></div>
-              <div class="irow"><span class="ilabel">Interval</span><span class="ival" id="cInt">30s</span></div>
+              <div class="irow"><span class="ilabel">Monitors</span><span class="ival" id="cMon">0</span></div>
+            </div>
+          </div>
+          <!-- Battery & Power -->
+          <div class="igrid">
+            <div class="icard">
+              <div class="icard-title">Power</div>
+              <div class="irow"><span class="ilabel">Source</span><span class="ival" id="pSrc">--</span></div>
+              <div class="irow"><span class="ilabel">Battery</span><span class="ival" id="pBat">--</span></div>
+              <div class="irow"><span class="ilabel">Charging</span><span class="ival" id="pChg">--</span></div>
+            </div>
+            <div class="icard">
+              <div class="icard-title">Disk Health</div>
+              <div class="irow"><span class="ilabel">Type</span><span class="ival" id="dhType">--</span></div>
+              <div class="irow"><span class="ilabel">SMART</span><span class="ival" id="dhSmart">--</span></div>
+              <div class="irow"><span class="ilabel">I/O Read</span><span class="ival" id="dhR">--</span></div>
+              <div class="irow"><span class="ilabel">I/O Write</span><span class="ival" id="dhW">--</span></div>
             </div>
           </div>
         </div>
 
         <!-- METRICS -->
         <div class="page" id="pg-metrics">
-          <div class="icard">
+          <div class="icard" style="margin-bottom:14px">
             <div class="icard-title">System Resources</div>
             <div class="irow"><span class="ilabel">CPU Usage</span><span class="ival" id="xCpu">--</span></div>
             <div class="irow"><span class="ilabel">RAM Used</span><span class="ival" id="xRu">--</span></div>
@@ -187,14 +208,24 @@
             <div class="irow"><span class="ilabel">Disk Total</span><span class="ival" id="xDt">--</span></div>
             <div class="irow"><span class="ilabel">Uptime</span><span class="ival" id="xUp">--</span></div>
           </div>
+          <div class="icard">
+            <div class="icard-title">Disk Performance</div>
+            <div class="irow"><span class="ilabel">Disk Type</span><span class="ival" id="xDtype">--</span></div>
+            <div class="irow"><span class="ilabel">Read Speed</span><span class="ival" id="xDr">--</span></div>
+            <div class="irow"><span class="ilabel">Write Speed</span><span class="ival" id="xDw">--</span></div>
+            <div class="irow"><span class="ilabel">Temperature</span><span class="ival" id="xDtemp">--</span></div>
+            <div class="irow"><span class="ilabel">SMART Status</span><span class="ival" id="xDsmart">--</span></div>
+          </div>
         </div>
 
         <!-- SETTINGS -->
         <div class="page" id="pg-settings">
           <div class="icard">
             <div class="icard-title">Agent Settings</div>
+            <div class="irow"><span class="ilabel">Agent Version</span><span class="ival" id="sVer">--</span></div>
             <div class="irow"><span class="ilabel">Device ID</span><span class="ival" id="sId">--</span></div>
             <div class="irow"><span class="ilabel">Heartbeat Interval</span><span class="ival" id="sInt">30s</span></div>
+            <div class="irow"><span class="ilabel">Active Monitors</span><span class="ival" id="sMon">0</span></div>
             <div class="irow"><span class="ilabel">Status</span><span class="ival"><span class="badge badge-g">Paired</span></span></div>
             <div style="margin-top:16px">
               <button class="unpair-btn" onclick="doUnpair()">Unpair Device</button>
@@ -209,6 +240,15 @@
 
 <script>
   const $ = id => document.getElementById(id)
+
+  // ─── Version display ───
+  ;(async () => {
+    const ver = await agent.getAppVersion()
+    $('pairVer').textContent = 'v' + ver
+    $('sbVer').textContent = 'v' + ver
+    $('topVer').textContent = 'Agent v' + ver
+    $('sVer').textContent = 'v' + ver
+  })()
 
   // ─── Navigation ───
   function nav(p) {
@@ -285,18 +325,59 @@
     $('xDu').textContent = m.disk_used_gb + ' GB'
     $('xDt').textContent = m.disk_total_gb + ' GB'
     $('xUp').textContent = m.uptime_hours + ' hours'
+    // Battery & power
+    if (m.has_battery) {
+      $('pBat').textContent = m.battery_percent != null ? m.battery_percent + '%' : 'N/A'
+      $('pChg').innerHTML = m.battery_charging ? '<span class="badge badge-g">Yes</span>' : '<span class="badge badge-gr">No</span>'
+    } else {
+      $('pBat').textContent = 'No battery'
+      $('pChg').textContent = '--'
+    }
+    $('pSrc').innerHTML = m.power_source === 'ac' ? '<span class="badge badge-g">AC Power</span>'
+      : m.power_source === 'ups' ? '<span class="badge badge-y">UPS / Backup</span>'
+      : m.power_source === 'battery' ? '<span class="badge badge-r">Battery</span>'
+      : '--'
+    // Disk health
+    $('dhType').textContent = m.disk_type || '--'
+    $('dhSmart').innerHTML = m.smart_status === 'ok' ? '<span class="badge badge-g">Healthy</span>'
+      : m.smart_status === 'caution' ? '<span class="badge badge-y">Caution</span>'
+      : m.smart_status === 'failing' ? '<span class="badge badge-r">Failing</span>'
+      : '--'
+    $('dhR').textContent = m.disk_io_read_mb != null ? m.disk_io_read_mb + ' MB/s' : '--'
+    $('dhW').textContent = m.disk_io_write_mb != null ? m.disk_io_write_mb + ' MB/s' : '--'
+    // Metrics page disk
+    $('xDtype').textContent = m.disk_type || '--'
+    $('xDr').textContent = m.disk_io_read_mb != null ? m.disk_io_read_mb + ' MB/s' : '--'
+    $('xDw').textContent = m.disk_io_write_mb != null ? m.disk_io_write_mb + ' MB/s' : '--'
+    $('xDtemp').textContent = m.disk_temp_c != null ? m.disk_temp_c + '°C' : '--'
+    $('xDsmart').innerHTML = m.smart_status === 'ok' ? '<span class="badge badge-g">Healthy</span>'
+      : m.smart_status === 'caution' ? '<span class="badge badge-y">Caution</span>'
+      : m.smart_status === 'failing' ? '<span class="badge badge-r">Failing</span>'
+      : '--'
+    // Monitor count
+    if (m.active_monitors !== undefined) {
+      $('cMon').textContent = m.active_monitors
+      $('sMon').textContent = m.active_monitors
+    }
   }
 
   function updateS(s) {
     if (!s) return
     $('sDot').className = 'dot ' + (s.connected ? 'on' : 'off')
-    $('sTxt').textContent = s.connected ? 'Connected' : 'Disconnected'
+    $('sTxt').textContent = s.connected ? 'Connected' : (s.error || 'Disconnected')
     $('dId').textContent = s.device_id ? s.device_id.slice(0, 8) + '...' : '--'
     $('sId').textContent = s.device_id || '--'
     $('cSt').innerHTML = s.connected ? '<span class="badge badge-g">Online</span>' : '<span class="badge badge-r">' + (s.error || 'Offline') + '</span>'
     $('cHb').textContent = s.last_heartbeat ? new Date(s.last_heartbeat).toLocaleTimeString() : '--'
     $('cCt').textContent = s.heartbeat_count
   }
+
+  // ─── Update notification ───
+  agent.onUpdateAvailable(d => {
+    $('updateBanner').style.display = 'flex'
+    $('updateVer').textContent = 'v' + d.version
+    $('updateLink').onclick = () => { require('electron').shell.openExternal(d.download_url); return false }
+  })
 
   // Live updates
   agent.onMetricsUpdate(updateM)
@@ -310,7 +391,6 @@
       updateM(await agent.getMetrics())
       updateS(await agent.getStatus())
       const cfg = await agent.getConfig()
-      $('cInt').textContent = (cfg.heartbeat_interval_ms / 1000) + 's'
       $('sInt').textContent = (cfg.heartbeat_interval_ms / 1000) + 's'
     } else {
       showPairing()

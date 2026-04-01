@@ -74,7 +74,7 @@ export function ResetPasswordPage() {
             </button>
           </form>
         </div>
-        <p className="text-center text-xs text-white/50 mt-4">Operate1 v1.1.5</p>
+        <p className="text-center text-xs text-white/50 mt-4">Operate1 v1.2.1</p>
       </div>
     </div>
   )
