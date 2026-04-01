@@ -27,17 +27,19 @@
     },
     "files": [
       "dist/**/*",
-      "ui/**/*"
+      "ui/**/*",
+      "assets/**/*"
     ],
     "asarUnpack": [
       "node_modules/systeminformation/**"
     ],
     "win": {
       "target": "nsis",
-      "icon": "assets/icon.ico"
+      "icon": "assets/icon.png"
     },
     "mac": {
-      "target": "dmg"
+      "target": "dmg",
+      "icon": "assets/icon.png"
     },
     "nsis": {
       "oneClick": false,
