@@ -9,7 +9,7 @@ export function MainLayout() {
   const closeSidebar = useCallback(() => setSidebarOpen(false), [])
 
   return (
-    <div className="flex h-screen overflow-hidden bg-gray-50">
+    <div className="flex h-screen overflow-hidden bg-[#0b1120]">
       <Sidebar open={sidebarOpen} onClose={closeSidebar} />
       <div className="flex-1 flex flex-col overflow-hidden min-w-0">
         <TopBar onToggleSidebar={toggleSidebar} />

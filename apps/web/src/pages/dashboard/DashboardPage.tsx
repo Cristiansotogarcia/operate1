@@ -54,12 +54,12 @@ interface StatCardProps {
 
 function StatCard({ title, value, subtitle, icon, color, onClick, trend }: StatCardProps) {
   const bg: Record<string, string> = {
-    cyan: 'bg-cyan-50 text-cyan-600 border-cyan-200',
-    green:  'bg-emerald-50 text-emerald-600 border-emerald-200',
-    yellow: 'bg-amber-50 text-amber-600 border-amber-200',
-    red:    'bg-red-50 text-red-600 border-red-200',
-    blue:   'bg-blue-50 text-blue-600 border-blue-200',
-    slate:  'bg-slate-50 text-slate-600 border-slate-200',
+    cyan: 'bg-cyan-500/15 text-cyan-400 border-cyan-500/30',
+    green:  'bg-emerald-500/15 text-emerald-400 border-emerald-500/30',
+    yellow: 'bg-amber-500/15 text-amber-400 border-amber-500/30',
+    red:    'bg-red-500/15 text-red-400 border-red-500/30',
+    blue:   'bg-blue-500/15 text-blue-400 border-blue-500/30',
+    slate:  'bg-slate-500/15 text-slate-400 border-slate-500/30',
   }
 
   return (
@@ -67,7 +67,7 @@ function StatCard({ title, value, subtitle, icon, color, onClick, trend }: StatC
       type="button"
       onClick={onClick}
       className={cn(
-        'bg-white rounded-xl border border-gray-200/80 p-5 flex items-center gap-4 w-full text-left transition-all duration-200',
+        'bg-slate-800/80 rounded-xl border border-white/10 p-5 flex items-center gap-4 w-full text-left transition-all duration-200',
         onClick && 'hover:shadow-lg hover:border-gray-300 hover:-translate-y-0.5 group cursor-pointer',
         !onClick && 'cursor-default'
       )}
@@ -76,13 +76,13 @@ function StatCard({ title, value, subtitle, icon, color, onClick, trend }: StatC
         {icon}
       </div>
       <div className="min-w-0 flex-1">
-        <p className="text-2xl font-bold text-gray-900 tabular-nums">{value}</p>
-        <p className="text-sm font-medium text-gray-600">{title}</p>
-        {subtitle && <p className="text-xs text-gray-400 mt-0.5">{subtitle}</p>}
+        <p className="text-2xl font-bold text-white tabular-nums">{value}</p>
+        <p className="text-sm font-medium text-slate-400">{title}</p>
+        {subtitle && <p className="text-xs text-slate-500 mt-0.5">{subtitle}</p>}
         {trend && <p className="text-xs text-emerald-500 font-medium mt-0.5">{trend}</p>}
       </div>
       {onClick && (
-        <ArrowRight size={16} className="text-gray-300 group-hover:text-cyan-500 transition-colors shrink-0" />
+        <ArrowRight size={16} className="text-slate-600 group-hover:text-cyan-500 transition-colors shrink-0" />
       )}
     </button>
   )
@@ -92,8 +92,8 @@ function SectionHeader({ icon, title, action }: { icon: React.ReactNode; title: 
   return (
     <div className="flex items-center justify-between mb-3">
       <div className="flex items-center gap-2">
-        <span className="text-gray-400">{icon}</span>
-        <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-wider">{title}</h2>
+        <span className="text-slate-500">{icon}</span>
+        <h2 className="text-xs font-semibold text-slate-500 uppercase tracking-wider">{title}</h2>
       </div>
       {action}
     </div>
@@ -102,8 +102,8 @@ function SectionHeader({ icon, title, action }: { icon: React.ReactNode; title: 
 
 function ChartCard({ title, children, className }: { title: string; children: React.ReactNode; className?: string }) {
   return (
-    <div className={cn('bg-white rounded-xl border border-gray-200/80 p-5', className)}>
-      <h3 className="text-sm font-semibold text-gray-700 mb-4">{title}</h3>
+    <div className={cn('bg-slate-800/80 rounded-xl border border-white/10 p-5', className)}>
+      <h3 className="text-sm font-semibold text-slate-300 mb-4">{title}</h3>
       {children}
     </div>
   )
@@ -121,13 +121,13 @@ function PulseDot({ color }: { color: 'green' | 'red' | 'gray' }) {
 
 function StatusBadge({ status }: { status: string }) {
   const map: Record<string, { label: string; cls: string }> = {
-    pending:     { label: 'Pending',     cls: 'bg-amber-100 text-amber-700' },
-    open:        { label: 'Open',        cls: 'bg-blue-100 text-blue-700' },
-    in_progress: { label: 'In Progress', cls: 'bg-cyan-100 text-cyan-700' },
-    resolved:    { label: 'Resolved',    cls: 'bg-emerald-100 text-emerald-700' },
-    closed:      { label: 'Closed',      cls: 'bg-gray-100 text-gray-500' },
+    pending:     { label: 'Pending',     cls: 'bg-amber-500/15 text-amber-400' },
+    open:        { label: 'Open',        cls: 'bg-blue-500/15 text-blue-400' },
+    in_progress: { label: 'In Progress', cls: 'bg-cyan-500/15 text-cyan-400' },
+    resolved:    { label: 'Resolved',    cls: 'bg-emerald-500/15 text-emerald-400' },
+    closed:      { label: 'Closed',      cls: 'bg-white/10 text-slate-500' },
   }
-  const { label, cls } = map[status] ?? { label: status, cls: 'bg-gray-100 text-gray-500' }
+  const { label, cls } = map[status] ?? { label: status, cls: 'bg-white/10 text-slate-500' }
   return <span className={cn('inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold', cls)}>{label}</span>
 }
 
@@ -158,30 +158,30 @@ function CompaniesDropdown({ companies, navigate }: { companies: CompanyRow[]; n
       <button
         type="button"
         onClick={() => setOpen(!open)}
-        className="inline-flex items-center gap-2 px-3 py-1.5 text-xs font-medium text-gray-600 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
+        className="inline-flex items-center gap-2 px-3 py-1.5 text-xs font-medium text-slate-400 bg-white border border-white/10 rounded-lg hover:bg-white/5 transition-colors"
       >
         <Building2 size={14} />
         Quick Access
         <ChevronDown size={14} className={cn('transition-transform', open && 'rotate-180')} />
       </button>
       {open && (
-        <div className="absolute right-0 top-full mt-1.5 w-72 bg-white rounded-xl border border-gray-200 shadow-xl z-50 overflow-hidden">
-          <div className="p-2 border-b border-gray-100">
-            <div className="flex items-center gap-2 px-2 py-1.5 bg-gray-50 rounded-lg">
-              <Search size={14} className="text-gray-400" />
+        <div className="absolute right-0 top-full mt-1.5 w-72 bg-slate-800/80 rounded-xl border border-white/10 shadow-xl z-50 overflow-hidden">
+          <div className="p-2 border-b border-white/5">
+            <div className="flex items-center gap-2 px-2 py-1.5 bg-white/5 rounded-lg">
+              <Search size={14} className="text-slate-500" />
               <input
                 type="text"
                 value={search}
                 onChange={e => setSearch(e.target.value)}
                 placeholder="Search companies..."
-                className="bg-transparent text-sm text-gray-700 placeholder-gray-400 outline-none flex-1"
+                className="bg-transparent text-sm text-slate-300 placeholder-gray-400 outline-none flex-1"
                 autoFocus
               />
             </div>
           </div>
           <div className="max-h-64 overflow-y-auto py-1">
             {filtered.length === 0 && (
-              <p className="text-xs text-gray-400 text-center py-4">No companies found</p>
+              <p className="text-xs text-slate-500 text-center py-4">No companies found</p>
             )}
             {filtered.map(c => (
               <button
@@ -191,16 +191,16 @@ function CompaniesDropdown({ companies, navigate }: { companies: CompanyRow[]; n
                 className="w-full flex items-center justify-between px-3 py-2 text-left hover:bg-cyan-50 transition-colors group"
               >
                 <div className="min-w-0">
-                  <p className="text-sm font-medium text-gray-700 truncate group-hover:text-cyan-700">{c.name}</p>
-                  <p className="text-[10px] text-gray-400">
+                  <p className="text-sm font-medium text-slate-300 truncate group-hover:text-cyan-700">{c.name}</p>
+                  <p className="text-[10px] text-slate-500">
                     {c.contracts?.length ?? 0} contract{c.contracts?.length !== 1 ? 's' : ''} &middot; {c.sites?.length ?? 0} site{c.sites?.length !== 1 ? 's' : ''}
                   </p>
                 </div>
-                <ExternalLink size={12} className="text-gray-300 group-hover:text-cyan-500 shrink-0" />
+                <ExternalLink size={12} className="text-slate-600 group-hover:text-cyan-500 shrink-0" />
               </button>
             ))}
           </div>
-          <div className="border-t border-gray-100 p-2">
+          <div className="border-t border-white/5 p-2">
             <button
               type="button"
               onClick={() => { navigate('/companies'); setOpen(false) }}
@@ -379,7 +379,7 @@ export function DashboardPage() {
       <div className="flex items-center justify-center h-full min-h-[400px]">
         <div className="text-center">
           <div className="w-10 h-10 border-3 border-cyan-200 border-t-cyan-600 rounded-full animate-spin mx-auto" />
-          <p className="text-sm text-gray-400 mt-3">Loading dashboard...</p>
+          <p className="text-sm text-slate-500 mt-3">Loading dashboard...</p>
         </div>
       </div>
     )
@@ -415,10 +415,10 @@ export function DashboardPage() {
       {/* ── Header ── */}
       <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
         <div>
-          <h1 className="text-xl sm:text-2xl font-bold text-gray-900">
+          <h1 className="text-xl sm:text-2xl font-bold text-white">
             {greeting}, {profile?.full_name?.split(' ')[0] || profile?.username}
           </h1>
-          <p className="text-sm text-gray-500 mt-0.5">
+          <p className="text-sm text-slate-500 mt-0.5">
             Here&apos;s your operations overview for today
           </p>
         </div>
@@ -428,12 +428,12 @@ export function DashboardPage() {
             type="button"
             onClick={() => fetchAll(true)}
             disabled={refreshing}
-            className="inline-flex items-center gap-2 px-3 py-1.5 text-xs font-medium text-gray-600 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors disabled:opacity-50"
+            className="inline-flex items-center gap-2 px-3 py-1.5 text-xs font-medium text-slate-400 bg-white border border-white/10 rounded-lg hover:bg-white/5 transition-colors disabled:opacity-50"
           >
             <RefreshCw size={14} className={cn(refreshing && 'animate-spin')} />
             Refresh
           </button>
-          <div className="flex items-center gap-1.5 text-[11px] text-gray-400">
+          <div className="flex items-center gap-1.5 text-[11px] text-slate-500">
             <PulseDot color="green" />
             <span>Live &middot; {lastUpdated.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
           </div>
@@ -444,8 +444,8 @@ export function DashboardPage() {
       <div className={cn(
         'rounded-xl border px-5 py-3.5 flex items-center gap-3 transition-colors',
         systemHealthy
-          ? 'bg-emerald-50/60 border-emerald-200 text-emerald-700'
-          : 'bg-red-50/60 border-red-200 text-red-700'
+          ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400'
+          : 'bg-red-500/10 border-red-500/30 text-red-400'
       )}>
         {systemHealthy ? <Shield size={18} /> : <AlertCircle size={18} />}
         <span className="text-sm font-medium">
@@ -519,12 +519,12 @@ export function DashboardPage() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
 
         {/* Live Monitor Status */}
-        <div className="bg-white rounded-xl border border-gray-200/80 overflow-hidden">
-          <div className="flex items-center justify-between px-5 py-3.5 border-b border-gray-100">
+        <div className="bg-slate-800/80 rounded-xl border border-white/10 overflow-hidden">
+          <div className="flex items-center justify-between px-5 py-3.5 border-b border-white/5">
             <div className="flex items-center gap-2">
               <PulseDot color={s.monitorsDown > 0 ? 'red' : 'green'} />
-              <h3 className="text-sm font-semibold text-gray-700">Live Monitors</h3>
-              <span className="text-[10px] font-medium text-gray-400 bg-gray-100 px-1.5 py-0.5 rounded-full">{s.monitorsTotal}</span>
+              <h3 className="text-sm font-semibold text-slate-300">Live Monitors</h3>
+              <span className="text-[10px] font-medium text-slate-500 bg-white/10 px-1.5 py-0.5 rounded-full">{s.monitorsTotal}</span>
             </div>
             <button
               type="button"
@@ -534,30 +534,30 @@ export function DashboardPage() {
               View All
             </button>
           </div>
-          <div className="divide-y divide-gray-50 max-h-[320px] overflow-y-auto">
+          <div className="divide-y divide-white/5 max-h-[320px] overflow-y-auto">
             {liveMonitors.length === 0 && (
-              <div className="flex items-center justify-center py-10 text-sm text-gray-400">No monitors configured</div>
+              <div className="flex items-center justify-center py-10 text-sm text-slate-500">No monitors configured</div>
             )}
             {liveMonitors.map(m => (
               <button
                 key={m.id}
                 type="button"
                 onClick={() => navigate('/monitoring')}
-                className="w-full flex items-center gap-3 px-5 py-3 hover:bg-gray-50/80 transition-colors text-left group"
+                className="w-full flex items-center gap-3 px-5 py-3 hover:bg-white/5/80 transition-colors text-left group"
               >
                 <PulseDot color={m.last_status === 'up' ? 'green' : m.last_status === 'down' ? 'red' : 'gray'} />
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-gray-700 truncate group-hover:text-cyan-600">{m.name}</p>
-                  <p className="text-[11px] text-gray-400 truncate">{m.target}</p>
+                  <p className="text-sm font-medium text-slate-300 truncate group-hover:text-cyan-600">{m.name}</p>
+                  <p className="text-[11px] text-slate-500 truncate">{m.target}</p>
                 </div>
                 <div className="text-right shrink-0">
                   <p className={cn(
                     'text-xs font-semibold tabular-nums',
-                    m.last_status === 'up' ? 'text-emerald-600' : m.last_status === 'down' ? 'text-red-600' : 'text-gray-400'
+                    m.last_status === 'up' ? 'text-emerald-600' : m.last_status === 'down' ? 'text-red-600' : 'text-slate-500'
                   )}>
                     {m.last_status === 'up' ? 'UP' : m.last_status === 'down' ? 'DOWN' : '—'}
                   </p>
-                  <p className="text-[10px] text-gray-400 tabular-nums">
+                  <p className="text-[10px] text-slate-500 tabular-nums">
                     {m.avg_response_ms > 0 ? `${Math.round(m.avg_response_ms)}ms` : '—'}
                   </p>
                 </div>
@@ -567,11 +567,11 @@ export function DashboardPage() {
         </div>
 
         {/* Recent Tickets Feed */}
-        <div className="bg-white rounded-xl border border-gray-200/80 overflow-hidden">
-          <div className="flex items-center justify-between px-5 py-3.5 border-b border-gray-100">
+        <div className="bg-slate-800/80 rounded-xl border border-white/10 overflow-hidden">
+          <div className="flex items-center justify-between px-5 py-3.5 border-b border-white/5">
             <div className="flex items-center gap-2">
               <Zap size={14} className="text-amber-500" />
-              <h3 className="text-sm font-semibold text-gray-700">Recent Activity</h3>
+              <h3 className="text-sm font-semibold text-slate-300">Recent Activity</h3>
             </div>
             <button
               type="button"
@@ -581,21 +581,21 @@ export function DashboardPage() {
               View All
             </button>
           </div>
-          <div className="divide-y divide-gray-50 max-h-[320px] overflow-y-auto">
+          <div className="divide-y divide-white/5 max-h-[320px] overflow-y-auto">
             {recentTickets.length === 0 && (
-              <div className="flex items-center justify-center py-10 text-sm text-gray-400">No tickets yet</div>
+              <div className="flex items-center justify-center py-10 text-sm text-slate-500">No tickets yet</div>
             )}
             {recentTickets.map(t => (
               <button
                 key={t.id}
                 type="button"
                 onClick={() => navigate(`/tickets/${t.id}`)}
-                className="w-full flex items-center gap-3 px-5 py-3 hover:bg-gray-50/80 transition-colors text-left group"
+                className="w-full flex items-center gap-3 px-5 py-3 hover:bg-white/5/80 transition-colors text-left group"
               >
                 <PriorityDot priority={t.priority} />
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-gray-700 truncate group-hover:text-cyan-600">{t.title}</p>
-                  <p className="text-[11px] text-gray-400">
+                  <p className="text-sm font-medium text-slate-300 truncate group-hover:text-cyan-600">{t.title}</p>
+                  <p className="text-[11px] text-slate-500">
                     {t.company?.name ?? 'Unassigned'} &middot; {timeAgo(t.created_at)}
                   </p>
                 </div>
@@ -681,23 +681,23 @@ export function DashboardPage() {
               </button>
             }
           />
-          <div className="bg-white rounded-xl border border-gray-200/80 overflow-hidden">
-            <div className="divide-y divide-gray-50 max-h-[320px] overflow-y-auto">
+          <div className="bg-slate-800/80 rounded-xl border border-white/10 overflow-hidden">
+            <div className="divide-y divide-white/5 max-h-[320px] overflow-y-auto">
               {deviceFleet.map(d => (
                 <button
                   key={d.id}
                   type="button"
                   onClick={() => navigate('/devices')}
-                  className="w-full flex items-center gap-3 px-5 py-3 hover:bg-gray-50/80 transition-colors text-left group"
+                  className="w-full flex items-center gap-3 px-5 py-3 hover:bg-white/5/80 transition-colors text-left group"
                 >
                   <PulseDot color={d.status === 'online' ? 'green' : 'red'} />
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium text-gray-700 truncate group-hover:text-cyan-600">{d.name}</p>
-                    <div className="flex items-center gap-3 text-[11px] text-gray-400 mt-0.5">
+                    <p className="text-sm font-medium text-slate-300 truncate group-hover:text-cyan-600">{d.name}</p>
+                    <div className="flex items-center gap-3 text-[11px] text-slate-500 mt-0.5">
                       {d.cpu_percent != null && <span>CPU {d.cpu_percent}%</span>}
                       {d.ram_percent != null && <span>RAM {d.ram_percent}%</span>}
                       {d.disk_percent != null && <span>Disk {d.disk_percent}%</span>}
-                      {d.disk_type && <span className="text-gray-300">{d.disk_type}</span>}
+                      {d.disk_type && <span className="text-slate-600">{d.disk_type}</span>}
                     </div>
                   </div>
                   <div className="flex items-center gap-3 shrink-0">
@@ -706,11 +706,11 @@ export function DashboardPage() {
                       <div className="flex items-center gap-1 text-[11px]">
                         {d.battery_charging
                           ? <BatteryCharging size={14} className="text-emerald-500" />
-                          : <Battery size={14} className={d.battery_percent < 20 ? 'text-red-500' : 'text-gray-400'} />
+                          : <Battery size={14} className={d.battery_percent < 20 ? 'text-red-500' : 'text-slate-500'} />
                         }
                         <span className={cn(
                           'tabular-nums font-medium',
-                          d.battery_percent < 20 ? 'text-red-500' : 'text-gray-500'
+                          d.battery_percent < 20 ? 'text-red-500' : 'text-slate-500'
                         )}>
                           {d.battery_percent}%
                         </span>
@@ -720,9 +720,9 @@ export function DashboardPage() {
                     {d.power_source && (
                       <span className={cn(
                         'text-[10px] font-semibold px-1.5 py-0.5 rounded-full',
-                        d.power_source === 'ac' ? 'bg-emerald-50 text-emerald-600' :
-                        d.power_source === 'ups' ? 'bg-amber-50 text-amber-600' :
-                        'bg-red-50 text-red-600'
+                        d.power_source === 'ac' ? 'bg-emerald-500/15 text-emerald-400' :
+                        d.power_source === 'ups' ? 'bg-amber-500/15 text-amber-400' :
+                        'bg-red-500/15 text-red-400'
                       )}>
                         {d.power_source === 'ac' ? 'AC' : d.power_source === 'ups' ? 'UPS' : 'BATT'}
                       </span>
@@ -731,14 +731,14 @@ export function DashboardPage() {
                     {d.smart_status && d.smart_status !== 'ok' && (
                       <span className={cn(
                         'text-[10px] font-semibold px-1.5 py-0.5 rounded-full',
-                        d.smart_status === 'failing' ? 'bg-red-50 text-red-600' : 'bg-amber-50 text-amber-600'
+                        d.smart_status === 'failing' ? 'bg-red-500/15 text-red-400' : 'bg-amber-500/15 text-amber-400'
                       )}>
                         {d.smart_status === 'failing' ? 'DISK FAIL' : 'DISK WARN'}
                       </span>
                     )}
                     {/* Agent version */}
                     {d.agent_version && (
-                      <span className="text-[10px] text-gray-300">v{d.agent_version}</span>
+                      <span className="text-[10px] text-slate-600">v{d.agent_version}</span>
                     )}
                   </div>
                 </button>
@@ -796,11 +796,11 @@ export function DashboardPage() {
                     <stop offset="95%" stopColor="#06b6d4" stopOpacity={0} />
                   </linearGradient>
                 </defs>
-                <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
-                <XAxis dataKey="date" tick={{ fontSize: 11, fill: '#94a3b8' }} tickLine={false} axisLine={false} interval={1} />
-                <YAxis tick={{ fontSize: 11, fill: '#94a3b8' }} tickLine={false} axisLine={false} allowDecimals={false} />
+                <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.06)" />
+                <XAxis dataKey="date" tick={{ fontSize: 11, fill: '#64748b' }} tickLine={false} axisLine={false} interval={1} />
+                <YAxis tick={{ fontSize: 11, fill: '#64748b' }} tickLine={false} axisLine={false} allowDecimals={false} />
                 <Tooltip
-                  contentStyle={{ borderRadius: '8px', border: '1px solid #e2e8f0', boxShadow: '0 4px 12px rgba(0,0,0,0.08)' }}
+                  contentStyle={{ borderRadius: '8px', color: '#e2e8f0', border: '1px solid rgba(255,255,255,0.1)', background: '#1e293b', boxShadow: '0 4px 12px rgba(0,0,0,0.3)' }}
                 />
                 <Area type="monotone" dataKey="count" stroke="#06b6d4" fill="url(#ticketGrad)" strokeWidth={2.5} name="Tickets" />
               </AreaChart>
@@ -812,12 +812,12 @@ export function DashboardPage() {
             {monitorUptime.length > 0 ? (
               <ResponsiveContainer width="100%" height={220}>
                 <BarChart data={monitorUptime} layout="vertical" margin={{ top: 0, right: 8, bottom: 0, left: 8 }}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" horizontal={false} />
-                  <XAxis type="number" domain={[0, 100]} tick={{ fontSize: 11, fill: '#94a3b8' }} tickLine={false} unit="%" axisLine={false} />
-                  <YAxis type="category" dataKey="name" tick={{ fontSize: 11, fill: '#94a3b8' }} tickLine={false} width={80} axisLine={false} />
+                  <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.06)" horizontal={false} />
+                  <XAxis type="number" domain={[0, 100]} tick={{ fontSize: 11, fill: '#64748b' }} tickLine={false} unit="%" axisLine={false} />
+                  <YAxis type="category" dataKey="name" tick={{ fontSize: 11, fill: '#64748b' }} tickLine={false} width={80} axisLine={false} />
                   <Tooltip
                     formatter={(v) => [`${v}%`, 'Uptime']}
-                    contentStyle={{ borderRadius: '8px', border: '1px solid #e2e8f0', boxShadow: '0 4px 12px rgba(0,0,0,0.08)' }}
+                    contentStyle={{ borderRadius: '8px', color: '#e2e8f0', border: '1px solid rgba(255,255,255,0.1)', background: '#1e293b', boxShadow: '0 4px 12px rgba(0,0,0,0.3)' }}
                   />
                   <Bar dataKey="uptime" radius={[0, 6, 6, 0]}>
                     {monitorUptime.map((m, i) => (
@@ -827,7 +827,7 @@ export function DashboardPage() {
                 </BarChart>
               </ResponsiveContainer>
             ) : (
-              <div className="flex items-center justify-center h-[220px] text-sm text-gray-400">No monitors configured yet</div>
+              <div className="flex items-center justify-center h-[220px] text-sm text-slate-500">No monitors configured yet</div>
             )}
           </ChartCard>
 
@@ -839,12 +839,12 @@ export function DashboardPage() {
                   <Pie data={ticketStatusData} cx="50%" cy="50%" innerRadius={60} outerRadius={85} dataKey="value" paddingAngle={4} strokeWidth={0}>
                     {ticketStatusData.map((entry, i) => <Cell key={i} fill={entry.fill} />)}
                   </Pie>
-                  <Tooltip contentStyle={{ borderRadius: '8px', border: '1px solid #e2e8f0', boxShadow: '0 4px 12px rgba(0,0,0,0.08)' }} />
+                  <Tooltip contentStyle={{ borderRadius: '8px', color: '#e2e8f0', border: '1px solid rgba(255,255,255,0.1)', background: '#1e293b', boxShadow: '0 4px 12px rgba(0,0,0,0.3)' }} />
                   <Legend iconType="circle" iconSize={8} wrapperStyle={{ fontSize: '12px' }} />
                 </PieChart>
               </ResponsiveContainer>
             ) : (
-              <div className="flex items-center justify-center h-[220px] text-sm text-gray-400">No open tickets</div>
+              <div className="flex items-center justify-center h-[220px] text-sm text-slate-500">No open tickets</div>
             )}
           </ChartCard>
 
@@ -856,12 +856,12 @@ export function DashboardPage() {
                   <Pie data={devicePieData} cx="50%" cy="50%" innerRadius={60} outerRadius={85} dataKey="value" paddingAngle={4} strokeWidth={0}>
                     {devicePieData.map((entry, i) => <Cell key={i} fill={entry.fill} />)}
                   </Pie>
-                  <Tooltip contentStyle={{ borderRadius: '8px', border: '1px solid #e2e8f0', boxShadow: '0 4px 12px rgba(0,0,0,0.08)' }} />
+                  <Tooltip contentStyle={{ borderRadius: '8px', color: '#e2e8f0', border: '1px solid rgba(255,255,255,0.1)', background: '#1e293b', boxShadow: '0 4px 12px rgba(0,0,0,0.3)' }} />
                   <Legend iconType="circle" iconSize={8} wrapperStyle={{ fontSize: '12px' }} />
                 </PieChart>
               </ResponsiveContainer>
             ) : (
-              <div className="flex items-center justify-center h-[220px] text-sm text-gray-400">No devices registered yet</div>
+              <div className="flex items-center justify-center h-[220px] text-sm text-slate-500">No devices registered yet</div>
             )}
           </ChartCard>
         </div>

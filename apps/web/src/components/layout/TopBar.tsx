@@ -20,11 +20,11 @@ export function TopBar({ onToggleSidebar }: TopBarProps) {
   }
 
   return (
-    <header className="h-14 border-b border-gray-200 bg-white flex items-center justify-between px-4 sm:px-6 shrink-0">
+    <header className="h-14 border-b border-white/10 bg-[#0f172a] flex items-center justify-between px-4 sm:px-6 shrink-0">
       <button
         type="button"
         onClick={onToggleSidebar}
-        className="lg:hidden p-2 -ml-1 text-gray-500 hover:text-gray-700 rounded-lg hover:bg-gray-100 transition-colors"
+        className="lg:hidden p-2 -ml-1 text-slate-400 hover:text-white rounded-lg hover:bg-white/10 transition-colors"
         aria-label="Toggle menu"
       >
         <Menu size={20} />
@@ -33,24 +33,24 @@ export function TopBar({ onToggleSidebar }: TopBarProps) {
       <div className="flex items-center gap-2 sm:gap-3">
         <button
           onClick={() => navigate('/account')}
-          className="p-2 text-gray-400 hover:text-gray-600 rounded-lg hover:bg-gray-100 transition-colors"
+          className="p-2 text-slate-400 hover:text-white rounded-lg hover:bg-white/10 transition-colors"
           title="Account settings"
         >
           <Settings size={18} />
         </button>
-        <div className="w-px h-6 bg-gray-200" />
+        <div className="w-px h-6 bg-white/10" />
         <div className="flex items-center gap-2.5">
           <div className="w-8 h-8 rounded-full bg-cyan-600 flex items-center justify-center text-white text-xs font-semibold">
             {getInitials(profile?.full_name || profile?.username)}
           </div>
           <div className="hidden sm:block">
-            <p className="text-sm font-medium text-gray-800 leading-tight">{profile?.full_name || profile?.username}</p>
-            <p className="text-xs text-gray-400 leading-tight">{profile?.role}</p>
+            <p className="text-sm font-medium text-slate-200 leading-tight">{profile?.full_name || profile?.username}</p>
+            <p className="text-xs text-slate-500 leading-tight">{profile?.role}</p>
           </div>
         </div>
         <button
           onClick={handleLogout}
-          className="p-2 text-gray-400 hover:text-red-500 rounded-lg hover:bg-gray-100 transition-colors"
+          className="p-2 text-slate-400 hover:text-red-400 rounded-lg hover:bg-white/10 transition-colors"
           title="Sign out"
         >
           <LogOut size={18} />
