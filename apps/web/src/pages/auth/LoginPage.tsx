@@ -57,8 +57,8 @@ export function LoginPage() {
       <div className="relative w-full max-w-md mx-4">
         <div className="bg-white rounded-2xl shadow-2xl p-8">
           <div className="text-center mb-8">
-            <h1 className="text-2xl font-bold bg-gradient-to-r from-emerald-500 via-cyan-500 to-blue-500 bg-clip-text text-transparent">Operate1</h1>
-            <p className="text-sm text-gray-500 mt-1">
+            <img src="/logo.svg" alt="Operate1" className="h-12 mx-auto mb-3" />
+            <p className="text-sm text-gray-500">
               {resetMode ? 'Reset your password' : 'Sign in to continue'}
             </p>
           </div>
