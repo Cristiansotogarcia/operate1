@@ -29,6 +29,10 @@ docs/
 MVP.md
 progress.md
 
+# IDE
+.vscode/
+.idea/
+
 # OS
 .DS_Store
 Thumbs.db
