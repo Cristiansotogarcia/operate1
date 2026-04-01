@@ -24,6 +24,11 @@ worker/worker-buffer.db
 # Claude Code local settings
 .claude/settings.local.json
 
+# Documentation (local only)
+docs/
+MVP.md
+progress.md
+
 # OS
 .DS_Store
 Thumbs.db
