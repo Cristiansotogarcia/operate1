@@ -6,8 +6,7 @@ export function useAuthInit() {
   const { setUser, setSession, setProfile, setLoading, reset } = useAuthStore()
 
   useEffect(() => {
-    // Determine initial session once — loading starts true (authStore default).
-    // setLoading(false) is called exactly once after this resolves, then never again.
+    // Get initial session — handles token refresh automatically
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session)
       setUser(session?.user ?? null)
@@ -18,28 +17,22 @@ export function useAuthInit() {
       }
     })
 
-    // Auth state changes — only act on real sign-in/sign-out transitions.
-    // TOKEN_REFRESHED and duplicate SIGNED_IN events (fired on tab focus)
-    // must NOT update the store or they trigger cascading re-renders and
-    // re-fetches that overwhelm the Supabase free-tier connection pool.
+    // Listen for all auth state changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
-        const current = useAuthStore.getState()
-
         if (event === 'SIGNED_OUT' || !session?.user) {
-          if (current.user) reset()
+          reset()
           return
         }
 
-        // Only update session/user when the identity actually changes
-        if (session.user.id !== current.user?.id) {
-          setSession(session)
-          setUser(session.user)
-          await fetchProfile(session.user.id)
-        }
+        // Always keep session in sync — critical for token refreshes
+        // Without this, RLS queries fail after the access token expires
+        setSession(session)
+        setUser(session.user)
 
-        // USER_UPDATED — profile may have changed (e.g. after Account page save)
-        if (event === 'USER_UPDATED') {
+        // Only refetch profile on actual identity changes or user updates
+        const current = useAuthStore.getState()
+        if (event === 'SIGNED_IN' || event === 'USER_UPDATED' || current.profile?.id !== session.user.id) {
           await fetchProfile(session.user.id)
         }
       }
@@ -48,7 +41,6 @@ export function useAuthInit() {
     return () => subscription.unsubscribe()
   }, [])
 
-  // fetchProfile never touches loading — the spinner is only the app's initial boot state.
   async function fetchProfile(userId: string) {
     const { data } = await supabase
       .from('profiles')

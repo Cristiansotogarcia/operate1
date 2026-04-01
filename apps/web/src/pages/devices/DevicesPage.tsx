@@ -299,6 +299,39 @@ export function DevicesPage() {
                   <div className="space-y-2 mb-3">
                     <ProgressBar value={d.cpu_percent ?? 0} label="CPU" />
                     <ProgressBar value={d.ram_percent ?? 0} label="RAM" />
+                    <ProgressBar value={d.disk_percent ?? 0} label="Disk" />
+                  </div>
+
+                  {/* Battery / Power / Disk Health indicators */}
+                  <div className="flex items-center gap-3 flex-wrap text-xs mb-3">
+                    {(d as any).battery_percent != null && (
+                      <span className="inline-flex items-center gap-1 text-gray-500">
+                        Battery: <strong className={(d as any).battery_percent < 20 ? 'text-red-500' : 'text-gray-700'}>{(d as any).battery_percent}%</strong>
+                        {(d as any).battery_charging && <span className="text-green-500">(charging)</span>}
+                      </span>
+                    )}
+                    {(d as any).power_source && (
+                      <span className={`inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-semibold ${
+                        (d as any).power_source === 'ac' ? 'bg-green-100 text-green-700' :
+                        (d as any).power_source === 'ups' ? 'bg-amber-100 text-amber-700' :
+                        'bg-red-100 text-red-700'
+                      }`}>
+                        {(d as any).power_source === 'ac' ? 'AC Power' : (d as any).power_source === 'ups' ? 'UPS' : 'Battery'}
+                      </span>
+                    )}
+                    {(d as any).disk_type && (
+                      <span className="text-gray-400">{(d as any).disk_type}</span>
+                    )}
+                    {(d as any).smart_status && (d as any).smart_status !== 'ok' && (
+                      <span className={`inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-semibold ${
+                        (d as any).smart_status === 'failing' ? 'bg-red-100 text-red-700' : 'bg-amber-100 text-amber-700'
+                      }`}>
+                        {(d as any).smart_status === 'failing' ? 'DISK FAILING' : 'DISK CAUTION'}
+                      </span>
+                    )}
+                    {(d as any).agent_version && (
+                      <span className="text-gray-300">v{(d as any).agent_version}</span>
+                    )}
                   </div>
 
                   <div className="flex items-center justify-between text-xs text-gray-400 pt-3 border-t border-gray-100">
