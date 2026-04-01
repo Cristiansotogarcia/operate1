@@ -138,17 +138,19 @@ export function unpair() {
 
 // ─── Metrics collection ────────────────────────
 export async function collectMetrics(): Promise<AgentMetrics> {
-  const [cpu, mem, disk, diskLayout, diskIO, battery] = await Promise.all([
+  const [cpu, mem, disk, diskLayout, diskIOraw, batteryRaw] = await Promise.all([
     si.currentLoad(),
     si.mem(),
     si.fsSize(),
-    si.diskLayout().catch(() => []),
-    si.disksIO().catch(() => ({ rIO_sec: 0, wIO_sec: 0 })),
-    si.battery().catch(() => ({ hasBattery: false, isCharging: false, percent: 0, acConnected: true })),
+    si.diskLayout().catch(() => null),
+    si.disksIO().catch(() => null),
+    si.battery().catch(() => null),
   ])
 
-  const d = disk[0] || { size: 0, used: 0, use: 0 }
-  const primaryDisk = diskLayout[0]
+  const d = disk?.[0] || { size: 0, used: 0, use: 0 }
+  const primaryDisk = diskLayout?.[0] ?? null
+  const diskIO = diskIOraw ?? { rIO_sec: 0, wIO_sec: 0 }
+  const battery = batteryRaw ?? { hasBattery: false, isCharging: false, percent: 0, acConnected: true }
 
   // Determine disk type
   let diskType: string | null = null
@@ -187,9 +189,9 @@ export async function collectMetrics(): Promise<AgentMetrics> {
     // UPS heuristic: desktop with battery that's not charging and AC lost
     if (!battery.acConnected && battery.hasBattery && battery.percent < 100) {
       // Could be UPS — flag if not a laptop (laptops have hasBattery naturally)
-      const chassis = await si.chassis().catch(() => ({ type: '' }))
+      const chassis = await si.chassis().catch(() => null)
       const isLaptop = ['notebook', 'laptop', 'portable', 'sub notebook'].some(
-        t => (chassis.type || '').toLowerCase().includes(t)
+        t => (chassis?.type || '').toLowerCase().includes(t)
       )
       if (!isLaptop) powerSource = 'ups'
     }
