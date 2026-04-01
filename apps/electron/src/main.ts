@@ -6,6 +6,14 @@ import { initUpdater, startUpdateChecker, stopUpdateChecker } from './updater'
 
 let mainWindow: BrowserWindow | null = null
 let tray: Tray | null = null
+let allowQuit = false
+
+// Resolve paths correctly whether running from source or packaged asar
+function assetPath(filename: string): string {
+  // In packaged app: __dirname is inside app.asar/dist/
+  // Assets are at app.asar/assets/ (sibling to dist/)
+  return path.join(__dirname, '..', 'assets', filename)
+}
 
 function createWindow() {
   mainWindow = new BrowserWindow({
@@ -16,7 +24,7 @@ function createWindow() {
     title: 'Operate1 Agent',
     frame: false,
     titleBarStyle: 'hidden',
-    icon: path.join(__dirname, '..', 'assets', 'icon.ico'),
+    icon: assetPath('icon.png'),
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
       contextIsolation: true,
@@ -24,7 +32,6 @@ function createWindow() {
     },
     show: false,
     backgroundColor: '#0f172a',
-    closable: false, // Prevent Alt+F4 closing
   })
 
   mainWindow.loadFile(path.join(__dirname, '..', 'ui', 'index.html'))
@@ -42,18 +49,20 @@ function createWindow() {
     startUpdateChecker()
   })
 
-  // Always minimize to tray — never close
+  // Minimize to tray instead of closing (unless quit is allowed)
   mainWindow.on('close', (e) => {
-    e.preventDefault()
-    mainWindow?.hide()
+    if (!allowQuit) {
+      e.preventDefault()
+      mainWindow?.hide()
+    }
   })
 }
 
 function createTray() {
   let trayIcon: Electron.NativeImage
-  const iconPath = path.join(__dirname, '..', 'assets', 'icon.ico')
   try {
-    trayIcon = nativeImage.createFromPath(iconPath)
+    trayIcon = nativeImage.createFromPath(assetPath('icon.png'))
+    if (trayIcon.isEmpty()) trayIcon = nativeImage.createFromPath(assetPath('icon.ico'))
   } catch {
     trayIcon = nativeImage.createEmpty()
   }
@@ -61,7 +70,6 @@ function createTray() {
   tray = new Tray(trayIcon)
   tray.setToolTip('Operate1 Agent — Running')
 
-  // No "Quit" option — only admins can uninstall via Control Panel
   const contextMenu = Menu.buildFromTemplate([
     {
       label: 'Show Operate1 Agent',
@@ -69,8 +77,8 @@ function createTray() {
     },
     { type: 'separator' },
     {
-      label: 'About',
-      click: () => { mainWindow?.show(); mainWindow?.focus() },
+      label: 'Quit',
+      click: () => { allowQuit = true; app.quit() },
     },
   ])
 
@@ -78,17 +86,12 @@ function createTray() {
   tray.on('double-click', () => { mainWindow?.show(); mainWindow?.focus() })
 }
 
-// Prevent quitting — the app should always run
-app.on('before-quit', async (e) => {
-  // Only allow quit if explicitly forced (e.g., during uninstall)
-  if (!process.env.OPERATE1_FORCE_QUIT) {
-    e.preventDefault()
-    mainWindow?.hide()
-  } else {
-    // Report graceful shutdown before quitting
-    await reportShutdown('graceful')
-    stopUpdateChecker()
-  }
+// Allow quit when NSIS installer sends kill signal or user explicitly quits
+app.on('before-quit', async () => {
+  allowQuit = true
+  await reportShutdown('graceful').catch(() => {})
+  stopUpdateChecker()
+  stopAgent()
 })
 
 app.whenReady().then(() => {
@@ -100,7 +103,6 @@ app.whenReady().then(() => {
   const cfg = loadConfig()
   if (cfg && isPaired()) {
     startAgent()
-    // If launched at boot with --hidden, stay in tray
     if (process.argv.includes('--hidden')) {
       mainWindow?.hide()
     }
@@ -111,7 +113,7 @@ app.whenReady().then(() => {
   })
 })
 
-// Prevent window-all-closed from quitting
+// Keep running in tray when all windows closed
 app.on('window-all-closed', () => {
-  // Do nothing — keep running in tray
+  // Do nothing — stay in tray
 })
