@@ -13,7 +13,7 @@ import {
   CheckCircle, AlertCircle, Clock, TrendingUp,
   ArrowRight, RefreshCw, ChevronDown, Search,
   CircleDot, Wifi, WifiOff, FileText, ExternalLink,
-  Shield, Zap,
+  Shield, Zap, Battery, BatteryCharging, Plug, HardDrive,
 } from 'lucide-react'
 
 /* ───────────── types ───────────── */
@@ -38,6 +38,7 @@ interface MonitorUptimeRow { name: string; uptime: number }
 interface LiveMonitor { id: string; name: string; target: string; type: string; last_status: 'up' | 'down' | 'unknown'; uptime_percent: number; avg_response_ms: number }
 interface CompanyRow { id: string; name: string; status: string; contracts: { id: string; status: string }[]; sites: { id: string }[] }
 interface RecentTicket { id: string; title: string; status: string; priority: string; created_at: string; company: { name: string } | null }
+interface DeviceRow { id: string; name: string; status: string; cpu_percent: number | null; ram_percent: number | null; disk_percent: number | null; battery_percent: number | null; battery_charging: boolean | null; power_source: string | null; smart_status: string | null; disk_type: string | null; agent_version: string | null; last_seen_at: string | null }
 
 /* ───────────── sub-components ───────────── */
 
@@ -225,6 +226,7 @@ export function DashboardPage() {
   const [liveMonitors, setLiveMonitors] = useState<LiveMonitor[]>([])
   const [companies, setCompanies] = useState<CompanyRow[]>([])
   const [recentTickets, setRecentTickets] = useState<RecentTicket[]>([])
+  const [deviceFleet, setDeviceFleet] = useState<DeviceRow[]>([])
   const [loading, setLoading] = useState(true)
   const [refreshing, setRefreshing] = useState(false)
   const [lastUpdated, setLastUpdated] = useState<Date>(new Date())
@@ -242,6 +244,7 @@ export function DashboardPage() {
         fetchLiveMonitors(),
         fetchCompanies(),
         fetchRecentTickets(),
+        fetchDeviceFleet(),
       ])
       setLastUpdated(new Date())
     } finally {
@@ -330,6 +333,15 @@ export function DashboardPage() {
     setRecentTickets((data as unknown as RecentTicket[]) ?? [])
   }
 
+  async function fetchDeviceFleet() {
+    const { data } = await supabase
+      .from('devices')
+      .select('id, name, status, cpu_percent, ram_percent, disk_percent, battery_percent, battery_charging, power_source, smart_status, disk_type, agent_version, last_seen_at')
+      .order('status', { ascending: true })
+      .limit(8)
+    setDeviceFleet((data as DeviceRow[]) ?? [])
+  }
+
   /* ── lifecycle & realtime ── */
 
   useEffect(() => { fetchAll() }, [fetchAll])
@@ -354,6 +366,7 @@ export function DashboardPage() {
       })
       .on('postgres_changes', { event: '*', schema: 'public', table: 'devices' }, () => {
         fetchStats()
+        fetchDeviceFleet()
       })
       .subscribe()
     return () => { supabase.removeChannel(channel) }
@@ -654,6 +667,86 @@ export function DashboardPage() {
           </div>
         </div>
       </div>
+
+      {/* ── Device Fleet Overview ── */}
+      {deviceFleet.length > 0 && (
+        <div>
+          <SectionHeader
+            icon={<HardDrive size={15} />}
+            title="Device Fleet"
+            action={
+              <button type="button" onClick={() => navigate('/devices')}
+                className="text-xs font-medium text-violet-600 hover:text-violet-700 transition-colors">
+                View All
+              </button>
+            }
+          />
+          <div className="bg-white rounded-xl border border-gray-200/80 overflow-hidden">
+            <div className="divide-y divide-gray-50 max-h-[320px] overflow-y-auto">
+              {deviceFleet.map(d => (
+                <button
+                  key={d.id}
+                  type="button"
+                  onClick={() => navigate('/devices')}
+                  className="w-full flex items-center gap-3 px-5 py-3 hover:bg-gray-50/80 transition-colors text-left group"
+                >
+                  <PulseDot color={d.status === 'online' ? 'green' : 'red'} />
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-medium text-gray-700 truncate group-hover:text-violet-600">{d.name}</p>
+                    <div className="flex items-center gap-3 text-[11px] text-gray-400 mt-0.5">
+                      {d.cpu_percent != null && <span>CPU {d.cpu_percent}%</span>}
+                      {d.ram_percent != null && <span>RAM {d.ram_percent}%</span>}
+                      {d.disk_percent != null && <span>Disk {d.disk_percent}%</span>}
+                      {d.disk_type && <span className="text-gray-300">{d.disk_type}</span>}
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-3 shrink-0">
+                    {/* Battery indicator */}
+                    {d.battery_percent != null && (
+                      <div className="flex items-center gap-1 text-[11px]">
+                        {d.battery_charging
+                          ? <BatteryCharging size={14} className="text-emerald-500" />
+                          : <Battery size={14} className={d.battery_percent < 20 ? 'text-red-500' : 'text-gray-400'} />
+                        }
+                        <span className={cn(
+                          'tabular-nums font-medium',
+                          d.battery_percent < 20 ? 'text-red-500' : 'text-gray-500'
+                        )}>
+                          {d.battery_percent}%
+                        </span>
+                      </div>
+                    )}
+                    {/* Power source */}
+                    {d.power_source && (
+                      <span className={cn(
+                        'text-[10px] font-semibold px-1.5 py-0.5 rounded-full',
+                        d.power_source === 'ac' ? 'bg-emerald-50 text-emerald-600' :
+                        d.power_source === 'ups' ? 'bg-amber-50 text-amber-600' :
+                        'bg-red-50 text-red-600'
+                      )}>
+                        {d.power_source === 'ac' ? 'AC' : d.power_source === 'ups' ? 'UPS' : 'BATT'}
+                      </span>
+                    )}
+                    {/* SMART status */}
+                    {d.smart_status && d.smart_status !== 'ok' && (
+                      <span className={cn(
+                        'text-[10px] font-semibold px-1.5 py-0.5 rounded-full',
+                        d.smart_status === 'failing' ? 'bg-red-50 text-red-600' : 'bg-amber-50 text-amber-600'
+                      )}>
+                        {d.smart_status === 'failing' ? 'DISK FAIL' : 'DISK WARN'}
+                      </span>
+                    )}
+                    {/* Agent version */}
+                    {d.agent_version && (
+                      <span className="text-[10px] text-gray-300">v{d.agent_version}</span>
+                    )}
+                  </div>
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* ── Companies & Contracts ── */}
       <div>
