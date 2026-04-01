@@ -2,10 +2,14 @@ import { useAuth } from '@/hooks/useAuth'
 import { useNavigate } from 'react-router-dom'
 import { supabase } from '@/lib/supabase'
 import { getInitials } from '@/lib/utils'
-import { LogOut, Bell, Settings } from 'lucide-react'
+import { LogOut, Settings, Menu } from 'lucide-react'
 import toast from 'react-hot-toast'
 
-export function TopBar() {
+interface TopBarProps {
+  onToggleSidebar: () => void
+}
+
+export function TopBar({ onToggleSidebar }: TopBarProps) {
   const { profile } = useAuth()
   const navigate = useNavigate()
 
@@ -16,9 +20,17 @@ export function TopBar() {
   }
 
   return (
-    <header className="h-14 border-b border-gray-200 bg-white flex items-center justify-between px-6 shrink-0">
-      <div />
-      <div className="flex items-center gap-3">
+    <header className="h-14 border-b border-gray-200 bg-white flex items-center justify-between px-4 sm:px-6 shrink-0">
+      <button
+        type="button"
+        onClick={onToggleSidebar}
+        className="lg:hidden p-2 -ml-1 text-gray-500 hover:text-gray-700 rounded-lg hover:bg-gray-100 transition-colors"
+        aria-label="Toggle menu"
+      >
+        <Menu size={20} />
+      </button>
+      <div className="hidden lg:block" />
+      <div className="flex items-center gap-2 sm:gap-3">
         <button
           onClick={() => navigate('/account')}
           className="p-2 text-gray-400 hover:text-gray-600 rounded-lg hover:bg-gray-100 transition-colors"

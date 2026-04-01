@@ -121,47 +121,85 @@ export function CompaniesPage() {
       {filtered.length === 0 ? (
         <EmptyState title="No companies found" description="Create your first company to get started" />
       ) : (
-        <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="border-b bg-gray-50">
-                <th className="text-left px-4 py-3 text-xs font-semibold text-gray-500 uppercase">Company Name</th>
-                <th className="text-left px-4 py-3 text-xs font-semibold text-gray-500 uppercase">Active Contract</th>
-                <th className="text-left px-4 py-3 text-xs font-semibold text-gray-500 uppercase">Contract Type</th>
-                <th className="text-left px-4 py-3 text-xs font-semibold text-gray-500 uppercase">Contract Status</th>
-                <th className="text-left px-4 py-3 text-xs font-semibold text-gray-500 uppercase">Sites</th>
-                {isAdmin && <th className="text-left px-4 py-3 text-xs font-semibold text-gray-500 uppercase">Actions</th>}
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-50">
-              {filtered.map(row => {
-                const activeContract = row.contracts?.find(c => c.status === 'active')
-                return (
-                  <tr key={row.id} className="hover:bg-gray-50">
-                    <td className="px-4 py-3 font-medium text-violet-600 cursor-pointer hover:underline" onClick={() => navigate(`/companies/${row.id}`)}>{row.name}</td>
-                    <td className="px-4 py-3 text-gray-600">{activeContract ? 'Yes' : 'No active contract'}</td>
-                    <td className="px-4 py-3">{activeContract ? <ContractTypeBadge type={activeContract.type as any} /> : '—'}</td>
-                    <td className="px-4 py-3">{activeContract ? <ContractStatusBadge status={activeContract.status as any} /> : '—'}</td>
-                    <td className="px-4 py-3 text-gray-600">{row.sites?.length || 0} site(s)</td>
-                    {isAdmin && (
-                      <td className="px-4 py-3">
-                        <div className="flex items-center gap-1">
-                          <button onClick={() => openEdit(row)} className="p-1 text-gray-400 hover:text-amber-600"><Pencil size={15} /></button>
-                          <button onClick={() => setDeleteTarget(row.id)} className="p-1 text-gray-400 hover:text-red-600"><Trash2 size={15} /></button>
-                        </div>
-                      </td>
+        <>
+          {/* Mobile card view */}
+          <div className="space-y-3 lg:hidden">
+            {filtered.map(row => {
+              const activeContract = row.contracts?.find(c => c.status === 'active')
+              return (
+                <div
+                  key={row.id}
+                  onClick={() => navigate(`/companies/${row.id}`)}
+                  className="bg-white rounded-xl border border-gray-200 p-4 active:bg-gray-50 cursor-pointer"
+                >
+                  <p className="text-sm font-semibold text-violet-600 mb-1">{row.name}</p>
+                  <div className="flex items-center gap-2 flex-wrap text-xs text-gray-500">
+                    {activeContract ? (
+                      <>
+                        <ContractTypeBadge type={activeContract.type as any} />
+                        <ContractStatusBadge status={activeContract.status as any} />
+                      </>
+                    ) : (
+                      <span>No active contract</span>
                     )}
+                    <span>&middot; {row.sites?.length || 0} site(s)</span>
+                  </div>
+                  {isAdmin && (
+                    <div className="flex items-center gap-2 mt-3 pt-3 border-t border-gray-100">
+                      <button onClick={(e) => { e.stopPropagation(); openEdit(row) }} className="p-1.5 text-gray-400 hover:text-amber-600"><Pencil size={15} /></button>
+                      <button onClick={(e) => { e.stopPropagation(); setDeleteTarget(row.id) }} className="p-1.5 text-gray-400 hover:text-red-600"><Trash2 size={15} /></button>
+                    </div>
+                  )}
+                </div>
+              )
+            })}
+          </div>
+
+          {/* Desktop table */}
+          <div className="hidden lg:block bg-white rounded-xl border border-gray-200 overflow-hidden">
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="border-b bg-gray-50">
+                    <th className="text-left px-4 py-3 text-xs font-semibold text-gray-500 uppercase">Company Name</th>
+                    <th className="text-left px-4 py-3 text-xs font-semibold text-gray-500 uppercase">Active Contract</th>
+                    <th className="text-left px-4 py-3 text-xs font-semibold text-gray-500 uppercase">Contract Type</th>
+                    <th className="text-left px-4 py-3 text-xs font-semibold text-gray-500 uppercase">Contract Status</th>
+                    <th className="text-left px-4 py-3 text-xs font-semibold text-gray-500 uppercase">Sites</th>
+                    {isAdmin && <th className="text-left px-4 py-3 text-xs font-semibold text-gray-500 uppercase">Actions</th>}
                   </tr>
-                )
-              })}
-            </tbody>
-          </table>
-        </div>
+                </thead>
+                <tbody className="divide-y divide-gray-50">
+                  {filtered.map(row => {
+                    const activeContract = row.contracts?.find(c => c.status === 'active')
+                    return (
+                      <tr key={row.id} className="hover:bg-gray-50">
+                        <td className="px-4 py-3 font-medium text-violet-600 cursor-pointer hover:underline" onClick={() => navigate(`/companies/${row.id}`)}>{row.name}</td>
+                        <td className="px-4 py-3 text-gray-600">{activeContract ? 'Yes' : 'No active contract'}</td>
+                        <td className="px-4 py-3">{activeContract ? <ContractTypeBadge type={activeContract.type as any} /> : '—'}</td>
+                        <td className="px-4 py-3">{activeContract ? <ContractStatusBadge status={activeContract.status as any} /> : '—'}</td>
+                        <td className="px-4 py-3 text-gray-600">{row.sites?.length || 0} site(s)</td>
+                        {isAdmin && (
+                          <td className="px-4 py-3">
+                            <div className="flex items-center gap-1">
+                              <button onClick={() => openEdit(row)} className="p-1 text-gray-400 hover:text-amber-600"><Pencil size={15} /></button>
+                              <button onClick={() => setDeleteTarget(row.id)} className="p-1 text-gray-400 hover:text-red-600"><Trash2 size={15} /></button>
+                            </div>
+                          </td>
+                        )}
+                      </tr>
+                    )
+                  })}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </>
       )}
 
       <Modal open={modalOpen} onClose={() => setModalOpen(false)} title={editing ? 'Edit Company' : 'New Company'} size="md">
         <form onSubmit={handleSave} className="space-y-4">
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Company Name *</label>
               <input required value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))}
@@ -174,7 +212,7 @@ export function CompaniesPage() {
                 className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-violet-500" />
             </div>
           </div>
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
               <input type="email" value={form.email} onChange={e => setForm(f => ({ ...f, email: e.target.value }))}
@@ -188,7 +226,7 @@ export function CompaniesPage() {
                 className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-violet-500" />
             </div>
           </div>
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Website</label>
               <input value={form.website} onChange={e => setForm(f => ({ ...f, website: e.target.value }))}

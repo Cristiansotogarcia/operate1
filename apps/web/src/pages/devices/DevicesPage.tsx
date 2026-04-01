@@ -239,7 +239,7 @@ export function DevicesPage() {
 
       <div className="bg-white rounded-xl border border-gray-200 p-4 mb-6">
         <p className="text-sm font-semibold text-gray-700 mb-3">Search & Filters</p>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
           <input placeholder="Name, serial, asset tag..." value={search} onChange={e => setSearch(e.target.value)}
             className="border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-violet-500" />
           <select value={statusFilter} onChange={e => setStatusFilter(e.target.value)}
@@ -318,7 +318,7 @@ export function DevicesPage() {
                 {/* Asset details panel */}
                 {isExpanded && (
                   <div className="border-t border-gray-100 bg-gray-50 px-5 py-4">
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 text-sm">
                       <div>
                         <p className="text-xs text-gray-400 uppercase font-semibold mb-0.5">Asset Tag</p>
                         <p className="text-gray-700">{d.asset_tag || <span className="text-gray-300">—</span>}</p>
@@ -379,7 +379,7 @@ export function DevicesPage() {
             <input required value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))}
               placeholder="e.g. Reception-PC, Server-01"
               className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-violet-500" /></div>
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div><label className="block text-sm font-medium text-gray-700 mb-1">Company</label>
               <select value={form.company_id} onChange={e => { setForm(f => ({ ...f, company_id: e.target.value, site_id: '' })); setFilteredSites(sites.filter(s => s.company_id === e.target.value)) }}
                 className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm bg-white">
@@ -415,7 +415,7 @@ export function DevicesPage() {
           </>
         }
       >
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div><label className="block text-sm font-medium text-gray-700 mb-1">Asset Tag</label>
             <input value={assetForm.asset_tag} onChange={e => af('asset_tag', e.target.value)} placeholder="e.g. IT-0042"
               className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-violet-500" /></div>

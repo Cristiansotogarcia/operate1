@@ -1,6 +1,7 @@
 import { NavLink } from 'react-router-dom'
 import { cn } from '@/lib/utils'
 import { useAuth } from '@/hooks/useAuth'
+import { X } from 'lucide-react'
 import {
   Ticket, Plus, Building2, FileText, Activity, MapPin,
   Landmark, BookOpen, Monitor, Users, Shield, SlidersHorizontal,
@@ -75,64 +76,95 @@ const navSections: NavSection[] = [
   },
 ]
 
-export function Sidebar() {
+interface SidebarProps {
+  open: boolean
+  onClose: () => void
+}
+
+export function Sidebar({ open, onClose }: SidebarProps) {
   const { profile } = useAuth()
   const isAdmin = profile?.role === 'admin'
-
   return (
-    <div className="flex flex-col h-full w-[220px] bg-[#0f172a] shrink-0">
-      {/* Brand */}
-      <div className="px-5 h-14 flex items-center border-b border-white/10">
-        <div className="flex items-center gap-2.5">
-          <div className="w-7 h-7 rounded-lg bg-violet-600 flex items-center justify-center">
-            <svg viewBox="0 0 32 32" fill="none" className="w-4 h-4">
-              <path d="M8 16a8 8 0 1 1 16 0a8 8 0 0 1-16 0z" stroke="#fff" strokeWidth="3" fill="none"/>
-              <path d="M16 10v6l4 2" stroke="#fff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
-            </svg>
+    <>
+      {/* Mobile backdrop */}
+      {open && (
+        <div
+          className="fixed inset-0 z-40 bg-black/50 lg:hidden"
+          onClick={onClose}
+        />
+      )}
+
+      {/* Sidebar panel */}
+      <div
+        className={cn(
+          'flex flex-col h-full w-[260px] sm:w-[220px] bg-[#0f172a] shrink-0 z-50 transition-transform duration-200',
+          // Mobile: fixed overlay, slide in/out
+          'fixed lg:relative',
+          open ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
+        )}
+      >
+        {/* Brand */}
+        <div className="px-5 h-14 flex items-center justify-between border-b border-white/10">
+          <div className="flex items-center gap-2.5">
+            <div className="w-7 h-7 rounded-lg bg-violet-600 flex items-center justify-center">
+              <svg viewBox="0 0 32 32" fill="none" className="w-4 h-4">
+                <path d="M8 16a8 8 0 1 1 16 0a8 8 0 0 1-16 0z" stroke="#fff" strokeWidth="3" fill="none"/>
+                <path d="M16 10v6l4 2" stroke="#fff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+            </div>
+            <span className="text-white font-semibold text-sm tracking-tight">Operate1</span>
           </div>
-          <span className="text-white font-semibold text-sm tracking-tight">Operate1</span>
+          <button
+            type="button"
+            onClick={onClose}
+            className="lg:hidden p-1.5 text-slate-400 hover:text-white rounded-md hover:bg-white/10 transition-colors"
+            aria-label="Close menu"
+          >
+            <X size={18} />
+          </button>
+        </div>
+
+        {/* Navigation */}
+        <nav className="flex-1 overflow-y-auto py-3 scrollbar-hide">
+          {navSections.map((section, si) => {
+            const visible = section.items.filter(item => !item.adminOnly || isAdmin)
+            if (!visible.length) return null
+            return (
+              <div key={si} className={section.label ? 'mt-2' : ''}>
+                {section.label && (
+                  <p className="px-5 pt-2 pb-1.5 text-[10px] font-semibold uppercase tracking-[0.1em] text-slate-500">
+                    {section.label}
+                  </p>
+                )}
+                {visible.map(item => (
+                  <NavLink
+                    key={item.path}
+                    to={item.path}
+                    end={item.path === '/tickets/create'}
+                    onClick={onClose}
+                    className={({ isActive }) =>
+                      cn(
+                        'flex items-center gap-2.5 mx-2 px-3 py-2.5 sm:py-[7px] text-sm sm:text-[13px] rounded-md transition-colors',
+                        isActive
+                          ? 'bg-violet-600/20 text-violet-300 font-medium'
+                          : 'text-slate-400 hover:bg-white/5 hover:text-slate-200'
+                      )
+                    }
+                  >
+                    <span className="shrink-0 opacity-75">{item.icon}</span>
+                    <span>{item.label}</span>
+                  </NavLink>
+                ))}
+              </div>
+            )
+          })}
+        </nav>
+
+        {/* Footer */}
+        <div className="px-4 py-3 border-t border-white/10">
+          <p className="text-[10px] text-slate-600 text-center">Operate1 v1.1.5</p>
         </div>
       </div>
-
-      {/* Navigation */}
-      <nav className="flex-1 overflow-y-auto py-3 scrollbar-hide">
-        {navSections.map((section, si) => {
-          const visible = section.items.filter(item => !item.adminOnly || isAdmin)
-          if (!visible.length) return null
-          return (
-            <div key={si} className={section.label ? 'mt-2' : ''}>
-              {section.label && (
-                <p className="px-5 pt-2 pb-1.5 text-[10px] font-semibold uppercase tracking-[0.1em] text-slate-500">
-                  {section.label}
-                </p>
-              )}
-              {visible.map(item => (
-                <NavLink
-                  key={item.path}
-                  to={item.path}
-                  end={item.path === '/tickets/create'}
-                  className={({ isActive }) =>
-                    cn(
-                      'flex items-center gap-2.5 mx-2 px-3 py-[7px] text-[13px] rounded-md transition-colors',
-                      isActive
-                        ? 'bg-violet-600/20 text-violet-300 font-medium'
-                        : 'text-slate-400 hover:bg-white/5 hover:text-slate-200'
-                    )
-                  }
-                >
-                  <span className="shrink-0 opacity-75">{item.icon}</span>
-                  <span>{item.label}</span>
-                </NavLink>
-              ))}
-            </div>
-          )
-        })}
-      </nav>
-
-      {/* Footer */}
-      <div className="px-4 py-3 border-t border-white/10">
-        <p className="text-[10px] text-slate-600 text-center">Operate1 v1.1.5</p>
-      </div>
-    </div>
+    </>
   )
 }

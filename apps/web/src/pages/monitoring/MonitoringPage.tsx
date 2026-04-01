@@ -130,7 +130,7 @@ export function MonitoringPage() {
 
       <div className="bg-white rounded-xl border border-gray-200 p-4 mb-6">
         <p className="text-sm font-semibold text-gray-700 mb-3">Search & Filters</p>
-        <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
           <input placeholder="Name, URL, IP..." value={search} onChange={e => setSearch(e.target.value)}
             className="border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-violet-500" />
           <select value={typeFilter} onChange={e => setTypeFilter(e.target.value)}
@@ -265,7 +265,7 @@ export function MonitoringPage() {
 
       <Modal open={modalOpen} onClose={() => setModalOpen(false)} title="New Endpoint" size="lg">
         <form onSubmit={handleCreate} className="space-y-4">
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div><label className="block text-sm font-medium text-gray-700 mb-1">Name *</label>
               <input required value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))}
                 className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-violet-500" /></div>
@@ -286,7 +286,7 @@ export function MonitoringPage() {
                   className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-violet-500" /></div>
             )}
           </div>
-          <div className="grid grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div><label className="block text-sm font-medium text-gray-700 mb-1">Device</label>
               <select value={form.device_id} onChange={e => setForm(f => ({ ...f, device_id: e.target.value }))}
                 className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm bg-white">

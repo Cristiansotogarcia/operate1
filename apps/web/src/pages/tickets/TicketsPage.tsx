@@ -121,12 +121,12 @@ export function TicketsPage() {
       {/* Filters */}
       <div className="bg-white rounded-xl border border-gray-200 p-4 mb-6">
         <p className="text-sm font-semibold text-gray-700 mb-3">Search Filters</p>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
           <input
             placeholder="Email, name, subject..."
             value={search}
             onChange={e => setSearch(e.target.value)}
-            className="border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-violet-500 col-span-2 md:col-span-1"
+            className="border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-violet-500 sm:col-span-2 md:col-span-1"
           />
           <select
             value={statusFilter}
@@ -147,91 +147,122 @@ export function TicketsPage() {
       {filtered.length === 0 ? (
         <EmptyState title="No tickets found" description="Create your first ticket to get started" />
       ) : (
-        <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="border-b border-gray-100 bg-gray-50">
-                <th className="text-left px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide">Status</th>
-                <th className="text-left px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide">Email</th>
-                <th className="text-left px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide">Contact</th>
-                <th className="text-left px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide">Company</th>
-                <th className="text-left px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide">Site</th>
-                <th className="text-left px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide">Type</th>
-                <th className="text-left px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide">Subject</th>
-                <th className="text-left px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide">Assigned To</th>
-                <th className="text-left px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide">Actions</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-50">
-              {filtered.map(ticket => (
-                <tr key={ticket.id} className="hover:bg-gray-50 transition-colors">
-                  <td className="px-4 py-3">
-                    <select
-                      value={ticket.status}
-                      onChange={e => updateStatus(ticket.id, e.target.value as TicketStatus)}
-                      className="text-xs border-0 bg-transparent cursor-pointer"
-                      disabled={profile?.role !== 'admin'}
-                    >
-                      {STATUS_OPTIONS.filter(o => o.value).map(o => (
-                        <option key={o.value} value={o.value}>{o.label}</option>
-                      ))}
-                    </select>
-                    <TicketStatusBadge status={ticket.status} />
-                  </td>
-                  <td className="px-4 py-3 text-violet-600">{ticket.contact_email}</td>
-                  <td className="px-4 py-3 text-gray-700">{ticket.contact_name || '—'}</td>
-                  <td className="px-4 py-3 text-gray-700">{(ticket.company as any)?.name || '—'}</td>
-                  <td className="px-4 py-3 text-gray-700">{(ticket.site as any)?.name || '—'}</td>
-                  <td className="px-4 py-3">
-                    {(ticket.ticket_type as any)?.name
-                      ? <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-700">{(ticket.ticket_type as any).name}</span>
-                      : '—'}
-                  </td>
-                  <td className="px-4 py-3 text-gray-900 max-w-xs truncate">{ticket.subject}</td>
-                  <td className="px-4 py-3">
-                    {profile?.role === 'admin' ? (
-                      <select
-                        value={ticket.assigned_to || ''}
-                        onChange={e => updateAssignee(ticket.id, e.target.value || null)}
-                        className="text-xs border border-gray-200 rounded px-2 py-1 bg-white text-gray-700 max-w-[120px]"
-                      >
-                        <option value="">Unassigned</option>
-                        {adminUsers.map(u => (
-                          <option key={u.id} value={u.id}>{u.full_name || u.username}</option>
-                        ))}
-                      </select>
-                    ) : (
-                      <span className="text-gray-500 text-xs">
-                        {(ticket as any).assignee?.full_name || (ticket as any).assignee?.username || '—'}
-                      </span>
-                    )}
-                  </td>
-                  <td className="px-4 py-3">
-                    <div className="flex items-center gap-1">
-                      <button onClick={() => navigate(`/tickets/${ticket.id}`)} className="p-1 text-gray-400 hover:text-violet-600 transition-colors" title="View">
-                        <Eye size={15} />
-                      </button>
-                      {profile?.role === 'admin' && (
-                        <>
-                          <button className="p-1 text-gray-400 hover:text-amber-600 transition-colors" title="Edit">
-                            <Pencil size={15} />
-                          </button>
-                          <button
-                            onClick={() => setDeleteTarget(ticket.id)}
-                            className="p-1 text-gray-400 hover:text-red-600 transition-colors"
-                            title="Delete"
+        <>
+          {/* Mobile card view */}
+          <div className="space-y-3 lg:hidden">
+            {filtered.map(ticket => (
+              <div
+                key={ticket.id}
+                onClick={() => navigate(`/tickets/${ticket.id}`)}
+                className="bg-white rounded-xl border border-gray-200 p-4 active:bg-gray-50 cursor-pointer"
+              >
+                <div className="flex items-start justify-between gap-2 mb-2">
+                  <p className="text-sm font-medium text-gray-900 line-clamp-2">{ticket.subject}</p>
+                  <TicketStatusBadge status={ticket.status} />
+                </div>
+                <div className="text-xs text-gray-500 space-y-1">
+                  <p>{ticket.contact_email}</p>
+                  {(ticket.company as any)?.name && <p>{(ticket.company as any).name}</p>}
+                  <div className="flex items-center justify-between pt-1">
+                    <span>{formatDate(ticket.created_at)}</span>
+                    <span className="text-gray-400">
+                      {(ticket as any).assignee?.full_name || (ticket as any).assignee?.username || 'Unassigned'}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Desktop table view */}
+          <div className="hidden lg:block bg-white rounded-xl border border-gray-200 overflow-hidden">
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="border-b border-gray-100 bg-gray-50">
+                    <th className="text-left px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide">Status</th>
+                    <th className="text-left px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide">Email</th>
+                    <th className="text-left px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide">Contact</th>
+                    <th className="text-left px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide">Company</th>
+                    <th className="text-left px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide">Site</th>
+                    <th className="text-left px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide">Type</th>
+                    <th className="text-left px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide">Subject</th>
+                    <th className="text-left px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide">Assigned To</th>
+                    <th className="text-left px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide">Actions</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-50">
+                  {filtered.map(ticket => (
+                    <tr key={ticket.id} className="hover:bg-gray-50 transition-colors">
+                      <td className="px-4 py-3">
+                        <select
+                          value={ticket.status}
+                          onChange={e => updateStatus(ticket.id, e.target.value as TicketStatus)}
+                          className="text-xs border-0 bg-transparent cursor-pointer"
+                          disabled={profile?.role !== 'admin'}
+                        >
+                          {STATUS_OPTIONS.filter(o => o.value).map(o => (
+                            <option key={o.value} value={o.value}>{o.label}</option>
+                          ))}
+                        </select>
+                        <TicketStatusBadge status={ticket.status} />
+                      </td>
+                      <td className="px-4 py-3 text-violet-600">{ticket.contact_email}</td>
+                      <td className="px-4 py-3 text-gray-700">{ticket.contact_name || '—'}</td>
+                      <td className="px-4 py-3 text-gray-700">{(ticket.company as any)?.name || '—'}</td>
+                      <td className="px-4 py-3 text-gray-700">{(ticket.site as any)?.name || '—'}</td>
+                      <td className="px-4 py-3">
+                        {(ticket.ticket_type as any)?.name
+                          ? <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-700">{(ticket.ticket_type as any).name}</span>
+                          : '—'}
+                      </td>
+                      <td className="px-4 py-3 text-gray-900 max-w-xs truncate">{ticket.subject}</td>
+                      <td className="px-4 py-3">
+                        {profile?.role === 'admin' ? (
+                          <select
+                            value={ticket.assigned_to || ''}
+                            onChange={e => updateAssignee(ticket.id, e.target.value || null)}
+                            className="text-xs border border-gray-200 rounded px-2 py-1 bg-white text-gray-700 max-w-[120px]"
                           >
-                            <Trash2 size={15} />
+                            <option value="">Unassigned</option>
+                            {adminUsers.map(u => (
+                              <option key={u.id} value={u.id}>{u.full_name || u.username}</option>
+                            ))}
+                          </select>
+                        ) : (
+                          <span className="text-gray-500 text-xs">
+                            {(ticket as any).assignee?.full_name || (ticket as any).assignee?.username || '—'}
+                          </span>
+                        )}
+                      </td>
+                      <td className="px-4 py-3">
+                        <div className="flex items-center gap-1">
+                          <button onClick={() => navigate(`/tickets/${ticket.id}`)} className="p-1 text-gray-400 hover:text-violet-600 transition-colors" title="View">
+                            <Eye size={15} />
                           </button>
-                        </>
-                      )}
-                    </div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+                          {profile?.role === 'admin' && (
+                            <>
+                              <button className="p-1 text-gray-400 hover:text-amber-600 transition-colors" title="Edit">
+                                <Pencil size={15} />
+                              </button>
+                              <button
+                                onClick={() => setDeleteTarget(ticket.id)}
+                                className="p-1 text-gray-400 hover:text-red-600 transition-colors"
+                                title="Delete"
+                              >
+                                <Trash2 size={15} />
+                              </button>
+                            </>
+                          )}
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </>
       )}
 
       <ConfirmDialog

@@ -400,16 +400,16 @@ export function DashboardPage() {
     <div className="p-6 space-y-6 max-w-[1440px] mx-auto">
 
       {/* ── Header ── */}
-      <div className="flex items-start justify-between gap-4 flex-wrap">
+      <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">
+          <h1 className="text-xl sm:text-2xl font-bold text-gray-900">
             {greeting}, {profile?.full_name?.split(' ')[0] || profile?.username}
           </h1>
           <p className="text-sm text-gray-500 mt-0.5">
             Here&apos;s your operations overview for today
           </p>
         </div>
-        <div className="flex items-center gap-3 shrink-0">
+        <div className="flex items-center gap-2 sm:gap-3 shrink-0 flex-wrap">
           <CompaniesDropdown companies={companies} navigate={navigate} />
           <button
             type="button"
